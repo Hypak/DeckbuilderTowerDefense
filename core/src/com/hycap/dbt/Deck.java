@@ -12,13 +12,13 @@ public class Deck {
 
     public Deck() {
         this.cards = new ArrayList<>();
-        for (int i = 0; i < 7; ++i) {
+        for (int i = 0; i < 8; ++i) {
             cards.add(new PathCard());
         }
         cards.add(new MineCard());
         cards.add(new MineCard());
         cards.add(new Draw2Card());
-        cards.add(new Remove1Card());
+        // cards.add(new Remove1Card());
         cards.add(new BuyCard());
         shuffleAll();
     }

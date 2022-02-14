@@ -5,7 +5,7 @@ import com.hycap.dbt.GameState;
 
 public class CoffersBuilding implements Building {
     public static Texture texture;
-    static final int goldCapacity = 3;
+    static final int goldCapacity = 5;
     @Override
     public String getName() {
         return "Coffers";

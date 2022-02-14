@@ -131,6 +131,6 @@ public class BuyCard implements ActionCard, BuyableCard{
 
     @Override
     public int getBuyCost() {
-        return 2;
+        return 4;
     }
 }

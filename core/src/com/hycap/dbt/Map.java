@@ -4,8 +4,8 @@ import com.hycap.dbt.buildings.Building;
 import com.hycap.dbt.buildings.CentralBuilding;
 
 public class Map {
-    public final int WIDTH = 21;
-    public final int HEIGHT = 21;
+    public final int WIDTH = 301;
+    public final int HEIGHT = 301;
     private final Building[][] buildings;
 
     public Map() {
@@ -14,14 +14,17 @@ public class Map {
     }
 
     public Building getBuilding(int x, int y) {
+        if (x < 0 || y < 0 || x >= WIDTH || y >= HEIGHT) {
+            return null;
+        }
         return buildings[x][y];
     }
 
     public boolean canPlaceBuilding(int x, int y) {
-        if (this.buildings[x][y] != null) {
+        if (x < 0 || y < 0 || x >= WIDTH || y >= HEIGHT) {
             return false;
         }
-        if (x < 0 || y < 0 || x >= WIDTH || y >= HEIGHT) {
+        if (this.buildings[x][y] != null) {
             return false;
         }
         if (x - 1 >= 0 && this.buildings[x-1][y] != null) {

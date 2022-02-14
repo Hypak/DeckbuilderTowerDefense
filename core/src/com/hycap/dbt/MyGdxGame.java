@@ -58,7 +58,6 @@ public class MyGdxGame extends ApplicationAdapter {
 	@Override
 	public void create () {
 		gameState = new GameState();
-		gameState.deck.drawNewHand(gameState.baseHandSize);
 
 		setTextures();
 
@@ -66,7 +65,7 @@ public class MyGdxGame extends ApplicationAdapter {
 		camera = new OrthographicCamera();
 		camera.setToOrtho(false, 20,
 				20f * Gdx.graphics.getHeight() / Gdx.graphics.getWidth());
-		camera.position.set(camera.viewportWidth / 2, camera.viewportHeight / 2, 0);
+		resetCamera();
 		SkinClass.skin = new Skin(Gdx.files.internal("gdx-skins-master/skin-composer/skin/skin-composer-ui.json"));
 		SkinClass.skin.getFont("font").getData().setScale(2, 2);
 		stage = new Stage();
@@ -178,6 +177,8 @@ public class MyGdxGame extends ApplicationAdapter {
 					return true;
 				} else if (keycode == Input.Keys.E) {
 					newTurn();
+				} else if (keycode == Input.Keys.SPACE) {
+					resetCamera();
 				}
 				return false;
 			}
@@ -185,6 +186,11 @@ public class MyGdxGame extends ApplicationAdapter {
 
 		Gdx.input.setInputProcessor(new InputMultiplexer(stage, cameraProcessor, shortcutProcessor));
 		newTurn();
+	}
+
+	void resetCamera() {
+		camera.position.set(gameState.map.WIDTH / 2f, gameState.map.WIDTH / 2f, 0);
+		camera.zoom = 1;
 	}
 
 	void newTurn() {
