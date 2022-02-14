@@ -23,6 +23,11 @@ public class PathCard implements BuildingCard {
     }
 
     @Override
+    public Card duplicate() {
+        return new PathCard();
+    }
+
+    @Override
     public Building getBuilding() {
         return new PathBuilding();
     }

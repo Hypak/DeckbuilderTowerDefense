@@ -6,4 +6,5 @@ public interface Card {
     int getEnergyCost();
     String getName();
     Texture getTexture();
+    Card duplicate();
 }

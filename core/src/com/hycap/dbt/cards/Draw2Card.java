@@ -1,9 +1,11 @@
 package com.hycap.dbt.cards;
 
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.hycap.dbt.Deck;
+import com.hycap.dbt.GameState;
 
-public class Draw2Card implements ActionCard {
+public class Draw2Card implements ActionCard, BuyableCard {
     public static Texture texture;
 
     @Override
@@ -22,11 +24,22 @@ public class Draw2Card implements ActionCard {
     }
 
     @Override
-    public boolean tryPlayCard(Deck deck) {
-        if (!deck.drawNewCard()) {
+    public Card duplicate() {
+        return new Draw2Card();
+    }
+
+    @Override
+    public boolean tryPlayCard(GameState gameState, Stage stage) {
+        if (!gameState.deck.drawNewCard()) {
             return false;  // No card to draw
         }
-        deck.drawNewCard();
+        gameState.deck.drawNewCard();
+        gameState.deck.discardCard(this);
         return true;
+    }
+
+    @Override
+    public int getBuyCost() {
+        return 2;
     }
 }

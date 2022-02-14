@@ -1,9 +1,6 @@
 package com.hycap.dbt;
 
-import com.hycap.dbt.cards.Card;
-import com.hycap.dbt.cards.Draw2Card;
-import com.hycap.dbt.cards.MineCard;
-import com.hycap.dbt.cards.PathCard;
+import com.hycap.dbt.cards.*;
 
 import java.util.*;
 
@@ -15,12 +12,14 @@ public class Deck {
 
     public Deck() {
         this.cards = new ArrayList<>();
-        for (int i = 0; i < 9; ++i) {
+        for (int i = 0; i < 7; ++i) {
             cards.add(new PathCard());
         }
         cards.add(new MineCard());
         cards.add(new MineCard());
         cards.add(new Draw2Card());
+        cards.add(new Remove1Card());
+        cards.add(new BuyCard());
         shuffleAll();
     }
 
@@ -40,6 +39,25 @@ public class Deck {
     public void discardCardAt(int index) {
         this.discardPile.add(hand.get(index));
         this.hand.remove(index);
+    }
+
+    public void addToDraw(Card card) {
+        this.cards.add(card);
+        this.drawPile.addLast(card);
+    }
+
+    public void removeCard(Card card) {
+        this.cards.remove(card);
+        this.drawPile.remove(card);
+        this.hand.remove(card);
+        this.discardPile.remove(card);
+    }
+
+    public void discardCard(Card card) {
+        if (this.hand.contains(card)) {
+            this.discardPile.add(card);
+            this.hand.remove(card);
+        }
     }
 
     public void shuffleAll() {
