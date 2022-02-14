@@ -36,6 +36,18 @@ public class Deck {
         return hand.get(index);
     }
 
+    public List<Card> getCards() {
+        return cards;
+    }
+
+    public LinkedList<Card> getDrawPile() {
+        return drawPile;
+    }
+
+    public List<Card> getDiscardPile() {
+        return discardPile;
+    }
+
     public void discardCardAt(int index) {
         this.discardPile.add(hand.get(index));
         this.hand.remove(index);

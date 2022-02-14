@@ -32,6 +32,7 @@ public class MyGdxGame extends ApplicationAdapter {
 	Label goldDisplay;
 	Label energyDisplay;
 	TextButton endTurnButton;
+	Label cardCounts;
 	Table resourceTable;
 
 	Table uiTable;
@@ -72,6 +73,7 @@ public class MyGdxGame extends ApplicationAdapter {
 		Gdx.input.setInputProcessor(stage);
 		handTable = new Table();
 		updateHandTable();
+		cardCounts = new Label("Loading...", SkinClass.skin);
 		goldDisplay = new Label("Loading...", SkinClass.skin);
 		energyDisplay = new Label("Loading...", SkinClass.skin);
 		// energyDisplay.setFillParent(true);
@@ -86,6 +88,7 @@ public class MyGdxGame extends ApplicationAdapter {
 		});
 
 		resourceTable = new Table();
+		resourceTable.add(cardCounts).row();
 		resourceTable.add(goldDisplay).row();
 		resourceTable.add(energyDisplay).row();
 		resourceTable.add(endTurnButton).row();
@@ -139,24 +142,20 @@ public class MyGdxGame extends ApplicationAdapter {
 							gameState.currentEnergy -= card.getEnergyCost();
 							gameState.deck.discardCard(card);
 							selectedIndex = null;
-							updateHandTable();
-							updateEnergyDisplay();
-							updateGoldDisplay();
 							if (card instanceof ExhaustCard) {
 								gameState.deck.removeCard(card);
 							}
+							updateHandTable();
 						}
 					} else if (card instanceof ActionCard) {
 						ActionCard actionCard = (ActionCard) card;
 						if (actionCard.tryPlayCard(gameState, stage)) {
 							gameState.currentEnergy -= card.getEnergyCost();
 							selectedIndex = null;
-							updateHandTable();
-							updateEnergyDisplay();
-							updateGoldDisplay();
 							if (card instanceof ExhaustCard) {
 								gameState.deck.removeCard(card);
 							}
+							updateHandTable();
 						}
 					}
 				}
@@ -191,8 +190,7 @@ public class MyGdxGame extends ApplicationAdapter {
 	void newTurn() {
 		gameState.newTurn();
 		updateHandTable();
-		updateEnergyDisplay();
-		updateGoldDisplay();
+		updateDisplays();
 	}
 
 	public void updateHandTable() {
@@ -218,12 +216,11 @@ public class MyGdxGame extends ApplicationAdapter {
 		}
 	}
 
-	public void updateEnergyDisplay() {
+	public void updateDisplays() {
 		energyDisplay.setText(gameState.currentEnergy + " / " + gameState.baseEnergy + " Energy");
-	}
-
-	public void updateGoldDisplay() {
 		goldDisplay.setText(gameState.gold + "(+" + gameState.goldPerTurn + ") / " + gameState.maxGold + " Gold");
+		cardCounts.setText(gameState.deck.getDrawPile().size() + " Draw, "
+				+ gameState.deck.getCards().size() + " Total");
 	}
 
 	public void resize (int width, int height) {
@@ -262,9 +259,26 @@ public class MyGdxGame extends ApplicationAdapter {
 				}
 			}
 		}
+		if (selectedIndex != null && gameState.deck.getHandCard(selectedIndex) instanceof BuildingCard) {
+			BuildingCard card = (BuildingCard)gameState.deck.getHandCard(selectedIndex);
+			Sprite sprite = new Sprite(card.getBuilding().getTexture());
+			sprite.setScale(1 / 32f);
+			Vector3 mousePos = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
+			camera.unproject(mousePos);
+			int x = Math.round(mousePos.x);
+			int y = Math.round(mousePos.y);
+			if (gameState.map.canPlaceBuilding(x, y)) {
+				sprite.setAlpha(0.9f);
+			} else if (gameState.map.getBuilding(x, y) == null) {
+				sprite.setAlpha(0.4f);
+			}
+			sprite.setPosition(x - 16, y - 16);
+			sprite.draw(batch);
+		}
 		batch.end();
 		stage.act(Gdx.graphics.getDeltaTime());
 		stage.draw();
+		updateDisplays();
 	}
 	
 	@Override

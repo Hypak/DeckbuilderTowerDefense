@@ -1,11 +1,13 @@
 package com.hycap.dbt.cards;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.hycap.dbt.GameState;
 import com.hycap.dbt.SkinClass;
@@ -85,7 +87,13 @@ public class BuyCard implements ActionCard, BuyableCard{
 
         gameState.blocked = true;
 
-        final Card thisCard = this;
+        for (final BuyableCard card : cardSelection) {
+            Label costLabel = new Label(card.getBuyCost() + "G", SkinClass.skin);
+            cardTable.add(costLabel);
+        }
+        cardTable.row();
+
+            final Card thisCard = this;
         for (final BuyableCard card : cardSelection) {
             TextureRegionDrawable image = new TextureRegionDrawable(new TextureRegion(card.getTexture()));
             image.setMinSize(108, 192);

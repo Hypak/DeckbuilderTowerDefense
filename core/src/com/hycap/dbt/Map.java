@@ -24,16 +24,17 @@ public class Map {
         if (x < 0 || y < 0 || x >= WIDTH || y >= HEIGHT) {
             return false;
         }
-
-        for (int xDiff = -1; xDiff <= 1; xDiff += 2) {
-            if (this.buildings[x + xDiff][y] != null) {
-                return true;
-            }
+        if (x - 1 >= 0 && this.buildings[x-1][y] != null) {
+            return true;
         }
-        for (int yDiff = -1; yDiff <= 1; yDiff += 2) {
-            if (this.buildings[x][y + yDiff] != null) {
-                return true;
-            }
+        if (x + 1 < WIDTH && this.buildings[x+1][y] != null) {
+            return true;
+        }
+        if (y - 1 >= 0 && this.buildings[x][y-1] != null) {
+            return true;
+        }
+        if (y + 1 < HEIGHT && this.buildings[x][y+1] != null) {
+            return true;
         }
         return false;
     }
