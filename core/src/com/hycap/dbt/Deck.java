@@ -12,7 +12,7 @@ public class Deck {
 
     public Deck() {
         this.cards = new ArrayList<>();
-        for (int i = 0; i < 8; ++i) {
+        for (int i = 0; i < 7; ++i) {
             cards.add(new PathCard());
         }
         cards.add(new MineCard());
@@ -20,6 +20,7 @@ public class Deck {
         cards.add(new Draw2Card());
         // cards.add(new Remove1Card());
         cards.add(new BuyCard());
+        cards.add(new TowerCard());
         shuffleAll();
     }
 

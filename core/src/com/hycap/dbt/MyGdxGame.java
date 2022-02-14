@@ -18,11 +18,10 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.hycap.dbt.buildings.*;
 import com.hycap.dbt.cards.*;
+import com.hycap.dbt.enemies.BasicEnemy;
+import com.hycap.dbt.enemies.Enemy;
 
 public class MyGdxGame extends ApplicationAdapter {
-	GameState gameState;
-
-
 	SpriteBatch batch;
 	OrthographicCamera camera;
 	float panSpeed = 15;
@@ -34,6 +33,8 @@ public class MyGdxGame extends ApplicationAdapter {
 	TextButton endTurnButton;
 	Label cardCounts;
 	Table resourceTable;
+
+	Texture grassTexture;
 
 	Table uiTable;
 
@@ -49,15 +50,22 @@ public class MyGdxGame extends ApplicationAdapter {
 		CoffersCard.texture = new Texture("CoffersCard.png");
 		MageBuilding.texture = new Texture("MageBuilding.png");
 		MageCard.texture = new Texture("MageCard.png");
+		TowerBuilding.texture = new Texture("TowerBuilding.png");
+		TowerCard.texture = new Texture("TowerCard.png");
 
 		Draw2Card.texture = new Texture("Draw2Card.png");
 		Remove1Card.texture = new Texture("Remove1Card.png");
 		BuyCard.texture = new Texture("BuyCard.png");
+
+		BasicEnemy.texture = new Texture("BasicEnemy.png");
+
+		EnemyBase.texture = new Texture("EnemyBase.png");
+		grassTexture = new Texture("Grass.png");
 	}
 
 	@Override
 	public void create () {
-		gameState = new GameState();
+		GameState.gameState = new GameState();
 
 		setTextures();
 
@@ -69,7 +77,6 @@ public class MyGdxGame extends ApplicationAdapter {
 		SkinClass.skin = new Skin(Gdx.files.internal("gdx-skins-master/skin-composer/skin/skin-composer-ui.json"));
 		SkinClass.skin.getFont("font").getData().setScale(2, 2);
 		stage = new Stage();
-		Gdx.input.setInputProcessor(stage);
 		handTable = new Table();
 		updateHandTable();
 		cardCounts = new Label("Loading...", SkinClass.skin);
@@ -80,7 +87,7 @@ public class MyGdxGame extends ApplicationAdapter {
 		endTurnButton.addListener(new ChangeListener() {
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
-				if (!gameState.blocked) {
+				if (!GameState.gameState.blocked) {
 					newTurn();
 				}
 			}
@@ -118,12 +125,12 @@ public class MyGdxGame extends ApplicationAdapter {
 				if (button != 0) {
 					return false;
 				}
-				if (gameState.blocked) {
+				if (GameState.gameState.blocked || GameState.gameState.animating) {
 					return false;
 				}
-				if (selectedIndex != null && selectedIndex >= 0 && selectedIndex < gameState.deck.getHand().size()) {
-					Card card = gameState.deck.getHandCard(selectedIndex);
-					if (gameState.currentEnergy < card.getEnergyCost()) {
+				if (selectedIndex != null && selectedIndex >= 0 && selectedIndex < GameState.gameState.deck.getHand().size()) {
+					Card card = GameState.gameState.deck.getHandCard(selectedIndex);
+					if (GameState.gameState.currentEnergy < card.getEnergyCost()) {
 						return false;
 					}
 					if (card instanceof BuildingCard) {
@@ -131,28 +138,27 @@ public class MyGdxGame extends ApplicationAdapter {
 						camera.unproject(mousePos);
 						int x = Math.round(mousePos.x);
 						int y = Math.round(mousePos.y);
-						if (selectedIndex >= gameState.deck.getHand().size()) {
-							return false;
-						}
 
 						BuildingCard buildingCard = (BuildingCard)card;
-						if (gameState.map.placeBuilding(buildingCard.getBuilding(), x, y)) {
-							buildingCard.getBuilding().onCreate(gameState);
-							gameState.currentEnergy -= card.getEnergyCost();
-							gameState.deck.discardCard(card);
+						Building newBuilding = buildingCard.getBuilding().duplicate();
+						newBuilding.setPosition(new Pair<>(x, y));
+						if (GameState.gameState.map.placeBuilding(newBuilding, x, y)) {
+							newBuilding.onCreate(GameState.gameState);
+							GameState.gameState.currentEnergy -= card.getEnergyCost();
+							GameState.gameState.deck.discardCard(card);
 							selectedIndex = null;
 							if (card instanceof ExhaustCard) {
-								gameState.deck.removeCard(card);
+								GameState.gameState.deck.removeCard(card);
 							}
 							updateHandTable();
 						}
 					} else if (card instanceof ActionCard) {
 						ActionCard actionCard = (ActionCard) card;
-						if (actionCard.tryPlayCard(gameState, stage)) {
-							gameState.currentEnergy -= card.getEnergyCost();
+						if (actionCard.tryPlayCard(GameState.gameState, stage)) {
+							GameState.gameState.currentEnergy -= card.getEnergyCost();
 							selectedIndex = null;
 							if (card instanceof ExhaustCard) {
-								gameState.deck.removeCard(card);
+								GameState.gameState.deck.removeCard(card);
 							}
 							updateHandTable();
 						}
@@ -165,7 +171,7 @@ public class MyGdxGame extends ApplicationAdapter {
 		InputProcessor shortcutProcessor = new InputAdapter() {
 			@Override
 			public boolean keyUp(int keycode) {
-				if (gameState.blocked) {
+				if (GameState.gameState.blocked || GameState.gameState.animating) {
 					return false;
 				}
 				if (keycode >= Input.Keys.NUM_0 && keycode <= Input.Keys.NUM_9) {
@@ -189,14 +195,15 @@ public class MyGdxGame extends ApplicationAdapter {
 	}
 
 	void resetCamera() {
-		camera.position.set(gameState.map.WIDTH / 2f, gameState.map.WIDTH / 2f, 0);
+		camera.position.set(GameState.gameState.map.WIDTH / 2f, GameState.gameState.map.WIDTH / 2f, 0);
 		camera.zoom = 1;
 	}
 
 	void newTurn() {
-		gameState.newTurn();
+		GameState.gameState.newTurn();
 		updateHandTable();
 		updateDisplays();
+		selectedIndex = null;
 	}
 
 	public void updateHandTable() {
@@ -205,7 +212,7 @@ public class MyGdxGame extends ApplicationAdapter {
 		handTable.bottom();
 
 		int i = 0;
-		for (Card card : gameState.deck.getHand()) {
+		for (Card card : GameState.gameState.deck.getHand()) {
 			TextureRegionDrawable image = new TextureRegionDrawable(new TextureRegion(card.getTexture()));
 			image.setMinSize(108, 192);
 			final ImageButton imageButton = new ImageButton(image, image);
@@ -223,10 +230,10 @@ public class MyGdxGame extends ApplicationAdapter {
 	}
 
 	public void updateDisplays() {
-		energyDisplay.setText(gameState.currentEnergy + " / " + gameState.baseEnergy + " Energy");
-		goldDisplay.setText(gameState.gold + "(+" + gameState.goldPerTurn + ") / " + gameState.maxGold + " Gold");
-		cardCounts.setText(gameState.deck.getDrawPile().size() + " Draw, "
-				+ gameState.deck.getCards().size() + " Total");
+		energyDisplay.setText(GameState.gameState.currentEnergy + " / " + GameState.gameState.baseEnergy + " Energy");
+		goldDisplay.setText(GameState.gameState.gold + "(+" + GameState.gameState.goldPerTurn + ") / " + GameState.gameState.maxGold + " Gold");
+		cardCounts.setText(GameState.gameState.deck.getDrawPile().size() + " Draw, "
+				+ GameState.gameState.deck.getCards().size() + " Total");
 	}
 
 	public void resize (int width, int height) {
@@ -249,42 +256,66 @@ public class MyGdxGame extends ApplicationAdapter {
 		if (Gdx.input.isKeyPressed(Input.Keys.A)) {
 			camera.position.x -= move;
 		}
+		GameState.gameState.update(Gdx.graphics.getDeltaTime());
 
 		ScreenUtils.clear(230/255f, 240/255f, 255/255f, 1);
 		camera.update();
 		batch.setProjectionMatrix(camera.combined);
 		batch.begin();
-		for (int x = 0; x < gameState.map.WIDTH; ++x) {
-			for (int y = 0; y < gameState.map.HEIGHT; ++y) {
-				Building building = gameState.map.getBuilding(x, y);
-				if (building != null) {
-					Sprite sprite = new Sprite(building.getTexture());
-					sprite.setScale(1 / 32f);
-					sprite.setPosition(x - 16, y - 16);
-					sprite.draw(batch);
+
+		for (int x = 0; x < GameState.gameState.map.WIDTH; ++x) {
+			for (int y = 0; y < GameState.gameState.map.HEIGHT; ++y) {
+				Building building = GameState.gameState.map.getBuilding(x, y);
+				if (building == null) {
+					if (GameState.gameState.map.isInRadius(x, y)) {
+						draw(grassTexture, x, y);
+					}
+				} else {
+					draw(building.getTexture(), x, y);
 				}
 			}
 		}
-		if (selectedIndex != null && gameState.deck.getHandCard(selectedIndex) instanceof BuildingCard) {
-			BuildingCard card = (BuildingCard)gameState.deck.getHandCard(selectedIndex);
-			Sprite sprite = new Sprite(card.getBuilding().getTexture());
-			sprite.setScale(1 / 32f);
+		if (!GameState.gameState.blocked &&
+				selectedIndex != null &&
+				GameState.gameState.deck.getHandCard(selectedIndex) instanceof BuildingCard) {
+			BuildingCard card = (BuildingCard)GameState.gameState.deck.getHandCard(selectedIndex);
 			Vector3 mousePos = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
 			camera.unproject(mousePos);
 			int x = Math.round(mousePos.x);
 			int y = Math.round(mousePos.y);
-			if (gameState.map.canPlaceBuilding(x, y)) {
-				sprite.setAlpha(0.9f);
-			} else if (gameState.map.getBuilding(x, y) == null) {
-				sprite.setAlpha(0.4f);
+			float alpha = 0;
+			if (GameState.gameState.map.canPlaceBuilding(x, y)) {
+				alpha = 0.9f;
+			} else if (GameState.gameState.map.getBuilding(x, y) == null) {
+				alpha = 0.4f;
 			}
-			sprite.setPosition(x - 16, y - 16);
-			sprite.draw(batch);
+			draw(card.getBuilding().getTexture(), x, y, alpha);
+		}
+		for (EnemyBase enemyBase : GameState.gameState.map.enemyBases) {
+			draw(enemyBase.getTexture(), enemyBase.position.getLeft(), enemyBase.position.getRight());
+		}
+		for (Enemy enemy : GameState.gameState.enemies) {
+			draw(enemy.getTexture(), enemy.getX(), enemy.getY());
 		}
 		batch.end();
 		stage.act(Gdx.graphics.getDeltaTime());
 		stage.draw();
 		updateDisplays();
+	}
+
+	void draw(Texture texture, float x, float y, float alpha) {
+		Sprite sprite = new Sprite(texture);
+		sprite.setAlpha(alpha);
+		sprite.setScale(1 / 32f);
+		sprite.setPosition(x - 16, y - 16);
+		sprite.draw(batch);
+	}
+
+	void draw(Texture texture, float x, float y) {
+		Sprite sprite = new Sprite(texture);
+		sprite.setScale(1 / 32f);
+		sprite.setPosition(x - 16, y - 16);
+		sprite.draw(batch);
 	}
 	
 	@Override

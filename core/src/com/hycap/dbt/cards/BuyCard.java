@@ -26,6 +26,7 @@ public class BuyCard implements ActionCard, BuyableCard{
         cardDrawWeights.put(new Remove1Card(), 1f);
         cardDrawWeights.put(new BuyCard(), 1.5f);
         cardDrawWeights.put(new MageCard(), 1f);
+        cardDrawWeights.put(new TowerCard(), 2f);
     }
 
     @Override
