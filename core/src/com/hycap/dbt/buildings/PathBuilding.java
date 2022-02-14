@@ -1,17 +1,13 @@
-package com.hycap.dbt;
+package com.hycap.dbt.buildings;
 
 import com.badlogic.gdx.graphics.Texture;
 
-public class MineCard implements BuildingCard {
+public class PathBuilding implements Building {
     public static Texture texture;
-    @Override
-    public Building getBuilding() {
-        return new MineBuilding();
-    }
 
     @Override
     public String getName() {
-        return "Mine";
+        return "Path";
     }
 
     @Override

@@ -1,9 +1,12 @@
 package com.hycap.dbt;
 
+import com.hycap.dbt.buildings.Building;
+import com.hycap.dbt.buildings.CentralBuilding;
+
 public class Map {
     public final int WIDTH = 21;
     public final int HEIGHT = 21;
-    private Building[][] buildings;
+    private final Building[][] buildings;
 
     public Map() {
         this.buildings = new Building[WIDTH][HEIGHT];
@@ -15,6 +18,9 @@ public class Map {
     }
 
     public boolean canPlaceBuilding(int x, int y) {
+        if (this.buildings[x][y] != null) {
+            return false;
+        }
         if (x < 0 || y < 0 || x >= WIDTH || y >= HEIGHT) {
             return false;
         }

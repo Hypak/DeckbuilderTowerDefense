@@ -1,4 +1,4 @@
-package com.hycap.dbt;
+package com.hycap.dbt.buildings;
 
 import com.badlogic.gdx.graphics.Texture;
 

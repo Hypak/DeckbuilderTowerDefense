@@ -1,12 +1,13 @@
-package com.hycap.dbt;
+package com.hycap.dbt.buildings;
 
 import com.badlogic.gdx.graphics.Texture;
 
-public class MineBuilding implements Building {
+public class CentralBuilding implements Building {
     public static Texture texture;
+
     @Override
     public String getName() {
-        return "Mine";
+        return "Central";
     }
 
     @Override

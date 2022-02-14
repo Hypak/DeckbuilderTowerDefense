@@ -6,24 +6,26 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.ScreenUtils;
-import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.hycap.dbt.buildings.*;
+import com.hycap.dbt.cards.*;
 
 public class MyGdxGame extends ApplicationAdapter {
 	Deck deck;
 	Map map;
-	int handSize = 5;
+	int baseHandSize = 5;
+	int baseEnergy = 3;
+	int currentEnergy;
 
 	SpriteBatch batch;
 	OrthographicCamera camera;
@@ -32,6 +34,11 @@ public class MyGdxGame extends ApplicationAdapter {
 	Stage stage;
 	Table handTable;
 	Skin skin;
+	Label energyDisplay;
+	TextButton endTurnButton;
+	Table energyEndTable;
+
+	Table uiTable;
 
 	Integer selectedIndex;
 
@@ -41,12 +48,17 @@ public class MyGdxGame extends ApplicationAdapter {
 		PathCard.texture = new Texture("PathCard.png");
 		MineBuilding.texture = new Texture("MineBuilding.png");
 		MineCard.texture = new Texture("MineCard.png");
+		CoffersBuilding.texture = new Texture("CoffersBuilding.png");
+		CoffersCard.texture = new Texture("CoffersCard.png");
+
+		Draw2Card.texture = new Texture("Draw2Card.png");
+		Remove1Card.texture = new Texture("Remove1Card.png");
 	}
 
 	@Override
 	public void create () {
 		deck = new Deck();
-		deck.drawNewHand(handSize);
+		deck.drawNewHand(baseHandSize);
 		map = new Map();
 
 		setTextures();
@@ -56,13 +68,33 @@ public class MyGdxGame extends ApplicationAdapter {
 		camera.setToOrtho(false, 20,
 				20f * Gdx.graphics.getHeight() / Gdx.graphics.getWidth());
 		camera.position.set(camera.viewportWidth / 2, camera.viewportHeight / 2, 0);
-		skin = new Skin(Gdx.files.internal("gdx-skins-master/cloud-form/skin/cloud-form-ui.json"));
+		skin = new Skin(Gdx.files.internal("gdx-skins-master/skin-composer/skin/skin-composer-ui.json"));
+		skin.getFont("font").getData().setScale(2, 2);
 		stage = new Stage();
 		Gdx.input.setInputProcessor(stage);
 		handTable = new Table();
 		updateHandTable();
+		energyDisplay = new Label("Loading...", skin);
+		// energyDisplay.setFillParent(true);
+		endTurnButton = new TextButton("End Turn", skin);
+		endTurnButton.addListener(new ChangeListener() {
+
+			@Override
+			public void changed(ChangeEvent event, Actor actor) {
+				newTurn();
+			}
+		});
+		energyEndTable = new Table();
+		energyEndTable.add(energyDisplay).row();
+		energyEndTable.add(endTurnButton).row();
+		energyEndTable.padBottom(30);
+		energyEndTable.padRight(30);
+		energyEndTable.setFillParent(true);
+		energyEndTable.align(Align.bottomRight);
+
+
 		stage.addActor(handTable);
-		// handTable.setPosition(400, 40);
+		stage.addActor(energyEndTable);
 
 		InputProcessor cameraProcessor = new InputAdapter() {
 			@Override
@@ -83,22 +115,30 @@ public class MyGdxGame extends ApplicationAdapter {
 				if (button != 0) {
 					return false;
 				}
-				if (selectedIndex != null) {
-					Vector3 mousePos = new Vector3(screenX, screenY, 0);
-					camera.unproject(mousePos);
-					int x = Math.round(mousePos.x);
-					int y = Math.round(mousePos.y);
-					System.out.println(x + " " + y);
-					if (selectedIndex >= deck.getHand().size()) {
+				if (selectedIndex != null && selectedIndex >= 0 && selectedIndex < deck.getHand().size()) {
+					Card card = deck.getHandCard(selectedIndex);
+					if (currentEnergy < card.getEnergyCost()) {
 						return false;
 					}
-					Card card = deck.getHand().get(selectedIndex);
 					if (card instanceof BuildingCard) {
+						Vector3 mousePos = new Vector3(screenX, screenY, 0);
+						camera.unproject(mousePos);
+						int x = Math.round(mousePos.x);
+						int y = Math.round(mousePos.y);
+						if (selectedIndex >= deck.getHand().size()) {
+							return false;
+						}
+
 						BuildingCard buildingCard = (BuildingCard)card;
 						if (map.placeBuilding(buildingCard.getBuilding(), x, y)) {
-							deck.discardCardAt(selectedIndex);
-							selectedIndex = null;
-							updateHandTable();
+							discardCardAt(selectedIndex);
+							updateEnergyDisplay();
+						}
+					} else if (card instanceof ActionCard) {
+						ActionCard actionCard = (ActionCard) card;
+						if (actionCard.tryPlayCard(deck)) {
+							discardCardAt(selectedIndex);
+							updateEnergyDisplay();
 						}
 					}
 				}
@@ -117,20 +157,34 @@ public class MyGdxGame extends ApplicationAdapter {
 					}
 					return true;
 				} else if (keycode == Input.Keys.E) {
-					deck.drawNewHand(handSize);
-					updateHandTable();
+					newTurn();
 				}
 				return false;
 			}
 		};
 
 		Gdx.input.setInputProcessor(new InputMultiplexer(stage, cameraProcessor, shortcutProcessor));
+		newTurn();
+	}
+
+	void discardCardAt(int index) {
+		currentEnergy -= deck.getHandCard(index).getEnergyCost();
+		deck.discardCardAt(index);
+		selectedIndex = null;
+		updateHandTable();
+	}
+
+	void newTurn() {
+		deck.drawNewHand(baseHandSize);
+		updateHandTable();
+		currentEnergy = baseEnergy;
+		updateEnergyDisplay();
 	}
 
 	public void updateHandTable() {
 		handTable.reset();
 		handTable.setFillParent(true);
-		handTable.align(Align.bottom);
+		handTable.bottom();
 
 		int i = 0;
 		for (Card card : deck.getHand()) {
@@ -148,7 +202,10 @@ public class MyGdxGame extends ApplicationAdapter {
 			});
 			++i;
 		}
-		System.out.println(handTable);
+	}
+
+	public void updateEnergyDisplay() {
+		energyDisplay.setText(currentEnergy + " / " + baseEnergy + " Energy");
 	}
 
 	public void resize (int width, int height) {
@@ -171,7 +228,7 @@ public class MyGdxGame extends ApplicationAdapter {
 			camera.position.x -= move;
 		}
 
-		ScreenUtils.clear(115/255f, 120/255f, 127/255f, 1);
+		ScreenUtils.clear(230/255f, 240/255f, 255/255f, 1);
 		camera.update();
 		batch.setProjectionMatrix(camera.combined);
 		batch.begin();

@@ -1,21 +1,16 @@
-package com.hycap.dbt;
+package com.hycap.dbt.buildings;
 
 import com.badlogic.gdx.graphics.Texture;
 
-public class PathCard implements BuildingCard {
+public class CoffersBuilding implements Building {
     public static Texture texture;
     @Override
     public String getName() {
-        return "Path";
+        return "Coffers";
     }
 
     @Override
     public Texture getTexture() {
         return texture;
-    }
-
-    @Override
-    public Building getBuilding() {
-        return new PathBuilding();
     }
 }
