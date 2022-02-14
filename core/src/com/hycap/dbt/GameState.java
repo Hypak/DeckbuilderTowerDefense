@@ -3,9 +3,9 @@ package com.hycap.dbt;
 public class GameState {
     public Map map;
     public Deck deck;
-    int baseHandSize;
-    int baseEnergy;
-    int currentEnergy;
+    public int baseHandSize;
+    public int baseEnergy;
+    public int currentEnergy;
 
     public int gold;
     public int maxGold;

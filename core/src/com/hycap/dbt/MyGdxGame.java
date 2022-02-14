@@ -46,6 +46,8 @@ public class MyGdxGame extends ApplicationAdapter {
 		MineCard.texture = new Texture("MineCard.png");
 		CoffersBuilding.texture = new Texture("CoffersBuilding.png");
 		CoffersCard.texture = new Texture("CoffersCard.png");
+		MageBuilding.texture = new Texture("MageBuilding.png");
+		MageCard.texture = new Texture("MageCard.png");
 
 		Draw2Card.texture = new Texture("Draw2Card.png");
 		Remove1Card.texture = new Texture("Remove1Card.png");
@@ -140,6 +142,9 @@ public class MyGdxGame extends ApplicationAdapter {
 							updateHandTable();
 							updateEnergyDisplay();
 							updateGoldDisplay();
+							if (card instanceof ExhaustCard) {
+								gameState.deck.removeCard(card);
+							}
 						}
 					} else if (card instanceof ActionCard) {
 						ActionCard actionCard = (ActionCard) card;
@@ -149,6 +154,9 @@ public class MyGdxGame extends ApplicationAdapter {
 							updateHandTable();
 							updateEnergyDisplay();
 							updateGoldDisplay();
+							if (card instanceof ExhaustCard) {
+								gameState.deck.removeCard(card);
+							}
 						}
 					}
 				}

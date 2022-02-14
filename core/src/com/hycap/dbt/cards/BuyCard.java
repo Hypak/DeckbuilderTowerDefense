@@ -23,6 +23,7 @@ public class BuyCard implements ActionCard, BuyableCard{
         cardDrawWeights.put(new Draw2Card(), 2f);
         cardDrawWeights.put(new Remove1Card(), 1f);
         cardDrawWeights.put(new BuyCard(), 1.5f);
+        cardDrawWeights.put(new MageCard(), 1f);
     }
 
     @Override
@@ -96,6 +97,7 @@ public class BuyCard implements ActionCard, BuyableCard{
                     if (gameState.gold < card.getBuyCost()) {
                         return false;
                     }
+                    gameState.gold -= card.getBuyCost();
                     gameState.deck.addToDraw(card);
                     gameState.deck.discardCard(thisCard);
                     gameState.blocked = false;
