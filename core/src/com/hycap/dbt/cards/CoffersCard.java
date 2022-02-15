@@ -33,6 +33,6 @@ public class CoffersCard implements BuildingCard, BuyableCard {
 
     @Override
     public int getBuyCost() {
-        return 4;
+        return 6;
     }
 }

@@ -34,7 +34,7 @@ public class TowerBuilding extends AttackableBuilding implements Updatable {
             float squareDist = xDiff*xDiff + yDiff*yDiff;
             if (squareDist <= range) {
                 GameState.gameState.addHurtParticle(new Vector2(base.position.getLeft(), base.position.getRight()));
-                GameState.gameState.map.enemyBases.remove(base);
+                GameState.gameState.map.destroyEnemyBase(base);
                 --i;
             }
         }

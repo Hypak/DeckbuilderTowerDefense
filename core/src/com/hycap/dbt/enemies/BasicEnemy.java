@@ -8,7 +8,7 @@ import com.hycap.dbt.Updatable;
 
 public class BasicEnemy extends Enemy {
     public static Texture texture;
-    final float attackTime = 0.5f;
+    float attackTime = 0.5f;
     final float attackDamage = 5;
     float timeUntilNextAttack;
 

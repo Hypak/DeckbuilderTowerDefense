@@ -33,6 +33,6 @@ public class TowerCard implements BuildingCard, BuyableCard {
 
     @Override
     public int getBuyCost() {
-        return 1;
+        return 3;
     }
 }

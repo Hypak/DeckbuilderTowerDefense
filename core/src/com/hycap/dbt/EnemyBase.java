@@ -1,7 +1,9 @@
 package com.hycap.dbt;
 
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.math.Vector2;
 import com.hycap.dbt.enemies.Enemy;
+import com.hycap.dbt.enemies.FastEnemy;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -17,6 +19,8 @@ public class EnemyBase implements Updatable {
     float timeUntilNextSpawn;
     int turnsBetweenSpawn;
     int turnsUntilNextSpawn;
+    int turnsUntilUpgrade;
+    int baseTurnsUntilUpgrade;
 
     public EnemyBase(Pair<Integer> position, List<Enemy> enemySpawns, float spawnDelay) {
         this.position = position;
@@ -25,9 +29,16 @@ public class EnemyBase implements Updatable {
         timeUntilNextSpawn = spawnDelay;
         turnsBetweenSpawn = 3;
         turnsUntilNextSpawn = 0;
+        baseTurnsUntilUpgrade = 12;
+        turnsUntilUpgrade = baseTurnsUntilUpgrade;
     }
 
     public void startTurn() {
+        --turnsUntilUpgrade;
+        if (turnsUntilUpgrade <= 0) {
+            enemySpawns.add(new FastEnemy(new Vector2(position.getLeft(), position.getRight())));
+            turnsUntilUpgrade = baseTurnsUntilUpgrade;
+        }
         --turnsUntilNextSpawn;
         if (turnsUntilNextSpawn > 0) {
             return;

@@ -40,6 +40,6 @@ public class Draw2Card implements ActionCard, BuyableCard {
 
     @Override
     public int getBuyCost() {
-        return 4;
+        return 6;
     }
 }

@@ -33,6 +33,6 @@ public class MageCard implements BuildingCard, BuyableCard, ExhaustCard {
 
     @Override
     public int getBuyCost() {
-        return 8;
+        return 10;
     }
 }

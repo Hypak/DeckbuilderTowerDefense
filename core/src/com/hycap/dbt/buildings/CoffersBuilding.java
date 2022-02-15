@@ -7,7 +7,7 @@ import com.hycap.dbt.Pair;
 public class CoffersBuilding extends AttackableBuilding {
     public static Texture texture;
 
-    static final int goldCapacity = 5;
+    static final int goldCapacity = 8;
 
     @Override
     public String getName() {

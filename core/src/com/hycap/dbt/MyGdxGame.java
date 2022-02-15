@@ -22,6 +22,7 @@ import com.hycap.dbt.buildings.*;
 import com.hycap.dbt.cards.*;
 import com.hycap.dbt.enemies.BasicEnemy;
 import com.hycap.dbt.enemies.Enemy;
+import com.hycap.dbt.enemies.FastEnemy;
 
 public class MyGdxGame extends ApplicationAdapter {
 	SpriteBatch batch;
@@ -37,6 +38,7 @@ public class MyGdxGame extends ApplicationAdapter {
 	Table resourceTable;
 
 	Texture grassTexture;
+	Texture riftTexture;
 
 	Table uiTable;
 
@@ -60,9 +62,11 @@ public class MyGdxGame extends ApplicationAdapter {
 		BuyCard.texture = new Texture("BuyCard.png");
 
 		BasicEnemy.texture = new Texture("BasicEnemy.png");
+		FastEnemy.texture = new Texture("FastEnemy.png");
 
 		EnemyBase.texture = new Texture("EnemyBase.png");
 		grassTexture = new Texture("Grass.png");
+		riftTexture = new Texture("EnergyRift.png");
 	}
 
 	@Override
@@ -269,8 +273,12 @@ public class MyGdxGame extends ApplicationAdapter {
 			for (int y = 0; y < GameState.gameState.map.HEIGHT; ++y) {
 				Building building = GameState.gameState.map.getBuilding(x, y);
 				if (building == null) {
-					if (GameState.gameState.map.isInRadius(x, y)) {
-						draw(grassTexture, x, y);
+					if (!GameState.gameState.map.isEnemyBaseAt(x, y)) {
+						if (GameState.gameState.map.isInRadius(x, y)) {
+							draw(grassTexture, x, y);
+						} else if (GameState.gameState.map.isInViewRadius(x, y)) {
+							draw(grassTexture, x, y, 0.6f);
+						}
 					}
 				} else {
 					draw(building.getTexture(), x, y);
@@ -296,7 +304,16 @@ public class MyGdxGame extends ApplicationAdapter {
 			}
 		}
 		for (EnemyBase enemyBase : GameState.gameState.map.enemyBases) {
-			draw(enemyBase.getTexture(), enemyBase.position.getLeft(), enemyBase.position.getRight());
+			int x = enemyBase.position.getLeft();
+			int y = enemyBase.position.getRight();
+			if (GameState.gameState.map.isInRadius(x, y)) {
+				draw(enemyBase.getTexture(), x, y);
+			} else if (GameState.gameState.map.isInViewRadius(x, y)) {
+				draw(enemyBase.getTexture(), x, y, 0.6f);
+			}
+		}
+		for (Pair<Integer> coords : GameState.gameState.map.riftCoords) {
+			draw(riftTexture, coords.getLeft(), coords.getRight());
 		}
 		for (Enemy enemy : GameState.gameState.enemies) {
 			draw(enemy.getTexture(), enemy.getX(), enemy.getY());

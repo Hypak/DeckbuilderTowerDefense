@@ -26,6 +26,15 @@ public class Pair<T> {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (o instanceof Pair) {
+            Pair pair = (Pair)o;
+            return pair.getLeft().equals(left) && pair.getRight().equals(right);
+        }
+        return false;
+    }
+
+    @Override
     public String toString() {
         return "(" + left.toString() + ", " + right.toString() + ")";
     }

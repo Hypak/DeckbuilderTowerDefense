@@ -79,6 +79,6 @@ public class Remove1Card implements ActionCard, BuyableCard {
 
     @Override
     public int getBuyCost() {
-        return 5;
+        return 7;
     }
 }
