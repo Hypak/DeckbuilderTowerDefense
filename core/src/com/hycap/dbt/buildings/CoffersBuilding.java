@@ -4,12 +4,10 @@ import com.badlogic.gdx.graphics.Texture;
 import com.hycap.dbt.GameState;
 import com.hycap.dbt.Pair;
 
-public class CoffersBuilding implements AttackableBuilding {
+public class CoffersBuilding extends AttackableBuilding {
     public static Texture texture;
-    static final int goldCapacity = 5;
 
-    float health = 30;
-    Pair<Integer> position;
+    static final int goldCapacity = 5;
 
     @Override
     public String getName() {
@@ -23,6 +21,7 @@ public class CoffersBuilding implements AttackableBuilding {
 
     @Override
     public void onCreate(GameState gameState) {
+        super.health = 50;
         gameState.maxGold += goldCapacity;
     }
 
@@ -35,26 +34,7 @@ public class CoffersBuilding implements AttackableBuilding {
     }
 
     @Override
-    public void setPosition(Pair<Integer> position) {
-        this.position = position;
-    }
-
-    @Override
-    public Pair<Integer> getPosition() {
-        return position;
-    }
-
-    @Override
     public Building duplicate() {
         return new CoffersBuilding();
-    }
-
-    @Override
-    public void attack(float damage) {
-        health -= damage;
-        if (health < 0) {
-            onDestroy(GameState.gameState);
-            GameState.gameState.map.removeBuilding(this);
-        }
     }
 }

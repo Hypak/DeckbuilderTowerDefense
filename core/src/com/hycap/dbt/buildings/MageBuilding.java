@@ -4,11 +4,10 @@ import com.badlogic.gdx.graphics.Texture;
 import com.hycap.dbt.GameState;
 import com.hycap.dbt.Pair;
 
-public class MageBuilding implements AttackableBuilding {
+public class MageBuilding extends AttackableBuilding {
     public static Texture texture;
+
     public static int energyIncrease = 1;
-    float health = 30;
-    Pair<Integer> position;
 
     @Override
     public String getName() {
@@ -22,6 +21,7 @@ public class MageBuilding implements AttackableBuilding {
 
     @Override
     public void onCreate(GameState gameState) {
+        super.health = 30;
         gameState.baseEnergy += energyIncrease;
     }
 
@@ -34,26 +34,8 @@ public class MageBuilding implements AttackableBuilding {
     }
 
     @Override
-    public void setPosition(Pair<Integer> position) {
-        this.position = position;
-    }
-
-    @Override
-    public Pair<Integer> getPosition() {
-        return position;
-    }
-
-    @Override
     public Building duplicate() {
         return new MageBuilding();
     }
 
-    @Override
-    public void attack(float damage) {
-        health -= damage;
-        if (health < 0) {
-            onDestroy(GameState.gameState);
-            GameState.gameState.map.removeBuilding(this);
-        }
-    }
 }

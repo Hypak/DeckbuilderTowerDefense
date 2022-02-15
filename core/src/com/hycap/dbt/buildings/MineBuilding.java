@@ -4,13 +4,11 @@ import com.badlogic.gdx.graphics.Texture;
 import com.hycap.dbt.GameState;
 import com.hycap.dbt.Pair;
 
-public class MineBuilding implements AttackableBuilding {
+public class MineBuilding extends AttackableBuilding {
     public static Texture texture;
+
     static final int goldCapacity = 1;
     static final int goldPerTurn = 1;
-
-    float health = 20;
-    Pair<Integer> position;
 
     @Override
     public String getName() {
@@ -24,6 +22,7 @@ public class MineBuilding implements AttackableBuilding {
 
     @Override
     public void onCreate(GameState gameState) {
+        super.health = 20;
         gameState.maxGold += goldCapacity;
         gameState.goldPerTurn += goldPerTurn;
     }
@@ -38,26 +37,7 @@ public class MineBuilding implements AttackableBuilding {
     }
 
     @Override
-    public void setPosition(Pair<Integer> position) {
-        this.position = position;
-    }
-
-    @Override
-    public Pair<Integer> getPosition() {
-        return position;
-    }
-
-    @Override
     public Building duplicate() {
         return new MineBuilding();
-    }
-
-    @Override
-    public void attack(float damage) {
-        health -= damage;
-        if (health < 0) {
-            onDestroy(GameState.gameState);
-            GameState.gameState.map.removeBuilding(this);
-        }
     }
 }

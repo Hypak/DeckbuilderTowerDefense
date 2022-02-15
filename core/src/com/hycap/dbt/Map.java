@@ -24,7 +24,10 @@ public class Map {
 
     public Map() {
         buildings = new Building[WIDTH][HEIGHT];
-        buildings[WIDTH / 2][HEIGHT / 2] = new CentralBuilding();
+        Building centralBuilding = new CentralBuilding();
+        centralBuilding.setPosition(new Pair<Integer>(WIDTH / 2, HEIGHT / 2));
+        centralBuilding.onCreate(GameState.gameState);
+        buildings[WIDTH / 2][HEIGHT / 2] = centralBuilding;
         buildingCoords = new LinkedList<>();
         buildingCoords.add(new Pair<>(WIDTH / 2, HEIGHT / 2));
         enemyBases = new ArrayList<>();
