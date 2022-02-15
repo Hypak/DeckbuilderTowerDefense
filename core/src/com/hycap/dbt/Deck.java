@@ -20,6 +20,7 @@ public class Deck {
         cards.add(new Draw2Card());
         cards.add(new BuyCard());
         cards.add(new TowerCard());
+        cards.add(new SniperCard());
         shuffleAll();
     }
 

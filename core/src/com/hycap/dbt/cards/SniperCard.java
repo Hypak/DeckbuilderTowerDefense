@@ -33,6 +33,6 @@ public class SniperCard implements BuildingCard, BuyableCard {
 
     @Override
     public Card duplicate() {
-        return null;
+        return new SniperCard();
     }
 }
