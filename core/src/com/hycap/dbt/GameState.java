@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.g2d.ParticleEmitter;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.hycap.dbt.buildings.CentralBuilding;
+import com.hycap.dbt.cards.Card;
 import com.hycap.dbt.enemies.BasicEnemy;
 import com.hycap.dbt.enemies.Enemy;
 
@@ -28,6 +29,11 @@ public class GameState {
     public boolean blocked;
     public boolean animating;
 
+    public float runSpeed;
+    float fastForwardRunSpeed = 3;
+
+    public List<Card> freeCardsPerTurn;
+
     public List<Enemy> enemies;
     public List<Updatable> updatableBuildings;
 
@@ -38,13 +44,16 @@ public class GameState {
     public GameState() {
         map = new Map();
         deck = new Deck();
-        baseHandSize = 5;
+        baseHandSize = 6;
         baseEnergy = 3;
         currentEnergy = baseEnergy;
         blocked = false;
         gold = 0;
         maxGold = CentralBuilding.goldCapacity;
         goldPerTurn = 0;
+        runSpeed = 1;
+
+        freeCardsPerTurn = new ArrayList<>();
 
         enemies = new ArrayList<>();
         updatableBuildings = new ArrayList<>();
@@ -62,6 +71,9 @@ public class GameState {
         }
         animating = true;
         deck.drawNewHand(baseHandSize);
+        for (Card card : freeCardsPerTurn) {
+            deck.getHand().add(card.duplicate());
+        }
     }
 
     public void update(float deltaT) {
@@ -70,12 +82,20 @@ public class GameState {
         }
         animating = false;
         for (Updatable e : updatableBuildings) {
-            e.update(deltaT);
+            e.update(deltaT * runSpeed);
             animating |= e.keepActive();
         }
         for (Enemy e : enemies) {
-            e.update(deltaT);
+            e.update(deltaT * runSpeed);
             animating |= e.keepActive();
+        }
+    }
+
+    public void toggleFastForward() {
+        if (runSpeed == 1) {
+            runSpeed = fastForwardRunSpeed;
+        } else {
+            runSpeed = 1;
         }
     }
 

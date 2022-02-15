@@ -24,7 +24,7 @@ public class Map {
     final List<EnemyBase> activeEnemyBases;
     final int enemyBaseCount = 80;
     final int fastEnemyBaseCount = 30;
-    final int noBaseRadius = 13;
+    final int noBaseRadius = 15;
     final int noFastBaseRadius = 20;
     final List<Integer> setBaseRadii;
     int currentRadius = 2;
@@ -44,6 +44,7 @@ public class Map {
         setBaseRadii.add(8);
         setBaseRadii.add(10);
         setBaseRadii.add(12);
+        setBaseRadii.add(14);
         enemyBases = new ArrayList<>();
         activeEnemyBases = new ArrayList<>();
         generateBases();

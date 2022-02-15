@@ -37,6 +37,9 @@ public class MyGdxGame extends ApplicationAdapter {
 	Label cardCounts;
 	Table resourceTable;
 
+	TextButton fastForwardButton;
+	Table fastForwardTable;
+
 	Texture grassTexture;
 	Texture riftTexture;
 
@@ -48,14 +51,21 @@ public class MyGdxGame extends ApplicationAdapter {
 		CentralBuilding.texture = new Texture("CentralBuilding.png");
 		PathBuilding.texture = new Texture("PathBuilding.png");
 		PathCard.texture = new Texture("PathCard.png");
+		Path0EnergyCard.texture = new Texture("Path0EnergyCard.png");
 		MineBuilding.texture = new Texture("MineBuilding.png");
 		MineCard.texture = new Texture("MineCard.png");
 		CoffersBuilding.texture = new Texture("CoffersBuilding.png");
 		CoffersCard.texture = new Texture("CoffersCard.png");
 		MageBuilding.texture = new Texture("MageBuilding.png");
 		MageCard.texture = new Texture("MageCard.png");
+		PaverBuilding.texture = new Texture("PaverBuilding.png");
+		PaverCard.texture = new Texture("PaverCard.png");
 		TowerBuilding.texture = new Texture("TowerBuilding.png");
 		TowerCard.texture = new Texture("TowerCard.png");
+		WallBuilding.texture = new Texture("WallBuilding.png");
+		WallCard.texture = new Texture("WallCard.png");
+		SniperBuilding.texture = new Texture("SniperBuilding.png");
+		SniperCard.texture = new Texture("SniperCard.png");
 
 		Draw2Card.texture = new Texture("Draw2Card.png");
 		Remove1Card.texture = new Texture("Remove1Card.png");
@@ -109,8 +119,26 @@ public class MyGdxGame extends ApplicationAdapter {
 		resourceTable.setFillParent(true);
 		resourceTable.align(Align.bottomRight);
 
+		fastForwardButton = new TextButton(">>>", SkinClass.skin);
+		fastForwardButton.addListener(new ChangeListener() {
+			@Override
+			public void changed(ChangeEvent event, Actor actor) {
+				if (GameState.gameState.runSpeed == 1) {
+					GameState.gameState.runSpeed = 3;
+				} else {
+					GameState.gameState.toggleFastForward();
+				}
+			}
+		});
+		fastForwardTable = new Table();
+		fastForwardTable.add(fastForwardButton);
+		fastForwardTable.padTop(30);
+		fastForwardTable.setFillParent(true);
+		fastForwardTable.align(Align.top);
+
 		stage.addActor(handTable);
 		stage.addActor(resourceTable);
+		stage.addActor(fastForwardTable);
 
 		InputProcessor cameraProcessor = new InputAdapter() {
 			@Override

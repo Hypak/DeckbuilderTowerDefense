@@ -21,13 +21,15 @@ public class BuyCard implements ActionCard, BuyableCard{
     static int shownCardAmount = 4;
     static {
         cardDrawWeights = new HashMap<>();
-        cardDrawWeights.put(new MineCard(), 2f);
         cardDrawWeights.put(new CoffersCard(), 2f);
         cardDrawWeights.put(new Draw2Card(), 2f);
         cardDrawWeights.put(new Remove1Card(), 1f);
         cardDrawWeights.put(new BuyCard(), 1.5f);
         cardDrawWeights.put(new MageCard(), 1f);
+        cardDrawWeights.put(new PaverCard(), 1f);
         cardDrawWeights.put(new TowerCard(), 2f);
+        cardDrawWeights.put(new WallCard(), 2f);
+        cardDrawWeights.put(new SniperCard(), 1.5f);
     }
 
     @Override
