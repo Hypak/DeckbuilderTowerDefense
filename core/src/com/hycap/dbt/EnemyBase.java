@@ -37,7 +37,7 @@ public class EnemyBase implements Updatable {
         timeUntilNextSpawn -= deltaT;
         if (timeUntilNextSpawn <= 0) {
             Enemy newEnemy = spawnsRemaining.poll();
-            GameState.gameState.updatablesToAdd.add((Updatable)newEnemy);
+            System.out.println(newEnemy.getPosition());
             GameState.gameState.enemies.add(newEnemy);
             timeUntilNextSpawn += spawnDelay;
         }

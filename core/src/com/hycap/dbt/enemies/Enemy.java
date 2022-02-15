@@ -9,7 +9,7 @@ import com.hycap.dbt.Updatable;
 import com.hycap.dbt.buildings.AttackableBuilding;
 import com.hycap.dbt.buildings.Building;
 
-public abstract class Enemy {
+public abstract class Enemy implements Updatable {
     Vector2 position;
     float moveSpeed;
     Vector2 target;
@@ -51,7 +51,8 @@ public abstract class Enemy {
         }
     }
 
-    void update(float deltaT) {
+    public void update(float deltaT) {
+
         setTargetNearest();
         Vector2 move = new Vector2(target).sub(position);
         targetDist = move.len();
@@ -62,12 +63,15 @@ public abstract class Enemy {
     }
 
     public void attack(float damage) {
+        GameState.gameState.addHurtParticle(position);
         health -= damage;
-        System.out.println("Health: " + health);
         if (health <= 0) {
             GameState.gameState.enemies.remove(this);
-            GameState.gameState.updatablesToRemove.add((Updatable)this);
         }
+    }
+
+    public boolean keepActive() {
+        return true;
     }
 
     public abstract Enemy clone();

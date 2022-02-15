@@ -1,6 +1,11 @@
 package com.hycap.dbt;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.ParticleEmitter;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.hycap.dbt.enemies.BasicEnemy;
 import com.hycap.dbt.enemies.Enemy;
 
@@ -23,9 +28,11 @@ public class GameState {
     public boolean animating;
 
     public List<Enemy> enemies;
-    public List<Updatable> updatables;
-    public List<Updatable> updatablesToAdd;
-    public List<Updatable> updatablesToRemove;
+    public List<Updatable> updatableBuildings;
+
+    public List<MyParticle> particles;
+
+    public Texture hitMarkTexture;
 
     public GameState() {
         map = new Map();
@@ -38,8 +45,11 @@ public class GameState {
         maxGold = 0;
         goldPerTurn = 0;
 
-        updatables = new ArrayList<>();
         enemies = new ArrayList<>();
+        updatableBuildings = new ArrayList<>();
+
+        particles = new ArrayList<>();
+        hitMarkTexture = new Texture("HitMark.png");
     }
 
     public void newTurn() {
@@ -58,15 +68,18 @@ public class GameState {
             return;
         }
         animating = false;
-        updatablesToAdd = new ArrayList<>();
-        updatablesToRemove = new ArrayList<>();
-        for (Updatable u : updatables) {
-            u.update(deltaT);
-            if (u.keepActive()) {
-                animating = true;
-            }
+        for (Updatable e : updatableBuildings) {
+            e.update(deltaT);
+            animating |= e.keepActive();
         }
-        updatables.addAll(updatablesToAdd);
-        updatables.removeAll(updatablesToRemove);
+        for (Enemy e : enemies) {
+            e.update(deltaT);
+            animating |= e.keepActive();
+        }
+    }
+
+    public void addHurtParticle(Vector2 position) {
+        MyParticle newParticle = new MyParticle(hitMarkTexture, position, 0.25f, true, 0.4f);
+        particles.add(newParticle);
     }
 }

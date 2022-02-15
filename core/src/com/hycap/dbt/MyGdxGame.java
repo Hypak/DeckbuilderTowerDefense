@@ -275,21 +275,23 @@ public class MyGdxGame extends ApplicationAdapter {
 				}
 			}
 		}
-		if (!GameState.gameState.blocked &&
-				selectedIndex != null &&
-				GameState.gameState.deck.getHandCard(selectedIndex) instanceof BuildingCard) {
-			BuildingCard card = (BuildingCard)GameState.gameState.deck.getHandCard(selectedIndex);
-			Vector3 mousePos = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
-			camera.unproject(mousePos);
-			int x = Math.round(mousePos.x);
-			int y = Math.round(mousePos.y);
-			float alpha = 0;
-			if (GameState.gameState.map.canPlaceBuilding(x, y)) {
-				alpha = 0.9f;
-			} else if (GameState.gameState.map.getBuilding(x, y) == null) {
-				alpha = 0.4f;
+		Card card;
+		if (selectedIndex != null && selectedIndex >= 0 && selectedIndex < GameState.gameState.deck.getHand().size()) {
+			card = GameState.gameState.deck.getHandCard(selectedIndex);
+			if (!GameState.gameState.blocked && selectedIndex != null && card instanceof BuildingCard) {
+				BuildingCard buildingCard = (BuildingCard) GameState.gameState.deck.getHandCard(selectedIndex);
+				Vector3 mousePos = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
+				camera.unproject(mousePos);
+				int x = Math.round(mousePos.x);
+				int y = Math.round(mousePos.y);
+				float alpha = 0;
+				if (GameState.gameState.map.canPlaceBuilding(x, y)) {
+					alpha = 0.9f;
+				} else if (GameState.gameState.map.getBuilding(x, y) == null) {
+					alpha = 0.4f;
+				}
+				draw(buildingCard.getBuilding().getTexture(), x, y, alpha);
 			}
-			draw(card.getBuilding().getTexture(), x, y, alpha);
 		}
 		for (EnemyBase enemyBase : GameState.gameState.map.enemyBases) {
 			draw(enemyBase.getTexture(), enemyBase.position.getLeft(), enemyBase.position.getRight());
@@ -297,6 +299,14 @@ public class MyGdxGame extends ApplicationAdapter {
 		for (Enemy enemy : GameState.gameState.enemies) {
 			draw(enemy.getTexture(), enemy.getX(), enemy.getY());
 		}
+		for (int i = 0; i < GameState.gameState.particles.size(); ++i) {
+			boolean keep = GameState.gameState.particles.get(i).render(batch, Gdx.graphics.getDeltaTime());
+			if (!keep) {
+				GameState.gameState.particles.remove(i);
+				--i;
+			}
+		}
+
 		batch.end();
 		stage.act(Gdx.graphics.getDeltaTime());
 		stage.draw();

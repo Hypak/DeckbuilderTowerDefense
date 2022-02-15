@@ -6,7 +6,7 @@ import com.hycap.dbt.GameState;
 import com.hycap.dbt.Map;
 import com.hycap.dbt.Updatable;
 
-public class BasicEnemy extends Enemy implements Updatable {
+public class BasicEnemy extends Enemy {
     public static Texture texture;
     final float attackTime = 0.5f;
     final float attackDamage = 5;
@@ -20,7 +20,11 @@ public class BasicEnemy extends Enemy implements Updatable {
         timeUntilNextAttack = 0;
     }
 
+    @Override
     public void update(float deltaT) {
+        if (super.health < 0) {
+            return;
+        }
         timeUntilNextAttack -= deltaT;
         super.update(deltaT);
         if (super.targetDist <= super.attackRange && timeUntilNextAttack <= 0 && super.targetBuilding != null) {
@@ -29,13 +33,8 @@ public class BasicEnemy extends Enemy implements Updatable {
         }
     }
 
-    @Override
-    public boolean keepActive() {
-        return true;
-    }
-
     public Enemy clone() {
-        return new BasicEnemy(this.position);
+        return new BasicEnemy(new Vector2(this.position));
     }
 
     @Override

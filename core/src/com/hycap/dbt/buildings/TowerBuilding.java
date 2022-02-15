@@ -10,7 +10,7 @@ import com.hycap.dbt.enemies.Enemy;
 public class TowerBuilding implements AttackableBuilding, Updatable {
     public static Texture texture;
     float health = 50;
-    float damage = 5;
+    float damage = 4;
     float reloadTime = 1.2f;
     float timeUntilNextReload = 0;
     float range = 3.5f;
@@ -30,20 +30,21 @@ public class TowerBuilding implements AttackableBuilding, Updatable {
 
     @Override
     public void onCreate(GameState gameState) {
-        gameState.updatables.add(this);
+        gameState.updatableBuildings.add(this);
     }
 
     @Override
     public void onDestroy(GameState gameState) {
-        GameState.gameState.updatablesToRemove.add(this);
+        GameState.gameState.updatableBuildings.remove(this);
     }
 
     @Override
     public void attack(float damage) {
         health -= damage;
+        GameState.gameState.addHurtParticle(new Vector2(position.getLeft(), position.getRight()));
         if (health < 0) {
-            onDestroy(GameState.gameState);
             GameState.gameState.map.removeBuilding(this);
+            onDestroy(GameState.gameState);
         }
     }
 

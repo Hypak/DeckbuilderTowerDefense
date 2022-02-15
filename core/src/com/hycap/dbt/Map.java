@@ -49,8 +49,8 @@ public class Map {
         for (EnemyBase base : enemyBases) {
             if (isInRadius(base.position.getLeft(), base.position.getRight())) {
                 base.startTurn();
-                if (!GameState.gameState.updatables.contains(base)) {
-                    GameState.gameState.updatables.add(base);
+                if (!GameState.gameState.updatableBuildings.contains(base)) {
+                    GameState.gameState.updatableBuildings.add(base);
                 }
             }
         }
