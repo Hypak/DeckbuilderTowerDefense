@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.ParticleEmitter;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.hycap.dbt.buildings.CentralBuilding;
 import com.hycap.dbt.enemies.BasicEnemy;
 import com.hycap.dbt.enemies.Enemy;
 
@@ -42,7 +43,7 @@ public class GameState {
         currentEnergy = baseEnergy;
         blocked = false;
         gold = 0;
-        maxGold = 0;
+        maxGold = CentralBuilding.goldCapacity;
         goldPerTurn = 0;
 
         enemies = new ArrayList<>();

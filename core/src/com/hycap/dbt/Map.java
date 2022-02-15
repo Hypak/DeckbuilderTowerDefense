@@ -16,10 +16,11 @@ public class Map {
     public final int HEIGHT = 101;
     final Building[][] buildings;
     final List<Pair<Integer>> buildingCoords;
-    final List<EnemyBase> enemyBases;
+    public final List<EnemyBase> enemyBases;
     final List<EnemyBase> activeEnemyBases;
     final int enemyBaseCount = 100;
-    final int noBaseRadius = 7;
+    final int noBaseRadius = 13;
+    final List<Integer> setBaseRadii;
     int currentRadius = 2;
 
     public Map() {
@@ -30,21 +31,56 @@ public class Map {
         buildings[WIDTH / 2][HEIGHT / 2] = centralBuilding;
         buildingCoords = new LinkedList<>();
         buildingCoords.add(new Pair<>(WIDTH / 2, HEIGHT / 2));
+
+        setBaseRadii = new ArrayList<>();
+        setBaseRadii.add(8);
+        setBaseRadii.add(10);
+        setBaseRadii.add(12);
         enemyBases = new ArrayList<>();
         activeEnemyBases = new ArrayList<>();
+        generateBases();
+    }
+
+    void generateBases() {
         Random random = new Random();
-        for (int i = 0; i < enemyBaseCount; ++i) {
+        for (int radius : setBaseRadii) {
+            boolean onX = random.nextBoolean();
+            boolean positive = random.nextBoolean();
+            int x, y;
+            if (positive) {
+                x = radius;
+            } else {
+                x = -radius;
+            }
+            y = random.nextInt(2 * radius + 1) - radius;
+            if (!onX) {
+                // Swap x and y
+                int tmp = x;
+                x = y;
+                y = tmp;
+            }
+            x += WIDTH / 2;
+            y += HEIGHT / 2;
+            generateEnemyBaseAt(x, y, 1);
+        }
+        for (int i = 0; i < enemyBaseCount - setBaseRadii.size(); ++i) {
             int x = random.nextInt(WIDTH);
             int y = random.nextInt(HEIGHT);
             if (Math.abs(x - WIDTH / 2) <= noBaseRadius && Math.abs(y - HEIGHT / 2) <= noBaseRadius) {
                 --i;
                 continue;
             }
-            List<Enemy> enemySpawns = new ArrayList<>();
-            enemySpawns.add(new BasicEnemy(new Vector2(x, y)));
-            EnemyBase newBase = new EnemyBase(new Pair<>(x, y), enemySpawns, 1.5f);
-            enemyBases.add(newBase);
+            generateEnemyBaseAt(x, y, 2);
         }
+    }
+
+    void generateEnemyBaseAt(int x, int y, int spawnCount) {
+        List<Enemy> enemySpawns = new ArrayList<>();
+        for (int i = 0; i < spawnCount; ++i) {
+            enemySpawns.add(new BasicEnemy(new Vector2(x, y)));
+        }
+        EnemyBase newBase = new EnemyBase(new Pair<>(x, y), enemySpawns, 1.5f);
+        enemyBases.add(newBase);
     }
 
     public void newTurn() {
@@ -77,6 +113,11 @@ public class Map {
             return false;
         }
         if (this.buildings[x][y] != null) {
+            return false;
+        }
+        int xDiff = Math.abs(WIDTH / 2 - x);
+        int yDiff = Math.abs(HEIGHT / 2 - x);
+        if (Math.max(xDiff, yDiff) > currentRadius) {
             return false;
         }
         if (x - 1 >= 0 && this.buildings[x-1][y] != null) {

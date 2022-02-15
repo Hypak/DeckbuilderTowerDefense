@@ -10,24 +10,33 @@ import java.util.Queue;
 
 public class EnemyBase implements Updatable {
     public static Texture texture;
-    Pair<Integer> position;
+    public Pair<Integer> position;
     List<Enemy> enemySpawns;
     float spawnDelay;
     Queue<Enemy> spawnsRemaining;
     float timeUntilNextSpawn;
+    int turnsBetweenSpawn;
+    int turnsUntilNextSpawn;
 
     public EnemyBase(Pair<Integer> position, List<Enemy> enemySpawns, float spawnDelay) {
         this.position = position;
         this.enemySpawns = enemySpawns;
         this.spawnDelay = spawnDelay;
         timeUntilNextSpawn = spawnDelay;
+        turnsBetweenSpawn = 3;
+        turnsUntilNextSpawn = 0;
     }
 
     public void startTurn() {
+        --turnsUntilNextSpawn;
+        if (turnsUntilNextSpawn > 0) {
+            return;
+        }
         spawnsRemaining = new LinkedList<>();
         for (Enemy enemy : enemySpawns) {
             spawnsRemaining.add(enemy.clone());
         }
+        turnsUntilNextSpawn = turnsBetweenSpawn;
     }
 
     public void update(float deltaT) {

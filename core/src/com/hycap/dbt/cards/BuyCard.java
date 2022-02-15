@@ -18,6 +18,7 @@ import java.util.List;
 public class BuyCard implements ActionCard, BuyableCard{
     public static Texture texture;
     public static Map<BuyableCard, Float> cardDrawWeights;
+    static int shownCardAmount = 4;
     static {
         cardDrawWeights = new HashMap<>();
         cardDrawWeights.put(new MineCard(), 2f);
@@ -73,7 +74,7 @@ public class BuyCard implements ActionCard, BuyableCard{
 
     @Override
     public boolean tryPlayCard(final GameState gameState, Stage stage) {
-        List<BuyableCard> cardSelection = getNewCardSelection(3);
+        List<BuyableCard> cardSelection = getNewCardSelection(shownCardAmount);
         final Table queryTable = new Table();
         queryTable.setFillParent(true);
 

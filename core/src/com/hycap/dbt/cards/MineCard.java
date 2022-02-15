@@ -13,7 +13,7 @@ public class MineCard implements BuildingCard, BuyableCard {
 
     @Override
     public int getEnergyCost() {
-        return 2;
+        return 1;
     }
 
     @Override

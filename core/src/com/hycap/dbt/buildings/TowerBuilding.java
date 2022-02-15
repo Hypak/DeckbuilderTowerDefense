@@ -2,9 +2,7 @@ package com.hycap.dbt.buildings;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
-import com.hycap.dbt.GameState;
-import com.hycap.dbt.Pair;
-import com.hycap.dbt.Updatable;
+import com.hycap.dbt.*;
 import com.hycap.dbt.enemies.Enemy;
 
 public class TowerBuilding extends AttackableBuilding implements Updatable {
@@ -29,6 +27,17 @@ public class TowerBuilding extends AttackableBuilding implements Updatable {
     public void onCreate(GameState gameState) {
         super.health = 50;
         gameState.updatableBuildings.add(this);
+        for (int i = 0; i < GameState.gameState.map.enemyBases.size(); ++i) {
+            EnemyBase base = GameState.gameState.map.enemyBases.get(i);
+            int xDiff = base.position.getLeft() - position.getLeft();
+            int yDiff = base.position.getRight() - position.getRight();
+            float squareDist = xDiff*xDiff + yDiff*yDiff;
+            if (squareDist <= range) {
+                GameState.gameState.addHurtParticle(new Vector2(base.position.getLeft(), base.position.getRight()));
+                GameState.gameState.map.enemyBases.remove(base);
+                --i;
+            }
+        }
     }
 
     @Override

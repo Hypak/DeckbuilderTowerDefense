@@ -9,6 +9,8 @@ import com.hycap.dbt.Updatable;
 import com.hycap.dbt.buildings.AttackableBuilding;
 import com.hycap.dbt.buildings.Building;
 
+import java.util.Random;
+
 public abstract class Enemy implements Updatable {
     Vector2 position;
     float moveSpeed;
@@ -17,9 +19,12 @@ public abstract class Enemy implements Updatable {
     float targetDist;
     float attackRange;
     float health;
+    float offsetAngle;
+    float maxOffsetAngle = (float)Math.PI / 4;
 
     public Enemy(Vector2 position) {
         this.position = position;
+        offsetAngle = (new Random().nextFloat() - 0.5f) * maxOffsetAngle;
     }
 
     public Vector2 getPosition() {
@@ -52,13 +57,13 @@ public abstract class Enemy implements Updatable {
     }
 
     public void update(float deltaT) {
-
         setTargetNearest();
         Vector2 move = new Vector2(target).sub(position);
         targetDist = move.len();
         if (targetDist > attackRange) {
             move.scl(1 / targetDist);
-            position.add(move.scl(deltaT * moveSpeed));
+            Vector2 rotatedMove = move.rotateRad(offsetAngle);
+            position.add(rotatedMove.scl(deltaT * moveSpeed));
         }
     }
 

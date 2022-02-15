@@ -1,7 +1,9 @@
 package com.hycap.dbt;
 
 import com.badlogic.gdx.*;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -74,7 +76,7 @@ public class MyGdxGame extends ApplicationAdapter {
 		camera.setToOrtho(false, 20,
 				20f * Gdx.graphics.getHeight() / Gdx.graphics.getWidth());
 		resetCamera();
-		SkinClass.skin = new Skin(Gdx.files.internal("gdx-skins-master/skin-composer/skin/skin-composer-ui.json"));
+		SkinClass.skin = new Skin(Gdx.files.internal("gdx-skins-master/tubular/skin/tubular-ui.json"));
 		SkinClass.skin.getFont("font").getData().setScale(2, 2);
 		stage = new Stage();
 		handTable = new Table();
