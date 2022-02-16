@@ -1,0 +1,77 @@
+package com.hycap.dbt;
+
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.hycap.dbt.EnemyBase;
+import com.hycap.dbt.buildings.*;
+import com.hycap.dbt.cards.*;
+import com.hycap.dbt.enemies.BasicEnemy;
+import com.hycap.dbt.enemies.BigEnemy;
+import com.hycap.dbt.enemies.FastEnemy;
+import com.hycap.dbt.enemies.RangedEnemy;
+
+public class TextureManager {
+    public static Texture grassTexture;
+    public static Texture riftTexture;
+
+    public static void setTextures() {
+        CentralBuilding.texture = new Texture("CentralBuilding.png");
+        PathBuilding.texture = new Texture("PathBuilding.png");
+        PathCard.texture = new Texture("PathCard.png");
+        Path0EnergyCard.texture = new Texture("Path0EnergyCard.png");
+        MineBuilding.texture = new Texture("MineBuilding.png");
+        MineCard.texture = new Texture("MineCard.png");
+        CoffersBuilding.texture = new Texture("CoffersBuilding.png");
+        CoffersCard.texture = new Texture("CoffersCard.png");
+        MageBuilding.texture = new Texture("MageBuilding.png");
+        MageCard.texture = new Texture("MageCard.png");
+        PaverBuilding.texture = new Texture("PaverBuilding.png");
+        PaverCard.texture = new Texture("PaverCard.png");
+        TowerBuilding.texture = new Texture("TowerBuilding.png");
+        TowerCard.texture = new Texture("TowerCard.png");
+        WallBuilding.texture = new Texture("WallBuilding.png");
+        WallCard.texture = new Texture("WallCard.png");
+        SniperBuilding.texture = new Texture("SniperBuilding.png");
+        SniperCard.texture = new Texture("SniperCard.png");
+        EarthquakeBuilding.texture = new Texture("EarthquakeBuilding.png");
+        EarthquakeCard.texture = new Texture("EarthquakeCard.png");
+
+        Draw2Card.texture = new Texture("Draw2Card.png");
+        Remove1Card.texture = new Texture("Remove1Card.png");
+        BuyCard.texture = new Texture("BuyCard.png");
+
+        BasicEnemy.texture = new Texture("BasicEnemy.png");
+        FastEnemy.texture = new Texture("FastEnemy.png");
+        RangedEnemy.texture = new Texture("RangedEnemy.png");
+        BigEnemy.texture = new Texture("BigEnemy.png");
+
+        EnemyBase.texture = new Texture("EnemyBase.png");
+
+        grassTexture = new Texture("Grass.png");
+        riftTexture = new Texture("EnergyRift.png");
+    }
+
+    public static void draw(Batch batch, Texture texture, float x, float y, float alpha, float scale) {
+        Sprite sprite = new Sprite(texture);
+        sprite.setAlpha(alpha);
+        sprite.setScale(scale / 32f);
+        sprite.setPosition(x - 16, y - 16);
+        sprite.draw(batch);
+    }
+
+    public static void draw(Batch batch, Texture texture, float x, float y, float alpha) {
+        Sprite sprite = new Sprite(texture);
+        sprite.setAlpha(alpha);
+        sprite.setScale(1 / 32f);
+        sprite.setPosition(x - 16, y - 16);
+        sprite.draw(batch);
+    }
+
+    public static void draw(Batch batch, Texture texture, float x, float y) {
+        Sprite sprite = new Sprite(texture);
+        sprite.setScale(1 / 32f);
+        sprite.setPosition(x - 16, y - 16);
+        sprite.draw(batch);
+    }
+}

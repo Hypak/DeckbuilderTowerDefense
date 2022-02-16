@@ -25,8 +25,6 @@ import jdk.nashorn.internal.objects.annotations.Setter;
 
 public class MyGdxGame extends ApplicationAdapter {
 	SpriteBatch batch;
-	OrthographicCamera camera;
-	float panSpeed = 15;
 
 	Stage stage;
 	Table handTable;
@@ -39,60 +37,17 @@ public class MyGdxGame extends ApplicationAdapter {
 	TextButton fastForwardButton;
 	Table fastForwardTable;
 
-	Texture grassTexture;
-	Texture riftTexture;
-
-	Table uiTable;
-
 	Integer selectedIndex;
-
-	private void setTextures() {
-		CentralBuilding.texture = new Texture("CentralBuilding.png");
-		PathBuilding.texture = new Texture("PathBuilding.png");
-		PathCard.texture = new Texture("PathCard.png");
-		Path0EnergyCard.texture = new Texture("Path0EnergyCard.png");
-		MineBuilding.texture = new Texture("MineBuilding.png");
-		MineCard.texture = new Texture("MineCard.png");
-		CoffersBuilding.texture = new Texture("CoffersBuilding.png");
-		CoffersCard.texture = new Texture("CoffersCard.png");
-		MageBuilding.texture = new Texture("MageBuilding.png");
-		MageCard.texture = new Texture("MageCard.png");
-		PaverBuilding.texture = new Texture("PaverBuilding.png");
-		PaverCard.texture = new Texture("PaverCard.png");
-		TowerBuilding.texture = new Texture("TowerBuilding.png");
-		TowerCard.texture = new Texture("TowerCard.png");
-		WallBuilding.texture = new Texture("WallBuilding.png");
-		WallCard.texture = new Texture("WallCard.png");
-		SniperBuilding.texture = new Texture("SniperBuilding.png");
-		SniperCard.texture = new Texture("SniperCard.png");
-		EarthquakeBuilding.texture = new Texture("EarthquakeBuilding.png");
-		EarthquakeCard.texture = new Texture("EarthquakeCard.png");
-
-		Draw2Card.texture = new Texture("Draw2Card.png");
-		Remove1Card.texture = new Texture("Remove1Card.png");
-		BuyCard.texture = new Texture("BuyCard.png");
-
-		BasicEnemy.texture = new Texture("BasicEnemy.png");
-		FastEnemy.texture = new Texture("FastEnemy.png");
-		RangedEnemy.texture = new Texture("RangedEnemy.png");
-		BigEnemy.texture = new Texture("BigEnemy.png");
-
-		EnemyBase.texture = new Texture("EnemyBase.png");
-		grassTexture = new Texture("Grass.png");
-		riftTexture = new Texture("EnergyRift.png");
-	}
 
 	@Override
 	public void create () {
 		GameState.gameState = new GameState();
+		CameraManager.create();
 
-		setTextures();
+		TextureManager.setTextures();
 
 		batch = new SpriteBatch();
-		camera = new OrthographicCamera();
-		camera.setToOrtho(false, 20,
-				20f * Gdx.graphics.getHeight() / Gdx.graphics.getWidth());
-		resetCamera();
+
 		SkinClass.skin = new Skin(Gdx.files.internal("gdx-skins-master/tubular/skin/tubular-ui.json"));
 		SkinClass.skin.getFont("font").getData().setScale(2, 2);
 		stage = new Stage();
@@ -139,20 +94,7 @@ public class MyGdxGame extends ApplicationAdapter {
 		stage.addActor(resourceTable);
 		stage.addActor(fastForwardTable);
 
-		InputProcessor cameraProcessor = new InputAdapter() {
-			@Override
-			public boolean scrolled(float amountX, float amountY) {
-				double zoomSpeed = 1.1f;
-				float zoomMult = (float)Math.pow(zoomSpeed, amountY);
-				camera.zoom *= zoomMult;
-				Vector3 mousePos = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
-				camera.unproject(mousePos);
-				Vector3 moveVec = new Vector3(camera.position).sub(mousePos);
-				moveVec.scl(zoomMult - 1);
-				camera.translate(moveVec);
-				return true;
-			}
-
+		InputProcessor buildingProcessor = new InputAdapter() {
 			@Override
 			public boolean touchUp(int screenX, int screenY, int pointer, int button) {
 				if (button != 0) {
@@ -168,7 +110,7 @@ public class MyGdxGame extends ApplicationAdapter {
 					}
 					if (card instanceof BuildingCard) {
 						Vector3 mousePos = new Vector3(screenX, screenY, 0);
-						camera.unproject(mousePos);
+						CameraManager.camera.unproject(mousePos);
 						int x = Math.round(mousePos.x);
 						int y = Math.round(mousePos.y);
 
@@ -199,22 +141,19 @@ public class MyGdxGame extends ApplicationAdapter {
 				}
 				return true;
 			}
-
-			@Override
-			public boolean keyUp(int keycode) {
-				if (keycode == Input.Keys.SPACE) {
-					resetCamera();
-					return true;
-				} else if (keycode == Input.Keys.TAB) {
-					GameState.gameState.toggleFastForward();
-				}
-				return false;
-			}
 		};
 
 		InputProcessor shortcutProcessor = new InputAdapter() {
 			@Override
 			public boolean keyUp(int keycode) {
+				if (keycode == Input.Keys.SPACE) {
+					CameraManager.resetCamera();
+					return true;
+				}
+				if (keycode == Input.Keys.TAB) {
+					GameState.gameState.toggleFastForward();
+					return true;
+				}
 				if (GameState.gameState.blocked || GameState.gameState.animating) {
 					return false;
 				}
@@ -231,14 +170,11 @@ public class MyGdxGame extends ApplicationAdapter {
 				return false;
 			}
 		};
-		Gdx.input.setInputProcessor(new InputMultiplexer(stage, cameraProcessor, shortcutProcessor));
+		Gdx.input.setInputProcessor(new InputMultiplexer(stage, buildingProcessor, CameraManager.cameraProcessor, shortcutProcessor));
 		newTurn();
 	}
 
-	void resetCamera() {
-		camera.position.set(GameState.gameState.map.WIDTH / 2f, GameState.gameState.map.WIDTH / 2f, 0);
-		camera.zoom = 1;
-	}
+
 
 	void newTurn() {
 		GameState.gameState.newTurn();
@@ -253,7 +189,7 @@ public class MyGdxGame extends ApplicationAdapter {
 		handTable.bottom();
 
 		int i = 0;
-		for (Card card : GameState.gameState.deck.getHand()) {
+		for (final Card card : GameState.gameState.deck.getHand()) {
 			TextureRegionDrawable image = new TextureRegionDrawable(new TextureRegion(card.getTexture()));
 			image.setMinSize(108, 192);
 			final ImageButton imageButton = new ImageButton(image, image);
@@ -264,6 +200,19 @@ public class MyGdxGame extends ApplicationAdapter {
 				public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
 					selectedIndex = finalIndex;
 					return true;
+				}
+
+				@Override
+				public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
+					Label tooltip = GetCardTooltip.getTooltip(card);
+					System.out.println(tooltip);
+					tooltip.setPosition(x, y);
+					stage.addActor(tooltip);
+				}
+
+				@Override
+				public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
+					super.exit(event, x, y, pointer, toActor);
 				}
 			});
 			++i;
@@ -284,25 +233,10 @@ public class MyGdxGame extends ApplicationAdapter {
 	@Override
 	public void render () {
 		updateHandTable();
-		float move = Gdx.graphics.getDeltaTime() * camera.zoom * panSpeed;
-		if (Gdx.input.isKeyPressed(Input.Keys.W)) {
-			camera.position.y += move;
-		}
-		if (Gdx.input.isKeyPressed(Input.Keys.S)) {
-			camera.position.y -= move;
-		}
-		if (Gdx.input.isKeyPressed(Input.Keys.D)) {
-			camera.position.x += move;
-		}
-		if (Gdx.input.isKeyPressed(Input.Keys.A)) {
-			camera.position.x -= move;
-		}
-
-		GameState.gameState.update(Gdx.graphics.getDeltaTime());
-
 		ScreenUtils.clear(230/255f, 240/255f, 255/255f, 1);
-		camera.update();
-		batch.setProjectionMatrix(camera.combined);
+
+		CameraManager.update();
+		batch.setProjectionMatrix(CameraManager.camera.combined);
 		batch.begin();
 
 		for (int x = 0; x < GameState.gameState.map.WIDTH; ++x) {
@@ -311,13 +245,13 @@ public class MyGdxGame extends ApplicationAdapter {
 				if (building == null) {
 					if (!GameState.gameState.map.isEnemyBaseAt(x, y)) {
 						if (GameState.gameState.map.isInRadius(x, y)) {
-							draw(grassTexture, x, y);
+							TextureManager.draw(batch, TextureManager.grassTexture, x, y);
 						} else if (GameState.gameState.map.isInViewRadius(x, y)) {
-							draw(grassTexture, x, y, 0.6f);
+							TextureManager.draw(batch, TextureManager.grassTexture, x, y, 0.6f);
 						}
 					}
 				} else {
-					draw(building.getTexture(), x, y);
+					TextureManager.draw(batch, building.getTexture(), x, y);
 				}
 			}
 		}
@@ -327,7 +261,7 @@ public class MyGdxGame extends ApplicationAdapter {
 			if (!GameState.gameState.blocked && selectedIndex != null && card instanceof BuildingCard) {
 				BuildingCard buildingCard = (BuildingCard) GameState.gameState.deck.getHandCard(selectedIndex);
 				Vector3 mousePos = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
-				camera.unproject(mousePos);
+				CameraManager.camera.unproject(mousePos);
 				int x = Math.round(mousePos.x);
 				int y = Math.round(mousePos.y);
 				float alpha = 0;
@@ -336,27 +270,27 @@ public class MyGdxGame extends ApplicationAdapter {
 				} else if (GameState.gameState.map.getBuilding(x, y) == null) {
 					alpha = 0.4f;
 				}
-				draw(buildingCard.getBuilding().getTexture(), x, y, alpha);
+				TextureManager.draw(batch, buildingCard.getBuilding().getTexture(), x, y, alpha);
 			}
 		}
 		for (EnemyBase enemyBase : GameState.gameState.map.enemyBases) {
 			int x = enemyBase.position.getLeft();
 			int y = enemyBase.position.getRight();
 			if (GameState.gameState.map.isInRadius(x, y)) {
-				draw(enemyBase.getTexture(), x, y);
+				TextureManager.draw(batch, enemyBase.getTexture(), x, y);
 			} else if (GameState.gameState.map.isInViewRadius(x, y)) {
-				draw(enemyBase.getTexture(), x, y, 0.6f);
+				TextureManager.draw(batch, enemyBase.getTexture(), x, y, 0.6f);
 			}
 		}
 		for (Pair<Integer> coords : GameState.gameState.map.riftCoords) {
-			draw(riftTexture, coords.getLeft(), coords.getRight());
+			TextureManager.draw(batch, TextureManager.riftTexture, coords.getLeft(), coords.getRight());
 		}
 		for (Enemy enemy : GameState.gameState.enemies) {
 			float scale = 1;
 			if (enemy instanceof SetRenderScale) {
 				scale = ((SetRenderScale)enemy).genRenderScale();
 			}
-			draw(enemy.getTexture(), enemy.getX(), enemy.getY(), 1, scale);
+			TextureManager.draw(batch, enemy.getTexture(), enemy.getX(), enemy.getY(), 1, scale);
 		}
 		for (int i = 0; i < GameState.gameState.particles.size(); ++i) {
 			boolean keep = GameState.gameState.particles.get(i).render(batch, Gdx.graphics.getDeltaTime());
@@ -372,28 +306,7 @@ public class MyGdxGame extends ApplicationAdapter {
 		updateDisplays();
 	}
 
-	void draw(Texture texture, float x, float y, float alpha, float scale) {
-		Sprite sprite = new Sprite(texture);
-		sprite.setAlpha(alpha);
-		sprite.setScale(scale / 32f);
-		sprite.setPosition(x - 16, y - 16);
-		sprite.draw(batch);
-	}
 
-	void draw(Texture texture, float x, float y, float alpha) {
-		Sprite sprite = new Sprite(texture);
-		sprite.setAlpha(alpha);
-		sprite.setScale(1 / 32f);
-		sprite.setPosition(x - 16, y - 16);
-		sprite.draw(batch);
-	}
-
-	void draw(Texture texture, float x, float y) {
-		Sprite sprite = new Sprite(texture);
-		sprite.setScale(1 / 32f);
-		sprite.setPosition(x - 16, y - 16);
-		sprite.draw(batch);
-	}
 
 	@Override
 	public void dispose () {
