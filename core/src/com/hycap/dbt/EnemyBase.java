@@ -4,11 +4,9 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
 import com.hycap.dbt.enemies.Enemy;
 import com.hycap.dbt.enemies.FastEnemy;
+import com.hycap.dbt.enemies.RangedEnemy;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Queue;
+import java.util.*;
 
 public class EnemyBase implements Updatable {
     public static Texture texture;
@@ -36,7 +34,11 @@ public class EnemyBase implements Updatable {
     public void startTurn() {
         --turnsUntilUpgrade;
         if (turnsUntilUpgrade <= 0) {
-            enemySpawns.add(new FastEnemy(new Vector2(position.getLeft(), position.getRight())));
+            if (new Random().nextBoolean()) {
+                enemySpawns.add(new FastEnemy(new Vector2(position.getLeft(), position.getRight())));
+            } else {
+                enemySpawns.add(0, new RangedEnemy(new Vector2(position.getLeft(), position.getRight())));
+            }
             turnsUntilUpgrade = baseTurnsUntilUpgrade;
         }
         --turnsUntilNextSpawn;

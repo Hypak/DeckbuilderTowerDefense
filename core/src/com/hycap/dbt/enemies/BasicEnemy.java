@@ -9,7 +9,7 @@ import com.hycap.dbt.Updatable;
 public class BasicEnemy extends Enemy {
     public static Texture texture;
     float attackTime = 0.5f;
-    final float attackDamage = 4;
+    float attackDamage = 4;
     float timeUntilNextAttack;
 
     public BasicEnemy(Vector2 position) {

@@ -209,7 +209,15 @@ public class Map {
     }
 
     public void removeBuilding(int x, int y) {
+        Building building = buildings[x][y];
+        Pair<Integer> coords = new Pair<>(x, y);
         this.buildings[x][y] = null;
+        if (riftCoords.contains(coords) && building instanceof AttackableBuilding) {
+            GameState.gameState.baseEnergy -= energyPerRift;
+            if (GameState.gameState.currentEnergy > GameState.gameState.baseEnergy) {
+                GameState.gameState.currentEnergy = GameState.gameState.baseEnergy;
+            }
+        }
     }
 
     public void removeBuilding(Building b) {
@@ -217,9 +225,6 @@ public class Map {
             for (int y = 0; y < HEIGHT; ++y) {
                 if (buildings[x][y] != null && buildings[x][y].equals(b)) {
                     removeBuilding(x, y);
-                    if (riftCoords.contains(new Pair<>(x, y))) {
-                        GameState.gameState.baseEnergy -= energyPerRift;
-                    }
                 }
             }
         }

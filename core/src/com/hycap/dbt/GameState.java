@@ -14,6 +14,7 @@ import com.hycap.dbt.enemies.Enemy;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Random;
 
 public class GameState {
     public static GameState gameState;
@@ -100,7 +101,12 @@ public class GameState {
     }
 
     public void addHurtParticle(Vector2 position) {
-        MyParticle newParticle = new MyParticle(hitMarkTexture, position, 0.25f, true, 0.4f);
+        float variation = 0.3f;
+        Random random = new Random();
+        Vector2 particlePos = new Vector2(position);
+        particlePos.x += variation * (random.nextFloat() - 0.5f);
+        particlePos.y += variation * (random.nextFloat() - 0.5f);
+        MyParticle newParticle = new MyParticle(hitMarkTexture, particlePos, 0.25f, true, 0.4f);
         particles.add(newParticle);
     }
 }

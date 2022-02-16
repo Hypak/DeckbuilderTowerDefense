@@ -23,6 +23,7 @@ import com.hycap.dbt.cards.*;
 import com.hycap.dbt.enemies.BasicEnemy;
 import com.hycap.dbt.enemies.Enemy;
 import com.hycap.dbt.enemies.FastEnemy;
+import com.hycap.dbt.enemies.RangedEnemy;
 
 public class MyGdxGame extends ApplicationAdapter {
 	SpriteBatch batch;
@@ -69,6 +70,8 @@ public class MyGdxGame extends ApplicationAdapter {
 		WallCard.texture = new Texture("WallCard.png");
 		SniperBuilding.texture = new Texture("SniperBuilding.png");
 		SniperCard.texture = new Texture("SniperCard.png");
+		EarthquakeBuilding.texture = new Texture("EarthquakeBuilding.png");
+		EarthquakeCard.texture = new Texture("EarthquakeCard.png");
 
 		Draw2Card.texture = new Texture("Draw2Card.png");
 		Remove1Card.texture = new Texture("Remove1Card.png");
@@ -76,6 +79,7 @@ public class MyGdxGame extends ApplicationAdapter {
 
 		BasicEnemy.texture = new Texture("BasicEnemy.png");
 		FastEnemy.texture = new Texture("FastEnemy.png");
+		RangedEnemy.texture = new Texture("RangedEnemy.png");
 
 		EnemyBase.texture = new Texture("EnemyBase.png");
 		grassTexture = new Texture("Grass.png");
