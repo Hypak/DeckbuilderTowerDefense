@@ -32,6 +32,11 @@ public class WallCard implements BuildingCard, BuyableCard {
     }
 
     @Override
+    public String getInfo() {
+        return "Walls have lots of health.";
+    }
+
+    @Override
     public Card duplicate() {
         return new WallCard();
     }

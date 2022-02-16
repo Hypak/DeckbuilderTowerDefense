@@ -32,6 +32,11 @@ public class MageCard implements BuildingCard, BuyableCard, ExhaustCard {
     }
 
     @Override
+    public String getInfo() {
+        return "Generate " + MageBuilding.energyIncrease + " more energy per turn.";
+    }
+
+    @Override
     public int getBuyCost() {
         return 10;
     }

@@ -39,6 +39,11 @@ public class Draw2Card implements ActionCard, BuyableCard {
     }
 
     @Override
+    public String getInfo() {
+        return "Draw 2 cards into your hand.";
+    }
+
+    @Override
     public int getBuyCost() {
         return 6;
     }

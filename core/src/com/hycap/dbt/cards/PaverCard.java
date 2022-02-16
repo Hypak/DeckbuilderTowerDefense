@@ -31,6 +31,12 @@ public class PaverCard implements BuildingCard, BuyableCard, ExhaustCard {
         return new PaverCard();
     }
 
+
+    @Override
+    public String getInfo() {
+        return "Produce a free path every turn.";
+    }
+
     @Override
     public int getBuyCost() {
         return 10;

@@ -33,6 +33,11 @@ public class EarthquakeCard implements BuildingCard, BuyableCard {
     }
 
     @Override
+    public String getInfo() {
+        return "Earthquake buildings deal damage to lots of enemies at short range.";
+    }
+
+    @Override
     public int getBuyCost() {
         return 8;
     }

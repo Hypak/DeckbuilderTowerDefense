@@ -32,6 +32,12 @@ public class MineCard implements BuildingCard, BuyableCard {
     }
 
     @Override
+    public String getInfo() {
+        return "Generate " + MineBuilding.goldPerTurn + " gold per turn, and hold "
+                + MineBuilding.goldCapacity + " more gold.";
+    }
+
+    @Override
     public int getBuyCost() {
         return 2;
     }

@@ -90,6 +90,11 @@ public class Remove1Card implements ActionCard, BuyableCard {
     }
 
     @Override
+    public String getInfo() {
+        return "Permanently remove 1 card from your hand.";
+    }
+
+    @Override
     public int getBuyCost() {
         return 7;
     }

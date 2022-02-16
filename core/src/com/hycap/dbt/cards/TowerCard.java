@@ -32,6 +32,11 @@ public class TowerCard implements BuildingCard, BuyableCard {
     }
 
     @Override
+    public String getInfo() {
+        return "Towers attack enemies at medium range.";
+    }
+
+    @Override
     public int getBuyCost() {
         return 3;
     }

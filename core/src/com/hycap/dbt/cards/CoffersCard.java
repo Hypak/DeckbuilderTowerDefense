@@ -32,6 +32,11 @@ public class CoffersCard implements BuildingCard, BuyableCard {
     }
 
     @Override
+    public String getInfo() {
+        return "Store " + CoffersBuilding.goldCapacity + " gold.";
+    }
+
+    @Override
     public int getBuyCost() {
         return 6;
     }

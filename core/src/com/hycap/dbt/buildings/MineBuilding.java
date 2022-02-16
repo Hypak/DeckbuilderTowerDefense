@@ -7,8 +7,8 @@ import com.hycap.dbt.Pair;
 public class MineBuilding extends AttackableBuilding {
     public static Texture texture;
 
-    static final int goldCapacity = 2;
-    static final int goldPerTurn = 1;
+    public static final int goldCapacity = 2;
+    public static final int goldPerTurn = 1;
 
     @Override
     public String getName() {

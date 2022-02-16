@@ -32,6 +32,11 @@ public class SniperCard implements BuildingCard, BuyableCard {
     }
 
     @Override
+    public String getInfo() {
+        return "Sniper towers deal damage slowly at long range.";
+    }
+
+    @Override
     public Card duplicate() {
         return new SniperCard();
     }

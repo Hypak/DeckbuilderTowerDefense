@@ -28,6 +28,11 @@ public class PathCard implements BuildingCard {
     }
 
     @Override
+    public String getInfo() {
+        return "Paths expand your base cheaply.";
+    }
+
+    @Override
     public Building getBuilding() {
         return new PathBuilding();
     }

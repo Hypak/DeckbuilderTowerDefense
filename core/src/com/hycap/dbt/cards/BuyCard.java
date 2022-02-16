@@ -135,6 +135,11 @@ public class BuyCard implements ActionCard, BuyableCard{
     }
 
     @Override
+    public String getInfo() {
+        return "Spend gold to buy 1 of " + shownCardAmount + " cards.";
+    }
+
+    @Override
     public int getBuyCost() {
         return 4;
     }
