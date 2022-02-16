@@ -130,6 +130,13 @@ public class Map {
                 }
             }
         }
+        for (Pair<Integer> buildingCoord : buildingCoords) {
+            Building building = buildings[buildingCoord.getLeft()][buildingCoord.getRight()];
+            if (building instanceof AttackableBuilding) {
+                AttackableBuilding attackableBuilding = (AttackableBuilding)building;
+                attackableBuilding.health = attackableBuilding.maxHealth;
+            }
+        }
     }
 
     public boolean isInRadius(int x, int y) {

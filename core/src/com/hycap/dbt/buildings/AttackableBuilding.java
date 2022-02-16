@@ -5,6 +5,12 @@ import com.hycap.dbt.GameState;
 
 public abstract class AttackableBuilding extends Building {
     public float health;
+    public float maxHealth;
+
+    @Override
+    public void onCreate(GameState gameState) {
+        this.maxHealth = health;
+    }
 
     public void attack(float damage) {
         health -= damage;

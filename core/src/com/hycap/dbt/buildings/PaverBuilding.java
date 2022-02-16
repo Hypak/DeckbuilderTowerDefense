@@ -21,6 +21,7 @@ public class PaverBuilding extends AttackableBuilding {
     public void onCreate(GameState gameState) {
         GameState.gameState.freeCardsPerTurn.add(new Path0EnergyCard());
         super.health = 50;
+        super.onCreate(gameState);
     }
 
     @Override

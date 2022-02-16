@@ -22,9 +22,10 @@ public class MineBuilding extends AttackableBuilding {
 
     @Override
     public void onCreate(GameState gameState) {
-        super.health = 20;
+        super.health = 25;
         gameState.maxGold += goldCapacity;
         gameState.goldPerTurn += goldPerTurn;
+        super.onCreate(gameState);
     }
 
     @Override

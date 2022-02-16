@@ -23,6 +23,7 @@ public class CoffersBuilding extends AttackableBuilding {
     public void onCreate(GameState gameState) {
         super.health = 50;
         gameState.maxGold += goldCapacity;
+        super.onCreate(gameState);
     }
 
     @Override

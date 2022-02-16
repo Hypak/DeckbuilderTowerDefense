@@ -21,8 +21,9 @@ public class MageBuilding extends AttackableBuilding {
 
     @Override
     public void onCreate(GameState gameState) {
-        super.health = 30;
+        super.health = 50;
         gameState.baseEnergy += energyIncrease;
+        super.onCreate(gameState);
     }
 
     @Override

@@ -47,6 +47,9 @@ public class MyGdxGame extends ApplicationAdapter {
 
 	Integer selectedIndex;
 
+	int oldPanScreenX = 0;
+	int oldPanScreenY = 0;
+
 	private void setTextures() {
 		CentralBuilding.texture = new Texture("CentralBuilding.png");
 		PathBuilding.texture = new Texture("PathBuilding.png");
@@ -200,6 +203,17 @@ public class MyGdxGame extends ApplicationAdapter {
 				}
 				return true;
 			}
+
+			@Override
+			public boolean keyUp(int keycode) {
+				if (keycode == Input.Keys.SPACE) {
+					resetCamera();
+					return true;
+				} else if (keycode == Input.Keys.TAB) {
+					GameState.gameState.toggleFastForward();
+				}
+				return false;
+			}
 		};
 
 		InputProcessor shortcutProcessor = new InputAdapter() {
@@ -217,13 +231,10 @@ public class MyGdxGame extends ApplicationAdapter {
 					return true;
 				} else if (keycode == Input.Keys.E) {
 					newTurn();
-				} else if (keycode == Input.Keys.SPACE) {
-					resetCamera();
 				}
 				return false;
 			}
 		};
-
 		Gdx.input.setInputProcessor(new InputMultiplexer(stage, cameraProcessor, shortcutProcessor));
 		newTurn();
 	}
@@ -290,6 +301,7 @@ public class MyGdxGame extends ApplicationAdapter {
 		if (Gdx.input.isKeyPressed(Input.Keys.A)) {
 			camera.position.x -= move;
 		}
+
 		GameState.gameState.update(Gdx.graphics.getDeltaTime());
 
 		ScreenUtils.clear(230/255f, 240/255f, 255/255f, 1);

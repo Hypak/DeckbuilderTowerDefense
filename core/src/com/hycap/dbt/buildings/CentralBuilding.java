@@ -20,7 +20,8 @@ public class CentralBuilding extends AttackableBuilding {
 
     @Override
     public void onCreate(GameState gameState) {
-        super.health = 75;
+        super.health = 100;
+        super.onCreate(gameState);
     }
 
     @Override
