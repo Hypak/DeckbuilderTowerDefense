@@ -22,97 +22,20 @@ import static com.badlogic.gdx.utils.Align.topRight;
 public class MyGdxGame extends ApplicationAdapter {
 	SpriteBatch batch;
 
-	Stage stage;
-	Table handTable;
-	Label goldDisplay;
-	Label energyDisplay;
-	TextButton endTurnButton;
-	Label cardCounts;
-	Table resourceTable;
-
-	Label cardInfo;
-	Table cardInfoTable;
-	Label roundInfo;
-	Table roundInfoTable;
-
-	TextButton fastForwardButton;
-	Table fastForwardTable;
-
 	Integer selectedIndex;
 
 	@Override
 	public void create () {
+		SkinClass.skin = new Skin(Gdx.files.internal("gdx-skins-master/tubular/skin/tubular-ui.json"));
+		SkinClass.skin.getFont("font").getData().setScale(2, 2);
+
 		GameState.gameState = new GameState();
 		CameraManager.create();
+		UIManager.create(this);
 
 		TextureManager.setTextures();
 
 		batch = new SpriteBatch();
-
-		SkinClass.skin = new Skin(Gdx.files.internal("gdx-skins-master/tubular/skin/tubular-ui.json"));
-		SkinClass.skin.getFont("font").getData().setScale(2, 2);
-		stage = new Stage();
-		handTable = new Table();
-		updateHandTable();
-		cardCounts = new Label("Loading...", SkinClass.skin);
-		goldDisplay = new Label("Loading...", SkinClass.skin);
-		energyDisplay = new Label("Loading...", SkinClass.skin);
-		// energyDisplay.setFillParent(true);
-		endTurnButton = new TextButton("End Turn", SkinClass.skin);
-		endTurnButton.addListener(new ChangeListener() {
-			@Override
-			public void changed(ChangeEvent event, Actor actor) {
-				if (!GameState.gameState.blocked) {
-					newTurn();
-				}
-			}
-		});
-
-		resourceTable = new Table();
-		resourceTable.add(cardCounts).row();
-		resourceTable.add(goldDisplay).row();
-		resourceTable.add(energyDisplay).row();
-		resourceTable.add(endTurnButton).row();
-		resourceTable.padBottom(30);
-		resourceTable.padRight(30);
-		resourceTable.setFillParent(true);
-		resourceTable.align(Align.bottomRight);
-
-		cardInfo = new Label("", SkinClass.skin);
-		cardInfo.setAlignment(Align.right);
-		cardInfo.setWrap(true);
-		cardInfoTable = new Table();
-		cardInfoTable.add(cardInfo);
-		cardInfoTable.setFillParent(true);
-		cardInfoTable.align(Align.right);
-		cardInfoTable.padRight(30);
-
-		roundInfo = new Label("Loading...", SkinClass.skin);
-		roundInfoTable = new Table();
-		roundInfoTable.add(roundInfo);
-		roundInfoTable.setFillParent(true);
-		roundInfoTable.align(Align.topLeft);
-		roundInfoTable.padTop(30);
-		roundInfoTable.padLeft(30);
-
-		fastForwardButton = new TextButton(">>>", SkinClass.skin);
-		fastForwardButton.addListener(new ChangeListener() {
-			@Override
-			public void changed(ChangeEvent event, Actor actor) {
-				GameState.gameState.toggleFastForward();
-			}
-		});
-		fastForwardTable = new Table();
-		fastForwardTable.add(fastForwardButton);
-		fastForwardTable.padTop(30);
-		fastForwardTable.setFillParent(true);
-		fastForwardTable.align(Align.top);
-
-		stage.addActor(handTable);
-		stage.addActor(resourceTable);
-		stage.addActor(cardInfoTable);
-		stage.addActor(roundInfoTable);
-		stage.addActor(fastForwardTable);
 
 		InputProcessor buildingProcessor = new InputAdapter() {
 			@Override
@@ -145,17 +68,15 @@ public class MyGdxGame extends ApplicationAdapter {
 							if (card instanceof ExhaustCard) {
 								GameState.gameState.deck.removeCard(card);
 							}
-							updateHandTable();
 						}
 					} else if (card instanceof ActionCard) {
 						ActionCard actionCard = (ActionCard) card;
-						if (actionCard.tryPlayCard(GameState.gameState, stage)) {
+						if (actionCard.tryPlayCard(GameState.gameState, UIManager.stage)) {
 							GameState.gameState.currentEnergy -= card.getEnergyCost();
 							selectedIndex = null;
 							if (card instanceof ExhaustCard) {
 								GameState.gameState.deck.removeCard(card);
 							}
-							updateHandTable();
 						}
 					}
 				}
@@ -190,59 +111,21 @@ public class MyGdxGame extends ApplicationAdapter {
 				return false;
 			}
 		};
-		Gdx.input.setInputProcessor(new InputMultiplexer(stage, buildingProcessor, CameraManager.cameraProcessor, shortcutProcessor));
+		Gdx.input.setInputProcessor(new InputMultiplexer(UIManager.stage, buildingProcessor, CameraManager.cameraProcessor, shortcutProcessor));
 		newTurn();
 	}
 
-
-
 	void newTurn() {
 		GameState.gameState.newTurn();
-		updateHandTable();
-		updateDisplays();
 		selectedIndex = null;
 	}
 
-	public void updateHandTable() {
-		handTable.reset();
-		handTable.setFillParent(true);
-		handTable.bottom();
-
-		int i = 0;
-		for (final Card card : GameState.gameState.deck.getHand()) {
-			TextureRegionDrawable image = new TextureRegionDrawable(new TextureRegion(card.getTexture()));
-			image.setMinSize(108, 192);
-			final ImageButton imageButton = new ImageButton(image, image);
-			handTable.add(imageButton);
-			final int finalIndex = i;
-			imageButton.addListener(new InputListener() {
-				@Override
-				public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-					selectedIndex = finalIndex;
-					System.out.println(card.getName());
-					cardInfo.setText(GetCardInfo.getInfo(card));
-					return true;
-				}
-			});
-			++i;
-		}
-	}
-
-	public void updateDisplays() {
-		energyDisplay.setText(GameState.gameState.currentEnergy + " / " + GameState.gameState.baseEnergy + " Energy");
-		goldDisplay.setText(GameState.gameState.gold + "(+" + GameState.gameState.goldPerTurn + ") / " + GameState.gameState.maxGold + " Gold");
-		cardCounts.setText(GameState.gameState.deck.getDrawPile().size() + " Draw, "
-				+ GameState.gameState.deck.getCards().size() + " Total");
-		roundInfo.setText("Radius: " + GameState.gameState.map.currentRadius + " / " + GameState.gameState.map.WIDTH / 2);
-	}
-
 	public void resize (int width, int height) {
-		stage.getViewport().update(width, height, true);
+		UIManager.stage.getViewport().update(width, height, true);
 	}
 
 	@Override
 	public void render () {
-		updateHandTable();
 		ScreenUtils.clear(230/255f, 240/255f, 255/255f, 1);
 
 		CameraManager.update();
@@ -309,14 +192,9 @@ public class MyGdxGame extends ApplicationAdapter {
 				--i;
 			}
 		}
-
 		batch.end();
-		stage.act(Gdx.graphics.getDeltaTime());
-		stage.draw();
-		updateDisplays();
+		UIManager.render(this);
 	}
-
-
 
 	@Override
 	public void dispose () {
