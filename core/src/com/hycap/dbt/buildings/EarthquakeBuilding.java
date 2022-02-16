@@ -33,7 +33,7 @@ public class EarthquakeBuilding extends AttackableBuilding implements Updatable 
         damage = 8;
         reloadTime = 1.8f;
         timeUntilNextReload = reloadTime;
-        range = 1.6f;
+        range = 1.4f;
         GameState.gameState.updatableBuildings.add(this);
         super.onCreate(gameState);
     }

@@ -50,6 +50,7 @@ public class EnemyBase implements Updatable {
             spawnsRemaining.add(enemy.clone());
         }
         turnsUntilNextSpawn = turnsBetweenSpawn;
+        timeUntilNextSpawn = 0;
     }
 
     public void update(float deltaT) {
