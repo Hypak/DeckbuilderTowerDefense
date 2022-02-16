@@ -58,6 +58,11 @@ public class Deck {
         this.drawPile.addLast(card);
     }
 
+    public void addToHand(Card card) {
+        this.cards.add(card);
+        this.hand.add(card);
+    }
+
     public void removeCard(Card card) {
         this.cards.remove(card);
         this.drawPile.remove(card);

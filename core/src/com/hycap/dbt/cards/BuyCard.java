@@ -111,7 +111,7 @@ public class BuyCard implements ActionCard, BuyableCard{
                         return false;
                     }
                     gameState.gold -= card.getBuyCost();
-                    gameState.deck.getHand().add(card);
+                    gameState.deck.addToHand(card);
                     gameState.deck.discardCard(thisCard);
                     gameState.blocked = false;
                     queryTable.remove();

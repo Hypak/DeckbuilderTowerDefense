@@ -1,11 +1,6 @@
 package com.hycap.dbt;
 
 import com.badlogic.gdx.*;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Pixmap;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector3;
@@ -21,7 +16,8 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import com.hycap.dbt.buildings.*;
 import com.hycap.dbt.cards.*;
 import com.hycap.dbt.enemies.*;
-import jdk.nashorn.internal.objects.annotations.Setter;
+
+import static com.badlogic.gdx.utils.Align.topRight;
 
 public class MyGdxGame extends ApplicationAdapter {
 	SpriteBatch batch;
@@ -33,6 +29,11 @@ public class MyGdxGame extends ApplicationAdapter {
 	TextButton endTurnButton;
 	Label cardCounts;
 	Table resourceTable;
+
+	Label cardInfo;
+	Table cardInfoTable;
+	Label roundInfo;
+	Table roundInfoTable;
 
 	TextButton fastForwardButton;
 	Table fastForwardTable;
@@ -77,6 +78,23 @@ public class MyGdxGame extends ApplicationAdapter {
 		resourceTable.setFillParent(true);
 		resourceTable.align(Align.bottomRight);
 
+		cardInfo = new Label("", SkinClass.skin);
+		cardInfo.setAlignment(Align.right);
+		cardInfo.setWrap(true);
+		cardInfoTable = new Table();
+		cardInfoTable.add(cardInfo);
+		cardInfoTable.setFillParent(true);
+		cardInfoTable.align(Align.right);
+		cardInfoTable.padRight(30);
+
+		roundInfo = new Label("Loading...", SkinClass.skin);
+		roundInfoTable = new Table();
+		roundInfoTable.add(roundInfo);
+		roundInfoTable.setFillParent(true);
+		roundInfoTable.align(Align.topLeft);
+		roundInfoTable.padTop(30);
+		roundInfoTable.padLeft(30);
+
 		fastForwardButton = new TextButton(">>>", SkinClass.skin);
 		fastForwardButton.addListener(new ChangeListener() {
 			@Override
@@ -92,6 +110,8 @@ public class MyGdxGame extends ApplicationAdapter {
 
 		stage.addActor(handTable);
 		stage.addActor(resourceTable);
+		stage.addActor(cardInfoTable);
+		stage.addActor(roundInfoTable);
 		stage.addActor(fastForwardTable);
 
 		InputProcessor buildingProcessor = new InputAdapter() {
@@ -199,20 +219,9 @@ public class MyGdxGame extends ApplicationAdapter {
 				@Override
 				public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
 					selectedIndex = finalIndex;
+					System.out.println(card.getName());
+					cardInfo.setText(GetCardInfo.getInfo(card));
 					return true;
-				}
-
-				@Override
-				public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
-					Label tooltip = GetCardTooltip.getTooltip(card);
-					System.out.println(tooltip);
-					tooltip.setPosition(x, y);
-					stage.addActor(tooltip);
-				}
-
-				@Override
-				public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
-					super.exit(event, x, y, pointer, toActor);
 				}
 			});
 			++i;
@@ -224,6 +233,7 @@ public class MyGdxGame extends ApplicationAdapter {
 		goldDisplay.setText(GameState.gameState.gold + "(+" + GameState.gameState.goldPerTurn + ") / " + GameState.gameState.maxGold + " Gold");
 		cardCounts.setText(GameState.gameState.deck.getDrawPile().size() + " Draw, "
 				+ GameState.gameState.deck.getCards().size() + " Total");
+		roundInfo.setText("Radius: " + GameState.gameState.map.currentRadius + " / " + GameState.gameState.map.WIDTH / 2);
 	}
 
 	public void resize (int width, int height) {
