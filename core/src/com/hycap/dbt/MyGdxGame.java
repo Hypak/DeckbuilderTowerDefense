@@ -20,10 +20,8 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.hycap.dbt.buildings.*;
 import com.hycap.dbt.cards.*;
-import com.hycap.dbt.enemies.BasicEnemy;
-import com.hycap.dbt.enemies.Enemy;
-import com.hycap.dbt.enemies.FastEnemy;
-import com.hycap.dbt.enemies.RangedEnemy;
+import com.hycap.dbt.enemies.*;
+import jdk.nashorn.internal.objects.annotations.Setter;
 
 public class MyGdxGame extends ApplicationAdapter {
 	SpriteBatch batch;
@@ -47,9 +45,6 @@ public class MyGdxGame extends ApplicationAdapter {
 	Table uiTable;
 
 	Integer selectedIndex;
-
-	int oldPanScreenX = 0;
-	int oldPanScreenY = 0;
 
 	private void setTextures() {
 		CentralBuilding.texture = new Texture("CentralBuilding.png");
@@ -80,6 +75,7 @@ public class MyGdxGame extends ApplicationAdapter {
 		BasicEnemy.texture = new Texture("BasicEnemy.png");
 		FastEnemy.texture = new Texture("FastEnemy.png");
 		RangedEnemy.texture = new Texture("RangedEnemy.png");
+		BigEnemy.texture = new Texture("BigEnemy.png");
 
 		EnemyBase.texture = new Texture("EnemyBase.png");
 		grassTexture = new Texture("Grass.png");
@@ -130,11 +126,7 @@ public class MyGdxGame extends ApplicationAdapter {
 		fastForwardButton.addListener(new ChangeListener() {
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
-				if (GameState.gameState.runSpeed == 1) {
-					GameState.gameState.runSpeed = 3;
-				} else {
-					GameState.gameState.toggleFastForward();
-				}
+				GameState.gameState.toggleFastForward();
 			}
 		});
 		fastForwardTable = new Table();
@@ -360,7 +352,11 @@ public class MyGdxGame extends ApplicationAdapter {
 			draw(riftTexture, coords.getLeft(), coords.getRight());
 		}
 		for (Enemy enemy : GameState.gameState.enemies) {
-			draw(enemy.getTexture(), enemy.getX(), enemy.getY());
+			float scale = 1;
+			if (enemy instanceof SetRenderScale) {
+				scale = ((SetRenderScale)enemy).genRenderScale();
+			}
+			draw(enemy.getTexture(), enemy.getX(), enemy.getY(), 1, scale);
 		}
 		for (int i = 0; i < GameState.gameState.particles.size(); ++i) {
 			boolean keep = GameState.gameState.particles.get(i).render(batch, Gdx.graphics.getDeltaTime());
@@ -374,6 +370,14 @@ public class MyGdxGame extends ApplicationAdapter {
 		stage.act(Gdx.graphics.getDeltaTime());
 		stage.draw();
 		updateDisplays();
+	}
+
+	void draw(Texture texture, float x, float y, float alpha, float scale) {
+		Sprite sprite = new Sprite(texture);
+		sprite.setAlpha(alpha);
+		sprite.setScale(scale / 32f);
+		sprite.setPosition(x - 16, y - 16);
+		sprite.draw(batch);
 	}
 
 	void draw(Texture texture, float x, float y, float alpha) {
@@ -390,7 +394,7 @@ public class MyGdxGame extends ApplicationAdapter {
 		sprite.setPosition(x - 16, y - 16);
 		sprite.draw(batch);
 	}
-	
+
 	@Override
 	public void dispose () {
 		batch.dispose();

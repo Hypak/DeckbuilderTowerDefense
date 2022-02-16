@@ -18,7 +18,7 @@ import java.util.List;
 public class BuyCard implements ActionCard, BuyableCard{
     public static Texture texture;
     public static Map<BuyableCard, Float> cardDrawWeights;
-    static int shownCardAmount = 4;
+    static int shownCardAmount = 3;
     static {
         cardDrawWeights = new HashMap<>();
         cardDrawWeights.put(new CoffersCard(), 2f);
@@ -30,11 +30,12 @@ public class BuyCard implements ActionCard, BuyableCard{
         cardDrawWeights.put(new TowerCard(), 2f);
         cardDrawWeights.put(new WallCard(), 2f);
         cardDrawWeights.put(new SniperCard(), 1.5f);
+        cardDrawWeights.put(new EarthquakeCard(), 1.5f);
     }
 
     @Override
     public int getEnergyCost() {
-        return 2;
+        return 1;
     }
 
     @Override
@@ -110,7 +111,7 @@ public class BuyCard implements ActionCard, BuyableCard{
                         return false;
                     }
                     gameState.gold -= card.getBuyCost();
-                    gameState.deck.addToDraw(card);
+                    gameState.deck.getHand().add(card);
                     gameState.deck.discardCard(thisCard);
                     gameState.blocked = false;
                     queryTable.remove();

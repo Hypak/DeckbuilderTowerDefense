@@ -72,6 +72,18 @@ public class Remove1Card implements ActionCard, BuyableCard {
                     }
                 });
             }
+            TextButton passButton = new TextButton("Pass", SkinClass.skin);
+            passButton.addListener(new InputListener() {
+                @Override
+                public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                    gameState.deck.discardCard(thisCard);
+                    gameState.blocked = false;
+                    queryTable.remove();
+                    return true;
+                }
+            });
+            queryTable.row();
+            queryTable.add(passButton);
             return true;
         }
         return false;

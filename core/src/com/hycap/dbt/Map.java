@@ -5,6 +5,7 @@ import com.hycap.dbt.buildings.AttackableBuilding;
 import com.hycap.dbt.buildings.Building;
 import com.hycap.dbt.buildings.CentralBuilding;
 import com.hycap.dbt.enemies.BasicEnemy;
+import com.hycap.dbt.enemies.BigEnemy;
 import com.hycap.dbt.enemies.Enemy;
 import com.hycap.dbt.enemies.FastEnemy;
 
@@ -24,8 +25,10 @@ public class Map {
     final List<EnemyBase> activeEnemyBases;
     final int enemyBaseCount = 80;
     final int fastEnemyBaseCount = 30;
+    final int bigEnemyBaseCount = 30;
     final int noBaseRadius = 15;
     final int noFastBaseRadius = 20;
+    final int noBigBaseRadius = 30;
     final List<Integer> setBaseRadii;
     int currentRadius = 2;
     final int extraViewRadius = 5;
@@ -71,6 +74,15 @@ public class Map {
             }
             generateFastEnemyBaseAt(x, y, 2);
         }
+        for (int i = 0; i < bigEnemyBaseCount; ++i) {
+            int x = random.nextInt(WIDTH);
+            int y = random.nextInt(HEIGHT);
+            if (Math.abs(x - WIDTH / 2) <= noBigBaseRadius && Math.abs(y - HEIGHT / 2) <= noBigBaseRadius) {
+                --i;
+                continue;
+            }
+            generateBigEnemyBaseAt(x, y);
+        }
     }
 
     void generateSetBases() {
@@ -111,6 +123,13 @@ public class Map {
         for (int i = 0; i < spawnCount; ++i) {
             enemySpawns.add(new FastEnemy(new Vector2(x, y)));
         }
+        EnemyBase newBase = new EnemyBase(new Pair<>(x, y), enemySpawns, 2f);
+        enemyBases.add(newBase);
+    }
+
+    void generateBigEnemyBaseAt(int x, int y) {
+        List<Enemy> enemySpawns = new ArrayList<>();
+        enemySpawns.add(new BigEnemy(new Vector2(x, y)));
         EnemyBase newBase = new EnemyBase(new Pair<>(x, y), enemySpawns, 2f);
         enemyBases.add(newBase);
     }
@@ -179,6 +198,12 @@ public class Map {
         int yDiff = Math.abs(HEIGHT / 2 - x);
         if (Math.max(xDiff, yDiff) > currentRadius) {
             return false;
+        }
+        Pair<Integer> position = new Pair<>(x, y);
+        for (EnemyBase base : enemyBases) {
+            if (base.position.equals(position)) {
+                return false;
+            }
         }
         if (x - 1 >= 0 && this.buildings[x-1][y] != null) {
             return true;
