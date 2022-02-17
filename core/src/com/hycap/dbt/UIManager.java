@@ -182,8 +182,9 @@ public class UIManager {
 
     public static void updateDisplays() {
         energyDisplay.setText(GameState.gameState.currentEnergy + " / " + GameState.gameState.baseEnergy + " Energy");
-        goldDisplay.setText(GameState.gameState.gold + "(+" + GameState.gameState.goldPerTurn + ") / " + GameState.gameState.maxGold + " Gold");
-        cardCounts.setText(GameState.gameState.deck.getDrawPile().size() + " Draw, "
+        goldDisplay.setText(GameState.gameState.gold + " / "
+                + GameState.gameState.maxGold + " Gold (+" + GameState.gameState.goldPerTurn + " per turn)");
+        cardCounts.setText(GameState.gameState.deck.getDrawPile().size() + " Cards in Draw Pile, "
                 + GameState.gameState.deck.getCards().size() + " Total");
         roundInfo.setText("Radius: " + GameState.gameState.map.currentRadius + " / " + GameState.gameState.map.WIDTH / 2);
     }
