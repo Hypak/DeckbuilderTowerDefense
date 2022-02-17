@@ -18,7 +18,7 @@ public class UIManager {
     static Table handTable;
     static TextButton viewAllCards;
     static boolean showingAllCards = false;
-    static int maxShowCardWidth = 10;
+    static int maxShowCardWidth = 5;
     static Table cardTable;
     static Label goldDisplay;
     static Label energyDisplay;
@@ -52,8 +52,9 @@ public class UIManager {
 
     public static void toggleShowCards() {
         showingAllCards = !showingAllCards;
-        GameState.gameState.blocked = showingAllCards;
+        // GameState.gameState.blocked = showingAllCards;
         cardTable.reset();
+        cardTable.align(Align.left);
         if (showingAllCards) {
             viewAllCards.setText("Hide deck");
             for (int i = 0; i < GameState.gameState.deck.getCards().size(); ++i) {
@@ -161,6 +162,7 @@ public class UIManager {
     public static void render(MyGdxGame myGdxGame) {
         updateHandTable(myGdxGame);
         updateDisplays();
+
         stage.act(Gdx.graphics.getDeltaTime());
         stage.draw();
     }
