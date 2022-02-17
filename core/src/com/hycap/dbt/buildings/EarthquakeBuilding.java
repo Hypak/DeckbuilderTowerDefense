@@ -32,6 +32,11 @@ public class EarthquakeBuilding extends AbstractTowerBuilding {
     }
 
     @Override
+    public String getInfo() {
+        return "Earthquake buildings deal damage to lots of enemies at short range.";
+    }
+
+    @Override
     public float getRange() {
         return range;
     }

@@ -4,7 +4,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.hycap.dbt.buildings.Building;
 import com.hycap.dbt.buildings.TowerBuilding;
 
-public class TowerCard implements BuildingCard, BuyableCard {
+public class TowerCard extends BuildingCard implements BuyableCard {
     public static Texture texture;
     @Override
     public Building getBuilding() {
@@ -29,11 +29,6 @@ public class TowerCard implements BuildingCard, BuyableCard {
     @Override
     public Card duplicate() {
         return new TowerCard();
-    }
-
-    @Override
-    public String getInfo() {
-        return "Towers attack enemies at medium range.";
     }
 
     @Override

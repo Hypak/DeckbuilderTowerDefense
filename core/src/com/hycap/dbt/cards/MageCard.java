@@ -4,7 +4,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.hycap.dbt.buildings.Building;
 import com.hycap.dbt.buildings.MageBuilding;
 
-public class MageCard implements BuildingCard, BuyableCard, ExhaustCard {
+public class MageCard extends BuildingCard implements BuyableCard, ExhaustCard {
     public static Texture texture;
     @Override
     public Building getBuilding() {
@@ -29,11 +29,6 @@ public class MageCard implements BuildingCard, BuyableCard, ExhaustCard {
     @Override
     public Card duplicate() {
         return new MageCard();
-    }
-
-    @Override
-    public String getInfo() {
-        return "Generate " + MageBuilding.energyIncrease + " more energy per turn.";
     }
 
     @Override

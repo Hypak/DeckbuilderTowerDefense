@@ -10,7 +10,6 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.hycap.dbt.buildings.Building;
 import com.hycap.dbt.cards.Card;
-import com.hycap.dbt.cards.GetCardInfo;
 
 public class UIManager {
     static Stage stage;
@@ -33,14 +32,38 @@ public class UIManager {
     static TextButton fastForwardButton;
     static Table fastForwardTable;
 
-    static boolean overButton = false;
-
     public static void setSelectedInfo(Card card) {
-        selectedInfo.setText(GetCardInfo.getInfo(card));
+        selectedInfo.setText(GetObjectInfo.getInfo(card));
     }
 
     public static void setSelectedInfo(Building building) {
-        selectedInfo.setText(building.getName());
+        selectedInfo.setText(GetObjectInfo.getInfo(building));
+    }
+
+    public static void hideAllCards() {
+        showingAllCards = true;
+        toggleShowCards();
+    }
+
+    public static void toggleShowCards() {
+        showingAllCards = !showingAllCards;
+        GameState.gameState.blocked = showingAllCards;
+        cardTable.reset();
+        if (showingAllCards) {
+            viewAllCards.setText("Hide deck");
+            for (int i = 0; i < GameState.gameState.deck.getCards().size(); ++i) {
+                Card card = GameState.gameState.deck.getCards().get(i);
+                TextureRegionDrawable image = new TextureRegionDrawable(new TextureRegion(card.getTexture()));
+                image.setMinSize(108, 192);
+                final ImageButton imageButton = new ImageButton(image, image);
+                cardTable.add(imageButton);
+                if (i % maxShowCardWidth == maxShowCardWidth - 1) {
+                    cardTable.row();
+                }
+            }
+        } else {
+            viewAllCards.setText("View deck");
+        }
     }
 
     public static void create(final MyGdxGame myGdxGame) {
@@ -50,30 +73,12 @@ public class UIManager {
         viewAllCards = new TextButton("View deck", SkinClass.skin);
         goldDisplay = new Label("Loading...", SkinClass.skin);
         energyDisplay = new Label("Loading...", SkinClass.skin);
-        // energyDisplay.setFillParent(true);
         endTurnButton = new TextButton("End Turn", SkinClass.skin);
 
         viewAllCards.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                showingAllCards = !showingAllCards;
-                GameState.gameState.blocked = showingAllCards;
-                cardTable.reset();
-                if (showingAllCards) {
-                    viewAllCards.setText("Hide deck");
-                    for (int i = 0; i < GameState.gameState.deck.getCards().size(); ++i) {
-                        Card card = GameState.gameState.deck.getCards().get(i);
-                        TextureRegionDrawable image = new TextureRegionDrawable(new TextureRegion(card.getTexture()));
-                        image.setMinSize(108, 192);
-                        final ImageButton imageButton = new ImageButton(image, image);
-                        cardTable.add(imageButton);
-                        if (i % maxShowCardWidth == maxShowCardWidth - 1) {
-                            cardTable.row();
-                        }
-                    }
-                } else {
-                    viewAllCards.setText("View deck");
-                }
+                toggleShowCards();
             }
         });
         endTurnButton.addListener(new ChangeListener() {
@@ -165,7 +170,7 @@ public class UIManager {
                 public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                     if (button == Input.Buttons.LEFT) {
                         myGdxGame.selectedIndex = finalIndex;
-                        selectedInfo.setText(GetCardInfo.getInfo(card));
+                        setSelectedInfo(card);
                         return true;
                     }
                     return false;

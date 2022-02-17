@@ -4,7 +4,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.hycap.dbt.buildings.Building;
 import com.hycap.dbt.buildings.SniperBuilding;
 
-public class SniperCard implements BuildingCard, BuyableCard {
+public class SniperCard extends BuildingCard implements BuyableCard {
     public static Texture texture;
     @Override
     public Building getBuilding() {
@@ -31,10 +31,6 @@ public class SniperCard implements BuildingCard, BuyableCard {
         return texture;
     }
 
-    @Override
-    public String getInfo() {
-        return "Sniper towers deal damage slowly at long range.";
-    }
 
     @Override
     public Card duplicate() {

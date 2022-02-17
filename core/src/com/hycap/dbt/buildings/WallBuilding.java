@@ -16,15 +16,19 @@ public class WallBuilding extends AttackableBuilding {
     }
 
     @Override
+    public String getInfo() {
+        return "Walls have lots of health.";
+    }
+
+
+    @Override
     public void onCreate(GameState gameState) {
         super.health = 125;
         super.onCreate(gameState);
     }
 
     @Override
-    public void onDestroy(GameState gameState) {
-
-    }
+    public void onDestroy(GameState gameState) {}
 
     @Override
     public Building duplicate() {

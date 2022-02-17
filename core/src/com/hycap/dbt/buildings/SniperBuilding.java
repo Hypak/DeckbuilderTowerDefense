@@ -14,6 +14,23 @@ public class SniperBuilding extends AbstractTowerBuilding {
     }
 
     @Override
+    public String getName() {
+        return "Sniper";
+    }
+
+    @Override
+    public Texture getTexture() {
+        return texture;
+    }
+
+
+    @Override
+    public String getInfo() {
+        return "Sniper towers deal damage slowly at long range.";
+    }
+
+
+    @Override
     public void onCreate(GameState gameState) {
 
         super.onCreate(gameState);
@@ -22,15 +39,5 @@ public class SniperBuilding extends AbstractTowerBuilding {
     @Override
     public Building duplicate() {
         return new SniperBuilding();
-    }
-
-    @Override
-    public String getName() {
-        return "Sniper";
-    }
-
-    @Override
-    public Texture getTexture() {
-        return texture;
     }
 }

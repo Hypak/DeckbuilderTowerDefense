@@ -4,7 +4,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.hycap.dbt.buildings.Building;
 import com.hycap.dbt.buildings.PaverBuilding;
 
-public class PaverCard implements BuildingCard, BuyableCard, ExhaustCard {
+public class PaverCard extends BuildingCard implements BuyableCard, ExhaustCard {
     public static Texture texture;
     @Override
     public Building getBuilding() {
@@ -29,12 +29,6 @@ public class PaverCard implements BuildingCard, BuyableCard, ExhaustCard {
     @Override
     public Card duplicate() {
         return new PaverCard();
-    }
-
-
-    @Override
-    public String getInfo() {
-        return "Produce a free path every turn.";
     }
 
     @Override

@@ -4,7 +4,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.hycap.dbt.buildings.Building;
 import com.hycap.dbt.buildings.WallBuilding;
 
-public class WallCard implements BuildingCard, BuyableCard {
+public class WallCard extends BuildingCard implements BuyableCard {
     public static Texture texture;
     @Override
     public Building getBuilding() {
@@ -29,11 +29,6 @@ public class WallCard implements BuildingCard, BuyableCard {
     @Override
     public Texture getTexture() {
         return texture;
-    }
-
-    @Override
-    public String getInfo() {
-        return "Walls have lots of health.";
     }
 
     @Override

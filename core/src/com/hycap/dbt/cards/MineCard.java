@@ -4,7 +4,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.hycap.dbt.buildings.Building;
 import com.hycap.dbt.buildings.MineBuilding;
 
-public class MineCard implements BuildingCard, BuyableCard {
+public class MineCard extends BuildingCard implements BuyableCard {
     public static Texture texture;
     @Override
     public Building getBuilding() {
@@ -29,12 +29,6 @@ public class MineCard implements BuildingCard, BuyableCard {
     @Override
     public Card duplicate() {
         return new MineCard();
-    }
-
-    @Override
-    public String getInfo() {
-        return "Generate " + MineBuilding.goldPerTurn + " gold per turn, and hold "
-                + MineBuilding.goldCapacity + " more gold.";
     }
 
     @Override

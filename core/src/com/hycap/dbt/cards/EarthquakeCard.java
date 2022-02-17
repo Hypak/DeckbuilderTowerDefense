@@ -4,7 +4,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.hycap.dbt.buildings.Building;
 import com.hycap.dbt.buildings.EarthquakeBuilding;
 
-public class EarthquakeCard implements BuildingCard, BuyableCard {
+public class EarthquakeCard extends BuildingCard implements BuyableCard {
     public static Texture texture;
 
     @Override
@@ -30,11 +30,6 @@ public class EarthquakeCard implements BuildingCard, BuyableCard {
     @Override
     public Card duplicate() {
         return new EarthquakeCard();
-    }
-
-    @Override
-    public String getInfo() {
-        return "Earthquake buildings deal damage to lots of enemies at short range.";
     }
 
     @Override

@@ -21,6 +21,12 @@ public class MineBuilding extends AttackableBuilding {
     }
 
     @Override
+    public String getInfo() {
+        return "Generate " + MineBuilding.goldPerTurn + " gold per turn, and hold "
+                + MineBuilding.goldCapacity + " more gold.";
+    }
+
+    @Override
     public void onCreate(GameState gameState) {
         super.health = 25;
         gameState.maxGold += goldCapacity;

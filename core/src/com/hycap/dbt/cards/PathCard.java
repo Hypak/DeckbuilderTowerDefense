@@ -4,7 +4,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.hycap.dbt.buildings.Building;
 import com.hycap.dbt.buildings.PathBuilding;
 
-public class PathCard implements BuildingCard {
+public class PathCard extends BuildingCard {
     public static Texture texture;
 
     @Override
@@ -25,11 +25,6 @@ public class PathCard implements BuildingCard {
     @Override
     public Card duplicate() {
         return new PathCard();
-    }
-
-    @Override
-    public String getInfo() {
-        return "Paths expand your base cheaply.";
     }
 
     @Override

@@ -4,7 +4,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.hycap.dbt.buildings.Building;
 import com.hycap.dbt.buildings.CoffersBuilding;
 
-public class CoffersCard implements BuildingCard, BuyableCard {
+public class CoffersCard extends BuildingCard implements BuyableCard {
     public static Texture texture;
     @Override
     public Building getBuilding() {
@@ -31,10 +31,7 @@ public class CoffersCard implements BuildingCard, BuyableCard {
         return new CoffersCard();
     }
 
-    @Override
-    public String getInfo() {
-        return "Store " + CoffersBuilding.goldCapacity + " gold.";
-    }
+
 
     @Override
     public int getBuyCost() {

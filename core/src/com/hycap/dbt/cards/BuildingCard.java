@@ -3,6 +3,11 @@ package com.hycap.dbt.cards;
 import com.hycap.dbt.GameState;
 import com.hycap.dbt.buildings.Building;
 
-public interface BuildingCard extends Card {
-    Building getBuilding();
+public abstract class BuildingCard implements Card {
+    public abstract Building getBuilding();
+
+    @Override
+    public String getInfo() {
+        return getBuilding().getInfo();
+    }
 }

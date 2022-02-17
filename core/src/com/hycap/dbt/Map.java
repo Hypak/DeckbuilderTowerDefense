@@ -1,9 +1,7 @@
 package com.hycap.dbt;
 
 import com.badlogic.gdx.math.Vector2;
-import com.hycap.dbt.buildings.AttackableBuilding;
-import com.hycap.dbt.buildings.Building;
-import com.hycap.dbt.buildings.CentralBuilding;
+import com.hycap.dbt.buildings.*;
 import com.hycap.dbt.enemies.BasicEnemy;
 import com.hycap.dbt.enemies.BigEnemy;
 import com.hycap.dbt.enemies.Enemy;
@@ -59,7 +57,7 @@ public class Map {
         for (int i = 0; i < enemyBaseCount - setBaseRadii.size(); ++i) {
             int x = random.nextInt(WIDTH);
             int y = random.nextInt(HEIGHT);
-            if (Math.abs(x - WIDTH / 2) <= noBaseRadius && Math.abs(y - HEIGHT / 2) <= noBaseRadius) {
+            if (Math.abs(x - WIDTH / 2) <= noBaseRadius && Math.abs(y - HEIGHT / 2) <= noBaseRadius || isEnemyBaseAt(x, y)) {
                 --i;
                 continue;
             }
@@ -68,7 +66,7 @@ public class Map {
         for (int i = 0; i < fastEnemyBaseCount; ++i) {
             int x = random.nextInt(WIDTH);
             int y = random.nextInt(HEIGHT);
-            if (Math.abs(x - WIDTH / 2) <= noFastBaseRadius && Math.abs(y - HEIGHT / 2) <= noFastBaseRadius) {
+            if (Math.abs(x - WIDTH / 2) <= noFastBaseRadius && Math.abs(y - HEIGHT / 2) <= noFastBaseRadius || isEnemyBaseAt(x, y)) {
                 --i;
                 continue;
             }
@@ -77,7 +75,7 @@ public class Map {
         for (int i = 0; i < bigEnemyBaseCount; ++i) {
             int x = random.nextInt(WIDTH);
             int y = random.nextInt(HEIGHT);
-            if (Math.abs(x - WIDTH / 2) <= noBigBaseRadius && Math.abs(y - HEIGHT / 2) <= noBigBaseRadius) {
+            if (Math.abs(x - WIDTH / 2) <= noBigBaseRadius && Math.abs(y - HEIGHT / 2) <= noBigBaseRadius || isEnemyBaseAt(x, y)) {
                 --i;
                 continue;
             }
@@ -192,7 +190,10 @@ public class Map {
             return false;
         }
         if (this.buildings[x][y] != null) {
-            return false;
+            if (!(this.buildings[x][y] instanceof CanBuildOver)) {
+                return false;
+            }
+            return true;
         }
         int xDiff = Math.abs(WIDTH / 2 - x);
         int yDiff = Math.abs(HEIGHT / 2 - x);
@@ -236,7 +237,7 @@ public class Map {
     public void removeBuilding(int x, int y) {
         Building building = buildings[x][y];
         Pair<Integer> coords = new Pair<>(x, y);
-        this.buildings[x][y] = null;
+        this.buildings[x][y] = new PathBuilding();
         if (riftCoords.contains(coords) && building instanceof AttackableBuilding) {
             GameState.gameState.baseEnergy -= energyPerRift;
             if (GameState.gameState.currentEnergy > GameState.gameState.baseEnergy) {

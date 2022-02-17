@@ -2,6 +2,7 @@ package com.hycap.dbt;
 
 import com.badlogic.gdx.*;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.utils.ScreenUtils;
@@ -20,8 +21,7 @@ public class MyGdxGame extends ApplicationAdapter {
 
 	@Override
 	public void create () {
-		SkinClass.skin = new Skin(Gdx.files.internal("gdx-skins-master/tubular/skin/tubular-ui.json"));
-		SkinClass.skin.getFont("font").getData().setScale(2, 2);
+		SkinClass.skin = new Skin(Gdx.files.internal("gdx-skins-master/plain-james/skin/plain-james-ui.json"));
 
 		GameState.gameState = new GameState();
 		CameraManager.create();
@@ -44,9 +44,6 @@ public class MyGdxGame extends ApplicationAdapter {
 				if (button != Input.Buttons.LEFT) {
 					return false;
 				}
-				if (GameState.gameState.blocked || GameState.gameState.animating) {
-					return false;
-				}
 				Vector3 mousePos = new Vector3(screenX, screenY, 0);
 				CameraManager.camera.unproject(mousePos);
 				int x = Math.round(mousePos.x);
@@ -62,6 +59,10 @@ public class MyGdxGame extends ApplicationAdapter {
 				}
 				if (clickedBuilding != null) {
 					UIManager.setSelectedInfo(clickedBuilding);
+					return true;
+				}
+				if (GameState.gameState.blocked || GameState.gameState.animating) {
+					return false;
 				}
 				if (selectedIndex != null && selectedIndex >= 0 && selectedIndex < GameState.gameState.deck.getHand().size()) {
 					Card card = GameState.gameState.deck.getHandCard(selectedIndex);
@@ -107,6 +108,14 @@ public class MyGdxGame extends ApplicationAdapter {
 					GameState.gameState.toggleFastForward();
 					return true;
 				}
+				if (keycode == Input.Keys.ESCAPE) {
+					UIManager.hideAllCards();
+					selectedViewTowers = new ArrayList<>();
+					selectedIndex = null;
+				}
+				if (keycode == Input.Keys.V) {
+					UIManager.toggleShowCards();
+				}
 				if (GameState.gameState.blocked || GameState.gameState.animating) {
 					return false;
 				}
@@ -122,6 +131,7 @@ public class MyGdxGame extends ApplicationAdapter {
 					newTurn();
 					return true;
 				}
+
 				return false;
 			}
 
@@ -134,6 +144,7 @@ public class MyGdxGame extends ApplicationAdapter {
 				return false;
 			}
 		};
+
 		Gdx.input.setInputProcessor(new InputMultiplexer(UIManager.stage, buildingProcessor, CameraManager.cameraProcessor, shortcutProcessor));
 		newTurn();
 	}

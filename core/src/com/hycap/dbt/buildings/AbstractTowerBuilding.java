@@ -22,6 +22,11 @@ public abstract class AbstractTowerBuilding extends AttackableBuilding implement
     }
 
     @Override
+    public String getStats() {
+        return "Damage: " + damage + "\nReload time: " + reloadTime + "\nRange: " + range + "\n" + super.getStats();
+    }
+
+    @Override
     public void onCreate(GameState gameState) {
         super.onCreate(gameState);
         gameState.updatableBuildings.add(this);

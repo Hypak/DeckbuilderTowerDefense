@@ -20,6 +20,11 @@ public class MageBuilding extends AttackableBuilding {
     }
 
     @Override
+    public String getInfo() {
+        return "Generate " + MageBuilding.energyIncrease + " more energy per turn.";
+    }
+
+    @Override
     public void onCreate(GameState gameState) {
         super.health = 50;
         gameState.baseEnergy += energyIncrease;

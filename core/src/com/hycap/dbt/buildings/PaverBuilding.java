@@ -18,6 +18,11 @@ public class PaverBuilding extends AttackableBuilding {
     }
 
     @Override
+    public String getInfo() {
+        return "Produce a free path every turn.";
+    }
+
+    @Override
     public void onCreate(GameState gameState) {
         GameState.gameState.freeCardsPerTurn.add(new Path0EnergyCard());
         super.health = 50;

@@ -16,12 +16,6 @@ public class TowerBuilding extends AbstractTowerBuilding implements Updatable {
     }
 
     @Override
-    public void onCreate(GameState gameState) {
-
-        super.onCreate(gameState);
-    }
-
-    @Override
     public String getName() {
         return "Tower";
     }
@@ -31,6 +25,15 @@ public class TowerBuilding extends AbstractTowerBuilding implements Updatable {
         return texture;
     }
 
+    @Override
+    public String getInfo() {
+        return "Towers attack enemies at medium range.";
+    }
+
+    @Override
+    public void onCreate(GameState gameState) {
+        super.onCreate(gameState);
+    }
 
     @Override
     public Building duplicate() {

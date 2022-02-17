@@ -12,6 +12,11 @@ public abstract class AttackableBuilding extends Building {
         this.maxHealth = health;
     }
 
+    @Override
+    public String getStats() {
+        return "Max Health: " + maxHealth;
+    }
+
     public void attack(float damage) {
         health -= damage;
         GameState.gameState.addHurtParticle(new Vector2(position.getLeft(), position.getRight()));

@@ -19,6 +19,11 @@ public class CentralBuilding extends AttackableBuilding {
     }
 
     @Override
+    public String getInfo() {
+        return "Center of your base.";
+    }
+
+    @Override
     public void onCreate(GameState gameState) {
         super.health = 100;
         super.onCreate(gameState);

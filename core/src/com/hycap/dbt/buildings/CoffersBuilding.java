@@ -20,6 +20,11 @@ public class CoffersBuilding extends AttackableBuilding {
     }
 
     @Override
+    public String getInfo() {
+        return "Store " + CoffersBuilding.goldCapacity + " gold.";
+    }
+
+    @Override
     public void onCreate(GameState gameState) {
         super.health = 50;
         gameState.maxGold += goldCapacity;

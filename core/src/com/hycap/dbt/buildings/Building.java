@@ -11,6 +11,10 @@ public abstract class Building {
 
     public abstract String getName();
 
+    public abstract String getInfo();
+
+    public abstract String getStats();
+
     public abstract Texture getTexture();
 
     public abstract void onCreate(GameState gameState);
