@@ -1,46 +1,81 @@
 package com.hycap.dbt;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.InputListener;
-import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.*;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
+import com.hycap.dbt.buildings.Building;
 import com.hycap.dbt.cards.Card;
 import com.hycap.dbt.cards.GetCardInfo;
 
 public class UIManager {
     static Stage stage;
     static Table handTable;
+    static TextButton viewAllCards;
+    static boolean showingAllCards = false;
+    static int maxShowCardWidth = 10;
+    static Table cardTable;
     static Label goldDisplay;
     static Label energyDisplay;
     static TextButton endTurnButton;
     static Label cardCounts;
     static Table resourceTable;
 
-    static Label cardInfo;
-    static Table cardInfoTable;
+    static Label selectedInfo;
+    static Table selectedInfoTable;
     static Label roundInfo;
     static Table roundInfoTable;
 
     static TextButton fastForwardButton;
     static Table fastForwardTable;
 
+    static boolean overButton = false;
+
+    public static void setSelectedInfo(Card card) {
+        selectedInfo.setText(GetCardInfo.getInfo(card));
+    }
+
+    public static void setSelectedInfo(Building building) {
+        selectedInfo.setText(building.getName());
+    }
+
     public static void create(final MyGdxGame myGdxGame) {
         stage = new Stage();
         handTable = new Table();
         cardCounts = new Label("Loading...", SkinClass.skin);
+        viewAllCards = new TextButton("View deck", SkinClass.skin);
         goldDisplay = new Label("Loading...", SkinClass.skin);
         energyDisplay = new Label("Loading...", SkinClass.skin);
         // energyDisplay.setFillParent(true);
         endTurnButton = new TextButton("End Turn", SkinClass.skin);
+
+        viewAllCards.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                showingAllCards = !showingAllCards;
+                GameState.gameState.blocked = showingAllCards;
+                cardTable.reset();
+                if (showingAllCards) {
+                    viewAllCards.setText("Hide deck");
+                    for (int i = 0; i < GameState.gameState.deck.getCards().size(); ++i) {
+                        Card card = GameState.gameState.deck.getCards().get(i);
+                        TextureRegionDrawable image = new TextureRegionDrawable(new TextureRegion(card.getTexture()));
+                        image.setMinSize(108, 192);
+                        final ImageButton imageButton = new ImageButton(image, image);
+                        cardTable.add(imageButton);
+                        if (i % maxShowCardWidth == maxShowCardWidth - 1) {
+                            cardTable.row();
+                        }
+                    }
+                } else {
+                    viewAllCards.setText("View deck");
+                }
+            }
+        });
         endTurnButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
@@ -50,7 +85,12 @@ public class UIManager {
             }
         });
 
+        cardTable = new Table();
+        cardTable.align(Align.center);
+        cardTable.setFillParent(true);
+
         resourceTable = new Table();
+        resourceTable.add(viewAllCards).row();
         resourceTable.add(cardCounts).row();
         resourceTable.add(goldDisplay).row();
         resourceTable.add(energyDisplay).row();
@@ -60,14 +100,14 @@ public class UIManager {
         resourceTable.setFillParent(true);
         resourceTable.align(Align.bottomRight);
 
-        cardInfo = new Label("", SkinClass.skin);
-        cardInfo.setAlignment(Align.right);
-        cardInfo.setWrap(true);
-        cardInfoTable = new Table();
-        cardInfoTable.add(cardInfo);
-        cardInfoTable.setFillParent(true);
-        cardInfoTable.align(Align.right);
-        cardInfoTable.padRight(30);
+        selectedInfo = new Label("", SkinClass.skin);
+        selectedInfo.setAlignment(Align.right);
+        selectedInfo.setWrap(true);
+        selectedInfoTable = new Table();
+        selectedInfoTable.add(selectedInfo);
+        selectedInfoTable.setFillParent(true);
+        selectedInfoTable.align(Align.right);
+        selectedInfoTable.padRight(30);
 
         roundInfo = new Label("Loading...", SkinClass.skin);
         roundInfoTable = new Table();
@@ -90,9 +130,10 @@ public class UIManager {
         fastForwardTable.setFillParent(true);
         fastForwardTable.align(Align.top);
 
+        stage.addActor(cardTable);
         stage.addActor(handTable);
         stage.addActor(resourceTable);
-        stage.addActor(cardInfoTable);
+        stage.addActor(selectedInfoTable);
         stage.addActor(roundInfoTable);
         stage.addActor(fastForwardTable);
     }
@@ -107,7 +148,7 @@ public class UIManager {
     public static void updateHandTable(final MyGdxGame myGdxGame) {
         handTable.reset();
         handTable.setFillParent(true);
-        handTable.bottom();
+        handTable.align(Align.bottom);
 
         int i = 0;
         for (final Card card : GameState.gameState.deck.getHand()) {
@@ -115,13 +156,19 @@ public class UIManager {
             image.setMinSize(108, 192);
             final ImageButton imageButton = new ImageButton(image, image);
             handTable.add(imageButton);
+            if (GameState.gameState.currentEnergy >= card.getEnergyCost()) {
+                imageButton.padBottom(30);
+            }
             final int finalIndex = i;
             imageButton.addListener(new InputListener() {
                 @Override
                 public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                    myGdxGame.selectedIndex = finalIndex;
-                    cardInfo.setText(GetCardInfo.getInfo(card));
-                    return true;
+                    if (button == Input.Buttons.LEFT) {
+                        myGdxGame.selectedIndex = finalIndex;
+                        selectedInfo.setText(GetCardInfo.getInfo(card));
+                        return true;
+                    }
+                    return false;
                 }
             });
             ++i;
@@ -135,6 +182,4 @@ public class UIManager {
                 + GameState.gameState.deck.getCards().size() + " Total");
         roundInfo.setText("Radius: " + GameState.gameState.map.currentRadius + " / " + GameState.gameState.map.WIDTH / 2);
     }
-
-
 }

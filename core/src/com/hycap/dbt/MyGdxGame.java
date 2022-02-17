@@ -2,27 +2,21 @@ package com.hycap.dbt;
 
 import com.badlogic.gdx.*;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.InputListener;
-import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
-import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
-import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.hycap.dbt.buildings.*;
 import com.hycap.dbt.cards.*;
 import com.hycap.dbt.enemies.*;
 
-import static com.badlogic.gdx.utils.Align.topRight;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MyGdxGame extends ApplicationAdapter {
 	SpriteBatch batch;
 
 	Integer selectedIndex;
+	List<HasRange> selectedViewTowers;
 
 	@Override
 	public void create () {
@@ -37,14 +31,37 @@ public class MyGdxGame extends ApplicationAdapter {
 
 		batch = new SpriteBatch();
 
+		selectedViewTowers = new ArrayList<>();
+
 		InputProcessor buildingProcessor = new InputAdapter() {
 			@Override
 			public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-				if (button != 0) {
+				if (button == Input.Buttons.RIGHT) {
+					selectedIndex = null;
+					selectedViewTowers = new ArrayList<>();
+					return true;
+				}
+				if (button != Input.Buttons.LEFT) {
 					return false;
 				}
 				if (GameState.gameState.blocked || GameState.gameState.animating) {
 					return false;
+				}
+				Vector3 mousePos = new Vector3(screenX, screenY, 0);
+				CameraManager.camera.unproject(mousePos);
+				int x = Math.round(mousePos.x);
+				int y = Math.round(mousePos.y);
+				Building clickedBuilding = GameState.gameState.map.getBuilding(x, y);
+				if (clickedBuilding instanceof HasRange) {
+					HasRange rangeBuilding = (HasRange) clickedBuilding;
+					if (selectedViewTowers.contains(rangeBuilding)) {
+						selectedViewTowers.remove(rangeBuilding);
+					} else {
+						selectedViewTowers.add(rangeBuilding);
+					}
+				}
+				if (clickedBuilding != null) {
+					UIManager.setSelectedInfo(clickedBuilding);
 				}
 				if (selectedIndex != null && selectedIndex >= 0 && selectedIndex < GameState.gameState.deck.getHand().size()) {
 					Card card = GameState.gameState.deck.getHandCard(selectedIndex);
@@ -52,11 +69,6 @@ public class MyGdxGame extends ApplicationAdapter {
 						return false;
 					}
 					if (card instanceof BuildingCard) {
-						Vector3 mousePos = new Vector3(screenX, screenY, 0);
-						CameraManager.camera.unproject(mousePos);
-						int x = Math.round(mousePos.x);
-						int y = Math.round(mousePos.y);
-
 						BuildingCard buildingCard = (BuildingCard)card;
 						Building newBuilding = buildingCard.getBuilding().duplicate();
 						newBuilding.setPosition(new Pair<>(x, y));
@@ -105,8 +117,19 @@ public class MyGdxGame extends ApplicationAdapter {
 						selectedIndex = keycode - Input.Keys.NUM_1;
 					}
 					return true;
-				} else if (keycode == Input.Keys.E) {
+				}
+				if (keycode == Input.Keys.E) {
 					newTurn();
+					return true;
+				}
+				return false;
+			}
+
+			@Override
+			public boolean touchUp(int screenX, int screenY, int pointer, int button) {
+				if (button == Input.Buttons.MIDDLE) {
+					CameraManager.resetCamera();
+					return true;
 				}
 				return false;
 			}
@@ -164,6 +187,11 @@ public class MyGdxGame extends ApplicationAdapter {
 					alpha = 0.4f;
 				}
 				TextureManager.draw(batch, buildingCard.getBuilding().getTexture(), x, y, alpha);
+				if (buildingCard.getBuilding() instanceof HasRange) {
+					HasRange towerBuilding = (HasRange)(buildingCard.getBuilding());
+					TextureManager.draw(batch, TextureManager.circleTexture, x, y, 0.5f,
+							towerBuilding.getRange() * 2 * TextureManager.circleSizeMult);
+				}
 			}
 		}
 		for (EnemyBase enemyBase : GameState.gameState.map.enemyBases) {
@@ -184,6 +212,12 @@ public class MyGdxGame extends ApplicationAdapter {
 				scale = ((SetRenderScale)enemy).genRenderScale();
 			}
 			TextureManager.draw(batch, enemy.getTexture(), enemy.getX(), enemy.getY(), 1, scale);
+		}
+		for (HasRange building : selectedViewTowers) {
+			int x = building.getPosition().getLeft();
+			int y = building.getPosition().getRight();
+			TextureManager.draw(batch, TextureManager.circleTexture, x, y, 0.5f,
+					building.getRange() * 2 * TextureManager.circleSizeMult);
 		}
 		for (int i = 0; i < GameState.gameState.particles.size(); ++i) {
 			boolean keep = GameState.gameState.particles.get(i).render(batch, Gdx.graphics.getDeltaTime());

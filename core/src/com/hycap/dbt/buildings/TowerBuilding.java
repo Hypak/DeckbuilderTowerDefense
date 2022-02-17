@@ -7,14 +7,17 @@ import com.hycap.dbt.enemies.Enemy;
 
 public class TowerBuilding extends AbstractTowerBuilding implements Updatable {
     public static Texture texture;
-
-    @Override
-    public void onCreate(GameState gameState) {
+    public TowerBuilding() {
         super.range = 3.5f;
         super.damage = 4;
         super.reloadTime = 1.2f;
         super.timeUntilNextReload = 0;
         super.health = 50;
+    }
+
+    @Override
+    public void onCreate(GameState gameState) {
+
         super.onCreate(gameState);
     }
 

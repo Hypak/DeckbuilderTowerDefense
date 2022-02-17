@@ -98,12 +98,15 @@ public class BuyCard implements ActionCard, BuyableCard{
         }
         cardTable.row();
 
-            final Card thisCard = this;
+        final Card thisCard = this;
         for (final BuyableCard card : cardSelection) {
             TextureRegionDrawable image = new TextureRegionDrawable(new TextureRegion(card.getTexture()));
             image.setMinSize(108, 192);
             final ImageButton imageButton = new ImageButton(image, image);
             cardTable.add(imageButton);
+            if (GameState.gameState.gold >= card.getBuyCost()) {
+                imageButton.padBottom(30);
+            }
             imageButton.addListener(new InputListener() {
                 @Override
                 public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {

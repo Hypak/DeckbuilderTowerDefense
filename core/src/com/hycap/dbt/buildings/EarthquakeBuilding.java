@@ -10,13 +10,17 @@ import com.hycap.dbt.enemies.Enemy;
 import java.util.ArrayList;
 import java.util.List;
 
-public class EarthquakeBuilding extends AttackableBuilding implements Updatable {
+public class EarthquakeBuilding extends AbstractTowerBuilding {
     public static Texture texture;
-    float health;
-    float damage;
-    float reloadTime;
-    float timeUntilNextReload;
-    float range;
+
+    public EarthquakeBuilding() {
+        super.health = 75;
+        super.damage = 8;
+        super.reloadTime = 1.8f;
+        super.timeUntilNextReload = reloadTime;
+        super.range = 1.4f;
+    }
+
     @Override
     public String getName() {
         return "Earthquake";
@@ -28,19 +32,8 @@ public class EarthquakeBuilding extends AttackableBuilding implements Updatable 
     }
 
     @Override
-    public void onCreate(GameState gameState) {
-        super.health = 75;
-        damage = 8;
-        reloadTime = 1.8f;
-        timeUntilNextReload = reloadTime;
-        range = 1.4f;
-        GameState.gameState.updatableBuildings.add(this);
-        super.onCreate(gameState);
-    }
-
-    @Override
-    public void onDestroy(GameState gameState) {
-        GameState.gameState.updatableBuildings.remove(this);
+    public float getRange() {
+        return range;
     }
 
     @Override
@@ -67,10 +60,5 @@ public class EarthquakeBuilding extends AttackableBuilding implements Updatable 
                 timeUntilNextReload = reloadTime;
             }
         }
-    }
-
-    @Override
-    public boolean keepActive() {
-        return false;
     }
 }

@@ -5,7 +5,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.hycap.dbt.*;
 import com.hycap.dbt.enemies.Enemy;
 
-public abstract class AbstractTowerBuilding extends AttackableBuilding implements Updatable {
+public abstract class AbstractTowerBuilding extends AttackableBuilding implements Updatable, HasRange {
     float damage;
     float reloadTime;
     float timeUntilNextReload;
@@ -15,6 +15,11 @@ public abstract class AbstractTowerBuilding extends AttackableBuilding implement
 
     @Override
     public abstract Texture getTexture();
+
+    @Override
+    public float getRange() {
+        return range;
+    }
 
     @Override
     public void onCreate(GameState gameState) {
