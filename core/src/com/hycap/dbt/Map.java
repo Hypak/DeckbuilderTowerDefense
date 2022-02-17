@@ -6,6 +6,10 @@ import com.hycap.dbt.enemies.BasicEnemy;
 import com.hycap.dbt.enemies.BigEnemy;
 import com.hycap.dbt.enemies.Enemy;
 import com.hycap.dbt.enemies.FastEnemy;
+import com.hycap.dbt.tasks.BuildMageTask;
+import com.hycap.dbt.tasks.BuildRiftTask;
+import com.hycap.dbt.tasks.BuildMineTask;
+import com.hycap.dbt.tasks.BuildTowerTask;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -190,10 +194,7 @@ public class Map {
             return false;
         }
         if (this.buildings[x][y] != null) {
-            if (!(this.buildings[x][y] instanceof CanBuildOver)) {
-                return false;
-            }
-            return true;
+            return this.buildings[x][y] instanceof CanBuildOver;
         }
         int xDiff = Math.abs(WIDTH / 2 - x);
         int yDiff = Math.abs(HEIGHT / 2 - x);
@@ -225,11 +226,23 @@ public class Map {
         if (!canPlaceBuilding(x, y)) {
             return false;
         }
+        Building otherBuilding = getBuilding(x, y);
+        if (otherBuilding != null && building.getName().equals(otherBuilding.getName())) {
+            return false;
+        }
         this.buildings[x][y] = building;
         Pair<Integer> coords = new Pair<>(x, y);
         this.buildingCoords.add(coords);
         if (riftCoords.contains(coords) && building instanceof AttackableBuilding) {
             GameState.gameState.baseEnergy += energyPerRift;
+            BuildRiftTask.finished = true;
+        }
+        if (building instanceof MineBuilding) {
+            BuildMineTask.finished = true;
+        } else if (building instanceof AbstractTowerBuilding) {
+            BuildTowerTask.finished = true;
+        } else if (building instanceof MageBuilding) {
+            BuildMageTask.finished = true;
         }
         return true;
     }

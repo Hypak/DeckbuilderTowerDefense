@@ -8,6 +8,7 @@ import com.hycap.dbt.Pair;
 import com.hycap.dbt.Updatable;
 import com.hycap.dbt.buildings.AttackableBuilding;
 import com.hycap.dbt.buildings.Building;
+import com.hycap.dbt.tasks.KillEnemyTask;
 
 import java.util.Random;
 
@@ -72,6 +73,7 @@ public abstract class Enemy implements Updatable {
         health -= damage;
         if (health <= 0) {
             GameState.gameState.enemies.remove(this);
+            KillEnemyTask.finished = true;
         }
     }
 

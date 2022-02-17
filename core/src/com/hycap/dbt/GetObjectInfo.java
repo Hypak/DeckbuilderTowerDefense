@@ -10,7 +10,7 @@ public class GetObjectInfo {
         string.append(card.getName()).append("\n");
         string.append(card.getInfo());
         if (card instanceof ExhaustCard) {
-            string.append("Remove after playing.");
+            string.append("\nRemove after playing.");
         }
         return string.toString();
     }

@@ -10,6 +10,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.hycap.dbt.buildings.Building;
 import com.hycap.dbt.cards.Card;
+import com.hycap.dbt.tasks.EndTurnTask;
+import com.hycap.dbt.tasks.TaskManager;
 
 public class UIManager {
     static Stage stage;
@@ -28,6 +30,9 @@ public class UIManager {
     static Table selectedInfoTable;
     static Label roundInfo;
     static Table roundInfoTable;
+
+    static Label taskInfoLabel;
+    static Table taskInfoTable;
 
     static TextButton fastForwardButton;
     static Table fastForwardTable;
@@ -86,6 +91,7 @@ public class UIManager {
             public void changed(ChangeEvent event, Actor actor) {
                 if (!GameState.gameState.blocked) {
                     myGdxGame.newTurn();
+                    EndTurnTask.finished = true;
                 }
             }
         });
@@ -122,6 +128,14 @@ public class UIManager {
         roundInfoTable.padTop(30);
         roundInfoTable.padLeft(30);
 
+        taskInfoLabel = new Label("Loading...", SkinClass.skin);
+        taskInfoTable = new Table();
+        taskInfoTable.add(taskInfoLabel);
+        taskInfoTable.setFillParent(true);
+        taskInfoTable.align(Align.topRight);
+        taskInfoTable.padTop(30);
+        taskInfoTable.padRight(30);
+
         fastForwardButton = new TextButton(">>>", SkinClass.skin);
         fastForwardButton.addListener(new ChangeListener() {
             @Override
@@ -139,6 +153,7 @@ public class UIManager {
         stage.addActor(handTable);
         stage.addActor(resourceTable);
         stage.addActor(selectedInfoTable);
+        stage.addActor(taskInfoTable);
         stage.addActor(roundInfoTable);
         stage.addActor(fastForwardTable);
     }
@@ -161,9 +176,12 @@ public class UIManager {
             image.setMinSize(108, 192);
             final ImageButton imageButton = new ImageButton(image, image);
             handTable.add(imageButton);
-            if (GameState.gameState.currentEnergy >= card.getEnergyCost()) {
+            if (myGdxGame.selectedIndex != null && myGdxGame.selectedIndex == i) {
+                imageButton.padBottom(60);
+            } else if (GameState.gameState.currentEnergy >= card.getEnergyCost()) {
                 imageButton.padBottom(30);
             }
+            imageButton.align(Align.bottom);
             final int finalIndex = i;
             imageButton.addListener(new InputListener() {
                 @Override
@@ -187,5 +205,6 @@ public class UIManager {
         cardCounts.setText(GameState.gameState.deck.getDrawPile().size() + " Cards in Draw Pile, "
                 + GameState.gameState.deck.getCards().size() + " Total");
         roundInfo.setText("Radius: " + GameState.gameState.map.currentRadius + " / " + GameState.gameState.map.WIDTH / 2);
+        taskInfoLabel.setText(TaskManager.getAllTaskDescriptions());
     }
 }

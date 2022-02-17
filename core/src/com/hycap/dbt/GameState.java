@@ -10,6 +10,7 @@ import com.hycap.dbt.buildings.CentralBuilding;
 import com.hycap.dbt.cards.Card;
 import com.hycap.dbt.enemies.BasicEnemy;
 import com.hycap.dbt.enemies.Enemy;
+import com.hycap.dbt.tasks.FastforwardTask;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -31,7 +32,7 @@ public class GameState {
     public boolean animating;
 
     public float runSpeed;
-    float fastForwardRunSpeed = 3;
+    float fastForwardRunSpeed = 4.5f;
 
     public List<Card> freeCardsPerTurn;
 
@@ -98,6 +99,7 @@ public class GameState {
         } else {
             runSpeed = 1;
         }
+        FastforwardTask.finished = true;
     }
 
     public void addHurtParticle(Vector2 position) {

@@ -11,6 +11,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.hycap.dbt.GameState;
 import com.hycap.dbt.SkinClass;
+import com.hycap.dbt.tasks.BuyNewCardTask;
 
 import java.util.*;
 import java.util.List;
@@ -118,6 +119,7 @@ public class BuyCard implements ActionCard, BuyableCard{
                     gameState.deck.discardCard(thisCard);
                     gameState.blocked = false;
                     queryTable.remove();
+                    BuyNewCardTask.finished = true;
                     return true;
                 }
             });

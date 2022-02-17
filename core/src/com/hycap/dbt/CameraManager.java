@@ -7,6 +7,8 @@ import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.ScreenUtils;
+import com.hycap.dbt.tasks.MoveTask;
+import com.hycap.dbt.tasks.ScrollTask;
 
 public class CameraManager {
     public static OrthographicCamera camera;
@@ -29,6 +31,7 @@ public class CameraManager {
                 Vector3 moveVec = new Vector3(camera.position).sub(mousePos);
                 moveVec.scl(zoomMult - 1);
                 camera.translate(moveVec);
+                ScrollTask.finished = true;
                 return true;
             }
         };
@@ -36,17 +39,21 @@ public class CameraManager {
 
     public static void update() {
         float move = Gdx.graphics.getDeltaTime() * camera.zoom * panSpeed;
-        if (Gdx.input.isKeyPressed(Input.Keys.W)) {
+        if (Gdx.input.isKeyPressed(Input.Keys.W) || Gdx.input.isKeyPressed(Input.Keys.UP)) {
             camera.position.y += move;
+            MoveTask.finished = true;
         }
-        if (Gdx.input.isKeyPressed(Input.Keys.S)) {
+        if (Gdx.input.isKeyPressed(Input.Keys.S) || Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
             camera.position.y -= move;
+            MoveTask.finished = true;
         }
-        if (Gdx.input.isKeyPressed(Input.Keys.D)) {
+        if (Gdx.input.isKeyPressed(Input.Keys.D) || Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
             camera.position.x += move;
+            MoveTask.finished = true;
         }
-        if (Gdx.input.isKeyPressed(Input.Keys.A)) {
+        if (Gdx.input.isKeyPressed(Input.Keys.A) || Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
             camera.position.x -= move;
+            MoveTask.finished = true;
         }
 
         GameState.gameState.update(Gdx.graphics.getDeltaTime());

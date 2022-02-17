@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
 import com.hycap.dbt.*;
 import com.hycap.dbt.enemies.Enemy;
+import com.hycap.dbt.tasks.KillBaseTask;
 
 public abstract class AbstractTowerBuilding extends AttackableBuilding implements Updatable, HasRange {
     float damage;
@@ -39,6 +40,7 @@ public abstract class AbstractTowerBuilding extends AttackableBuilding implement
                 GameState.gameState.addHurtParticle(new Vector2(base.position.getLeft(), base.position.getRight()));
                 GameState.gameState.map.destroyEnemyBase(base);
                 --i;
+                KillBaseTask.finished = true;
             }
         }
     }

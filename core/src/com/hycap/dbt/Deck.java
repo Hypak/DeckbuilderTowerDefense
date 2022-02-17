@@ -23,11 +23,6 @@ public class Deck {
         shuffleAll();
     }
 
-    public Deck(List<Card> cards) {
-        this.cards = cards;
-        shuffleAll();
-    }
-
     public List<Card> getHand() {
         return hand;
     }

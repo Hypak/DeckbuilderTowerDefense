@@ -9,6 +9,10 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import com.hycap.dbt.buildings.*;
 import com.hycap.dbt.cards.*;
 import com.hycap.dbt.enemies.*;
+import com.hycap.dbt.tasks.ClickBuildingTask;
+import com.hycap.dbt.tasks.EndTurnTask;
+import com.hycap.dbt.tasks.PlayActionTask;
+import com.hycap.dbt.tasks.TaskManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,7 +20,7 @@ import java.util.List;
 public class MyGdxGame extends ApplicationAdapter {
 	SpriteBatch batch;
 
-	Integer selectedIndex;
+	public Integer selectedIndex;
 	List<HasRange> selectedViewTowers;
 
 	@Override
@@ -59,7 +63,7 @@ public class MyGdxGame extends ApplicationAdapter {
 				}
 				if (clickedBuilding != null) {
 					UIManager.setSelectedInfo(clickedBuilding);
-					return true;
+					ClickBuildingTask.finished = true;
 				}
 				if (GameState.gameState.blocked || GameState.gameState.animating) {
 					return false;
@@ -90,6 +94,7 @@ public class MyGdxGame extends ApplicationAdapter {
 							if (card instanceof ExhaustCard) {
 								GameState.gameState.deck.removeCard(card);
 							}
+							PlayActionTask.finished = true;
 						}
 					}
 				}
@@ -119,16 +124,23 @@ public class MyGdxGame extends ApplicationAdapter {
 				if (GameState.gameState.blocked || GameState.gameState.animating) {
 					return false;
 				}
+				int newSelectedIndex;
 				if (keycode >= Input.Keys.NUM_0 && keycode <= Input.Keys.NUM_9) {
 					if (keycode == Input.Keys.NUM_0) {
-						selectedIndex = 9;
+						newSelectedIndex = 9;
 					} else {
-						selectedIndex = keycode - Input.Keys.NUM_1;
+						newSelectedIndex = keycode - Input.Keys.NUM_1;
+					}
+					if (selectedIndex != null && newSelectedIndex == selectedIndex) {
+						selectedIndex = null;
+					} else {
+						selectedIndex = newSelectedIndex;
 					}
 					return true;
 				}
 				if (keycode == Input.Keys.E) {
 					newTurn();
+					EndTurnTask.finished = true;
 					return true;
 				}
 
@@ -162,6 +174,7 @@ public class MyGdxGame extends ApplicationAdapter {
 	public void render () {
 		ScreenUtils.clear(230/255f, 240/255f, 255/255f, 1);
 
+		TaskManager.update();
 		CameraManager.update();
 		batch.setProjectionMatrix(CameraManager.camera.combined);
 		batch.begin();
