@@ -23,7 +23,7 @@ public class WallBuilding extends AttackableBuilding {
 
     @Override
     public void onCreate(GameState gameState) {
-        super.health = 125;
+        super.health = 175;
         super.onCreate(gameState);
     }
 
