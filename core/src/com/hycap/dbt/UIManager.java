@@ -8,6 +8,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
+import com.badlogic.gdx.utils.viewport.ExtendViewport;
+import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.hycap.dbt.buildings.Building;
 import com.hycap.dbt.cards.Card;
 import com.hycap.dbt.tasks.EndTurnTask;
@@ -73,7 +75,7 @@ public class UIManager {
     }
 
     public static void create(final MyGdxGame myGdxGame) {
-        stage = new Stage();
+        stage = new Stage(new ExtendViewport(1920, 1080));
         handTable = new Table();
         cardCounts = new Label("Loading...", SkinClass.skin);
         viewAllCards = new TextButton("View deck", SkinClass.skin);

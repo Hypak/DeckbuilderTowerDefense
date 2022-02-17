@@ -6,7 +6,6 @@ import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.utils.ScreenUtils;
 import com.hycap.dbt.tasks.MoveTask;
 import com.hycap.dbt.tasks.ScrollTask;
 
@@ -62,7 +61,7 @@ public class CameraManager {
     }
 
     public static void resetCamera() {
-        camera.position.set(GameState.gameState.map.WIDTH / 2f, GameState.gameState.map.WIDTH / 2f, 0);
+        camera.position.set(GameState.gameState.map.WIDTH / 2f, GameState.gameState.map.HEIGHT / 2f, 0);
         camera.zoom = 1;
     }
 
