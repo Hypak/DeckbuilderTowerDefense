@@ -45,6 +45,7 @@ public class TextureManager {
         Draw2Card.texture = new Texture("Draw2Card.png");
         Remove1Card.texture = new Texture("Remove1Card.png");
         BuyCard.texture = new Texture("BuyCard.png");
+        Recycle2Card.texture = new Texture("Recycle2Card.png");
 
         BasicEnemy.texture = new Texture("BasicEnemy.png");
         FastEnemy.texture = new Texture("FastEnemy.png");

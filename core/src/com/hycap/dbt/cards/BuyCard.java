@@ -32,6 +32,7 @@ public class BuyCard implements ActionCard, BuyableCard{
         cardDrawWeights.put(new WallCard(), 2f);
         cardDrawWeights.put(new SniperCard(), 1.5f);
         cardDrawWeights.put(new EarthquakeCard(), 1.5f);
+        cardDrawWeights.put(new Recycle2Card(), 1f);
     }
 
     @Override

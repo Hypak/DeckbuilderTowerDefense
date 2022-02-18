@@ -17,9 +17,9 @@ public class Deck {
         }
         cards.add(new MineCard());
         cards.add(new MineCard());
-        cards.add(new Draw2Card());
         cards.add(new BuyCard());
         cards.add(new TowerCard());
+        cards.add(new Recycle2Card());
         shuffleAll();
     }
 
