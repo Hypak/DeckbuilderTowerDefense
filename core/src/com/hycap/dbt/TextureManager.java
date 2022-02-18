@@ -3,13 +3,16 @@ package com.hycap.dbt;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.hycap.dbt.EnemyBase;
 import com.hycap.dbt.buildings.*;
 import com.hycap.dbt.cards.*;
 import com.hycap.dbt.enemies.BasicEnemy;
 import com.hycap.dbt.enemies.BigEnemy;
 import com.hycap.dbt.enemies.FastEnemy;
 import com.hycap.dbt.enemies.RangedEnemy;
+import com.hycap.dbt.projectiles.EarthquakeProjectile;
+import com.hycap.dbt.projectiles.RangedEnemyProjectile;
+import com.hycap.dbt.projectiles.SniperProjectile;
+import com.hycap.dbt.projectiles.TowerProjectile;
 
 public class TextureManager {
     public static Texture grassTexture;
@@ -49,6 +52,11 @@ public class TextureManager {
         BigEnemy.texture = new Texture("BigEnemy.png");
 
         EnemyBase.texture = new Texture("EnemyBase.png");
+
+        TowerProjectile.texture = new Texture("TowerProjectile.png");
+        SniperProjectile.texture = new Texture("TowerProjectile.png");
+        EarthquakeProjectile.texture = new Texture("TowerProjectile.png");
+        RangedEnemyProjectile.texture = new Texture("RangedEnemyProjectile.png");
 
         grassTexture = new Texture("Grass.png");
         riftTexture = new Texture("EnergyRift.png");

@@ -2,13 +2,14 @@ package com.hycap.dbt;
 
 import com.badlogic.gdx.*;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.hycap.dbt.buildings.*;
 import com.hycap.dbt.cards.*;
 import com.hycap.dbt.enemies.*;
+import com.hycap.dbt.projectiles.EnemyProjectile;
+import com.hycap.dbt.projectiles.Projectile;
 import com.hycap.dbt.tasks.ClickBuildingTask;
 import com.hycap.dbt.tasks.EndTurnTask;
 import com.hycap.dbt.tasks.PlayActionTask;
@@ -242,6 +243,16 @@ public class MyGdxGame extends ApplicationAdapter {
 			int y = building.getPosition().getRight();
 			TextureManager.draw(batch, TextureManager.circleTexture, x, y, 0.5f,
 					building.getRange() * 2 * TextureManager.circleSizeMult);
+		}
+		for (Projectile projectile : GameState.gameState.projectiles) {
+			float x = projectile.positionVector.x;
+			float y = projectile.positionVector.y;
+			TextureManager.draw(batch, projectile.getTexture(), x, y, 1, projectile.getTextureScale());
+		}
+		for (EnemyProjectile projectile : GameState.gameState.enemyProjectiles) {
+			float x = projectile.positionVector.x;
+			float y = projectile.positionVector.y;
+			TextureManager.draw(batch, projectile.getTexture(), x, y, 1, projectile.getTextureScale());
 		}
 		for (int i = 0; i < GameState.gameState.particles.size(); ++i) {
 			boolean keep = GameState.gameState.particles.get(i).render(batch, Gdx.graphics.getDeltaTime());

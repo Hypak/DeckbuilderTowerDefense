@@ -2,6 +2,7 @@ package com.hycap.dbt.buildings;
 
 import com.badlogic.gdx.math.Vector2;
 import com.hycap.dbt.GameState;
+import com.hycap.dbt.Map;
 
 public abstract class AttackableBuilding extends Building {
     public float health;

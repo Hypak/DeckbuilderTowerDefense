@@ -1,9 +1,8 @@
 package com.hycap.dbt.buildings;
 
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.math.Vector2;
 import com.hycap.dbt.*;
-import com.hycap.dbt.enemies.Enemy;
+import com.hycap.dbt.projectiles.TowerProjectile;
 
 public class TowerBuilding extends AbstractTowerBuilding implements Updatable {
     public static Texture texture;
@@ -13,6 +12,7 @@ public class TowerBuilding extends AbstractTowerBuilding implements Updatable {
         super.reloadTime = 1.2f;
         super.timeUntilNextReload = 0;
         super.health = 50;
+        super.projectileType = new TowerProjectile();
     }
 
     @Override

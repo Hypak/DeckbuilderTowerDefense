@@ -1,19 +1,15 @@
 package com.hycap.dbt;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.ParticleEmitter;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.hycap.dbt.buildings.CentralBuilding;
 import com.hycap.dbt.cards.Card;
-import com.hycap.dbt.enemies.BasicEnemy;
 import com.hycap.dbt.enemies.Enemy;
+import com.hycap.dbt.projectiles.EnemyProjectile;
+import com.hycap.dbt.projectiles.Projectile;
 import com.hycap.dbt.tasks.FastforwardTask;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 
@@ -38,6 +34,10 @@ public class GameState {
 
     public List<Enemy> enemies;
     public List<Updatable> updatableBuildings;
+    public List<Projectile> projectiles;
+    public List<Projectile> projectilesToRemove;
+    public List<EnemyProjectile> enemyProjectiles;
+    public List<EnemyProjectile> enemyProjectilesToRemove;
 
     public List<MyParticle> particles;
 
@@ -59,6 +59,8 @@ public class GameState {
 
         enemies = new ArrayList<>();
         updatableBuildings = new ArrayList<>();
+        projectiles = new ArrayList<>();
+        enemyProjectiles = new ArrayList<>();
 
         particles = new ArrayList<>();
         hitMarkTexture = new Texture("HitMark.png");
@@ -80,6 +82,8 @@ public class GameState {
 
     public void update(float deltaT) {
         if (!animating) {
+            projectiles = new ArrayList<>();
+            enemyProjectiles = new ArrayList<>();
             return;
         }
         animating = false;
@@ -87,6 +91,18 @@ public class GameState {
             e.update(deltaT * runSpeed);
             animating |= e.keepActive();
         }
+        projectilesToRemove = new ArrayList<>();
+        for (Updatable p : projectiles) {
+            p.update(deltaT * runSpeed);
+            animating |= p.keepActive();
+        }
+        projectiles.removeAll(projectilesToRemove);
+        enemyProjectilesToRemove = new ArrayList<>();
+        for (Updatable p : enemyProjectiles) {
+            p.update(deltaT * runSpeed);
+            animating |= p.keepActive();
+        }
+        enemyProjectiles.removeAll(enemyProjectilesToRemove);
         for (Enemy e : enemies) {
             e.update(deltaT * runSpeed);
             animating |= e.keepActive();

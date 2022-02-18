@@ -2,7 +2,7 @@ package com.hycap.dbt.buildings;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.hycap.dbt.GameState;
-import com.hycap.dbt.cards.SniperCard;
+import com.hycap.dbt.projectiles.SniperProjectile;
 
 public class SniperBuilding extends AbstractTowerBuilding {
     public static Texture texture;
@@ -11,6 +11,7 @@ public class SniperBuilding extends AbstractTowerBuilding {
         super.range = 7;
         super.reloadTime = 2.5f;
         super.damage = 5;
+        super.projectileType = new SniperProjectile();
     }
 
     @Override

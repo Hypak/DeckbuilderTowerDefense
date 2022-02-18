@@ -57,6 +57,7 @@ public abstract class Enemy implements Updatable {
         }
     }
 
+    @Override
     public void update(float deltaT) {
         setTargetNearest();
         Vector2 move = new Vector2(target).sub(position);

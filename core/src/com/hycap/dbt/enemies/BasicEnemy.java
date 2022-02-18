@@ -33,6 +33,7 @@ public class BasicEnemy extends Enemy {
         }
     }
 
+    @Override
     public Enemy clone() {
         return new BasicEnemy(new Vector2(this.position));
     }

@@ -3,9 +3,8 @@ package com.hycap.dbt.buildings;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
 import com.hycap.dbt.GameState;
-import com.hycap.dbt.Updatable;
-import com.hycap.dbt.cards.BuyableCard;
 import com.hycap.dbt.enemies.Enemy;
+import com.hycap.dbt.projectiles.EarthquakeProjectile;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,6 +18,7 @@ public class EarthquakeBuilding extends AbstractTowerBuilding {
         super.reloadTime = 1.8f;
         super.timeUntilNextReload = reloadTime;
         super.range = 1.4f;
+        super.projectileType = new EarthquakeProjectile();
     }
 
     @Override
@@ -60,7 +60,7 @@ public class EarthquakeBuilding extends AbstractTowerBuilding {
             }
             if (enemiesToAttack.size() > 0) {
                 for (Enemy enemy : enemiesToAttack) {
-                    enemy.attack(damage);
+                    super.attackEnemy(enemy);
                 }
                 timeUntilNextReload = reloadTime;
             }

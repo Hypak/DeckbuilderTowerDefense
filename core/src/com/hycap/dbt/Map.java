@@ -2,10 +2,7 @@ package com.hycap.dbt;
 
 import com.badlogic.gdx.math.Vector2;
 import com.hycap.dbt.buildings.*;
-import com.hycap.dbt.enemies.BasicEnemy;
-import com.hycap.dbt.enemies.BigEnemy;
-import com.hycap.dbt.enemies.Enemy;
-import com.hycap.dbt.enemies.FastEnemy;
+import com.hycap.dbt.enemies.*;
 import com.hycap.dbt.tasks.BuildMageTask;
 import com.hycap.dbt.tasks.BuildRiftTask;
 import com.hycap.dbt.tasks.BuildMineTask;

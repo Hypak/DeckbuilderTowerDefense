@@ -4,13 +4,15 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
 import com.hycap.dbt.*;
 import com.hycap.dbt.enemies.Enemy;
+import com.hycap.dbt.projectiles.Projectile;
 import com.hycap.dbt.tasks.KillBaseTask;
 
 public abstract class AbstractTowerBuilding extends AttackableBuilding implements Updatable, HasRange {
-    float damage;
-    float reloadTime;
+    public float damage;
+    public float reloadTime;
     float timeUntilNextReload;
-    float range;
+    public float range;
+    public Projectile projectileType;
 
     public abstract String getName();
 
@@ -65,10 +67,18 @@ public abstract class AbstractTowerBuilding extends AttackableBuilding implement
                 }
             }
             if (closestEnemy != null) {
-                closestEnemy.attack(damage);
+                attackEnemy(closestEnemy);
                 timeUntilNextReload = reloadTime;
             }
         }
+    }
+
+    public void attackEnemy(Enemy enemy) {
+        Projectile newProjectile = projectileType.duplicate();
+        newProjectile.positionVector = new Vector2(position.getLeft(), position.getRight());
+        newProjectile.targetEnemy = enemy;
+        newProjectile.damage = damage;
+        GameState.gameState.projectiles.add(newProjectile);
     }
 
     @Override
