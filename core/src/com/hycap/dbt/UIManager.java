@@ -48,6 +48,10 @@ public class UIManager {
         selectedInfo.setText(GetObjectInfo.getInfo(building));
     }
 
+    public static void removeSelectedInfo() {
+        selectedInfo.setText("");
+    }
+
     public static void hideAllCards() {
         showingAllCards = true;
         toggleShowCards();
@@ -93,7 +97,7 @@ public class UIManager {
         endTurnButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                if (!GameState.gameState.blocked) {
+                if (!GameState.gameState.blocked && !GameState.gameState.animating) {
                     myGdxGame.newTurn();
                     EndTurnTask.finished = true;
                 }
@@ -175,10 +179,17 @@ public class UIManager {
         handTable.setFillParent(true);
         handTable.align(Align.bottom);
 
+        float scale = 1;
+        if (GameState.gameState.deck.getHand().size() >= 20) {
+            scale = 1 / 2f;
+        }
+        if (GameState.gameState.deck.getHand().size() >= 12) {
+            scale = 3 / 4f;
+        }
         int i = 0;
         for (final Card card : GameState.gameState.deck.getHand()) {
             TextureRegionDrawable image = new TextureRegionDrawable(new TextureRegion(card.getTexture()));
-            image.setMinSize(108, 192);
+            image.setMinSize(108 * scale, 192 * scale);
             final ImageButton imageButton = new ImageButton(image, image);
             handTable.add(imageButton);
             if (myGdxGame.selectedIndex != null && myGdxGame.selectedIndex == i) {
@@ -209,7 +220,18 @@ public class UIManager {
                 + GameState.gameState.maxGold + " Gold (+" + GameState.gameState.goldPerTurn + " per turn)");
         cardCounts.setText(GameState.gameState.deck.getDrawPile().size() + " Cards in Draw Pile, "
                 + GameState.gameState.deck.getCards().size() + " Total");
-        roundInfo.setText("Radius: " + GameState.gameState.map.currentRadius + " / " + GameState.gameState.map.WIDTH / 2);
+        int radius = GameState.gameState.map.currentRadius;
+        int maxRadius = GameState.gameState.map.WIDTH / 2;
+        StringBuilder roundInfoString = new StringBuilder();
+        roundInfoString.append("Radius: ").append(Math.min(radius, maxRadius)).append(" / ").append(maxRadius);
+        if (radius + GameState.gameState.map.extraViewRadius >= maxRadius) {
+            if (radius > maxRadius) {
+                roundInfoString.append("\nExtra turns: ").append(radius - maxRadius);
+            }
+            roundInfoString.append("\nRemaining bases: ").append(GameState.gameState.map.enemyBases.size());
+        }
+        roundInfo.setText(roundInfoString.toString());
+
         taskInfoLabel.setText(TaskManager.getAllTaskDescriptions());
     }
 }

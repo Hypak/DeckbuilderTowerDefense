@@ -15,20 +15,22 @@ import java.util.Random;
 
 public class Map {
     public final int WIDTH = 101;
-    public final int HEIGHT = 101;
+    public final int HEIGHT = WIDTH;
     final Building[][] buildings;
     final List<Pair<Integer>> buildingCoords;
     final List<Pair<Integer>> riftCoords;
     int energyPerRift = 1;
     public final List<EnemyBase> enemyBases;
     final List<EnemyBase> activeEnemyBases;
-    final int enemyBaseCount = 80;
+    final int enemyBaseCount = 75;
     final int fastEnemyBaseCount = 30;
     final int bigEnemyBaseCount = 30;
-    final int noBaseRadius = 15;
-    final int noFastBaseRadius = 20;
-    final int noBigBaseRadius = 30;
-    final List<Integer> setBaseRadii;
+    final int noBaseRadius = 18;
+    final int noFastBaseRadius = 26;
+    final int noBigBaseRadius = 35;
+    final List<Pair<Integer>> setBasicBaseRadii;
+    final List<Pair<Integer>> setFastBaseRadii;
+    final List<Pair<Integer>> setBigBaseRadii;
     int currentRadius = 2;
     final int extraViewRadius = 5;
 
@@ -42,11 +44,26 @@ public class Map {
         buildingCoords.add(new Pair<>(WIDTH / 2, HEIGHT / 2));
         riftCoords = new ArrayList<>();
 
-        setBaseRadii = new ArrayList<>();
-        setBaseRadii.add(8);
-        setBaseRadii.add(10);
-        setBaseRadii.add(12);
-        setBaseRadii.add(14);
+        setBasicBaseRadii = new ArrayList<>();
+        setBasicBaseRadii.add(new Pair<>(8, 1));
+        setBasicBaseRadii.add(new Pair<>(10, 1));
+        setBasicBaseRadii.add(new Pair<>(12, 1));
+        setBasicBaseRadii.add(new Pair<>(14, 1));
+        setBasicBaseRadii.add(new Pair<>(16, 2));
+        setBasicBaseRadii.add(new Pair<>(17, 2));
+        setBasicBaseRadii.add(new Pair<>(18, 2));
+
+        setFastBaseRadii = new ArrayList<>();
+        setFastBaseRadii.add(new Pair<>(20, 1));
+        setFastBaseRadii.add(new Pair<>(22, 1));
+        setFastBaseRadii.add(new Pair<>(24, 2));
+        setFastBaseRadii.add(new Pair<>(26, 2));
+
+        setBigBaseRadii = new ArrayList<>();
+        setBigBaseRadii.add(new Pair<>(30, 1));
+        setBigBaseRadii.add(new Pair<>(32, 1));
+        setBigBaseRadii.add(new Pair<>(34, 1));
+
         enemyBases = new ArrayList<>();
         activeEnemyBases = new ArrayList<>();
         generateBases();
@@ -55,7 +72,7 @@ public class Map {
     void generateBases() {
         Random random = new Random();
         generateSetBases();
-        for (int i = 0; i < enemyBaseCount - setBaseRadii.size(); ++i) {
+        for (int i = 0; i < enemyBaseCount - setBasicBaseRadii.size(); ++i) {
             int x = random.nextInt(WIDTH);
             int y = random.nextInt(HEIGHT);
             if (Math.abs(x - WIDTH / 2) <= noBaseRadius && Math.abs(y - HEIGHT / 2) <= noBaseRadius || isEnemyBaseAt(x, y)) {
@@ -80,31 +97,44 @@ public class Map {
                 --i;
                 continue;
             }
-            generateBigEnemyBaseAt(x, y);
+            generateBigEnemyBaseAt(x, y, 1);
         }
     }
 
-    void generateSetBases() {
+    Pair<Integer> getCoordsAtRadius(int radius) {
         Random random = new Random();
-        for (int radius : setBaseRadii) {
-            boolean onX = random.nextBoolean();
-            boolean positive = random.nextBoolean();
-            int x, y;
-            if (positive) {
-                x = radius;
-            } else {
-                x = -radius;
-            }
-            y = random.nextInt(2 * radius + 1) - radius;
-            if (!onX) {
-                // Swap x and y
-                int tmp = x;
-                x = y;
-                y = tmp;
-            }
-            x += WIDTH / 2;
-            y += HEIGHT / 2;
-            generateBasicEnemyBaseAt(x, y, 1);
+        boolean onX = random.nextBoolean();
+        boolean positive = random.nextBoolean();
+        int x, y;
+        if (positive) {
+            x = radius;
+        } else {
+            x = -radius;
+        }
+        y = random.nextInt(2 * radius + 1) - radius;
+        if (!onX) {
+            // Swap x and y
+            int tmp = x;
+            x = y;
+            y = tmp;
+        }
+        x += WIDTH / 2;
+        y += HEIGHT / 2;
+        return new Pair<>(x, y);
+    }
+
+    void generateSetBases() {
+        for (Pair<Integer> radiusCount : setBasicBaseRadii) {
+            Pair<Integer> coords = getCoordsAtRadius(radiusCount.getLeft());
+            generateBasicEnemyBaseAt(coords.getLeft(), coords.getRight(), radiusCount.getRight());
+        }
+        for (Pair<Integer> radiusCount : setFastBaseRadii) {
+            Pair<Integer> coords = getCoordsAtRadius(radiusCount.getLeft());
+            generateFastEnemyBaseAt(coords.getLeft(), coords.getRight(), radiusCount.getRight());
+        }
+        for (Pair<Integer> radiusCount : setBigBaseRadii) {
+            Pair<Integer> coords = getCoordsAtRadius(radiusCount.getLeft());
+            generateBigEnemyBaseAt(coords.getLeft(), coords.getRight(), radiusCount.getRight());
         }
     }
 
@@ -126,9 +156,11 @@ public class Map {
         enemyBases.add(newBase);
     }
 
-    void generateBigEnemyBaseAt(int x, int y) {
+    void generateBigEnemyBaseAt(int x, int y, int spawnCount) {
         List<Enemy> enemySpawns = new ArrayList<>();
-        enemySpawns.add(new BigEnemy(new Vector2(x, y)));
+        for (int i = 0; i < spawnCount; ++i) {
+            enemySpawns.add(new BigEnemy(new Vector2(x, y)));
+        }
         EnemyBase newBase = new EnemyBase(new Pair<>(x, y), enemySpawns, 2f);
         enemyBases.add(newBase);
     }
@@ -193,11 +225,10 @@ public class Map {
         if (this.buildings[x][y] != null) {
             return this.buildings[x][y] instanceof CanBuildOver;
         }
-        int xDiff = Math.abs(WIDTH / 2 - x);
-        int yDiff = Math.abs(HEIGHT / 2 - x);
-        if (Math.max(xDiff, yDiff) > currentRadius) {
+        if (!isInRadius(x, y)) {
             return false;
         }
+
         Pair<Integer> position = new Pair<>(x, y);
         for (EnemyBase base : enemyBases) {
             if (base.position.equals(position)) {

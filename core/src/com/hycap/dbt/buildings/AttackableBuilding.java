@@ -7,6 +7,7 @@ import com.hycap.dbt.Map;
 public abstract class AttackableBuilding extends Building {
     public float health;
     public float maxHealth;
+    boolean destroyed = false;
 
     @Override
     public void onCreate(GameState gameState) {
@@ -21,9 +22,10 @@ public abstract class AttackableBuilding extends Building {
     public void attack(float damage) {
         health -= damage;
         GameState.gameState.addHurtParticle(new Vector2(position.getLeft(), position.getRight()));
-        if (health < 0) {
+        if (health < 0 && !destroyed) {
             GameState.gameState.map.removeBuilding(this);
             onDestroy(GameState.gameState);
+            destroyed = true;  // Prevent triggering twice
         }
     }
 }

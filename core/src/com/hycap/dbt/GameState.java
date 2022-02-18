@@ -76,7 +76,7 @@ public class GameState {
         animating = true;
         deck.drawNewHand(baseHandSize);
         for (Card card : freeCardsPerTurn) {
-            deck.getHand().add(card.duplicate());
+            deck.addToHand(card);
         }
     }
 

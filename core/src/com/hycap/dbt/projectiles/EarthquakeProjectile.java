@@ -6,7 +6,7 @@ public class EarthquakeProjectile extends Projectile {
     public static Texture texture;
 
     public EarthquakeProjectile() {
-        super.projectileRadius = 0.25f;
+        super.projectileRadius = 0.4f;
         super.projectileSpeed = 4;
     }
 

@@ -2,6 +2,7 @@ package com.hycap.dbt;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
+import com.hycap.dbt.enemies.BigEnemy;
 import com.hycap.dbt.enemies.Enemy;
 import com.hycap.dbt.enemies.FastEnemy;
 import com.hycap.dbt.enemies.RangedEnemy;
@@ -19,6 +20,7 @@ public class EnemyBase implements Updatable {
     int turnsUntilNextSpawn;
     int turnsUntilUpgrade;
     int baseTurnsUntilUpgrade;
+    int addBigAtRadius = 40;
 
     public EnemyBase(Pair<Integer> position, List<Enemy> enemySpawns, float spawnDelay) {
         this.position = position;
@@ -38,6 +40,9 @@ public class EnemyBase implements Updatable {
                 enemySpawns.add(new FastEnemy(new Vector2(position.getLeft(), position.getRight())));
             } else {
                 enemySpawns.add(0, new RangedEnemy(new Vector2(position.getLeft(), position.getRight())));
+            }
+            if (GameState.gameState.map.currentRadius >= addBigAtRadius) {
+                enemySpawns.add(0, new BigEnemy(new Vector2(position.getLeft(), position.getRight())));
             }
             turnsUntilUpgrade = baseTurnsUntilUpgrade;
         }

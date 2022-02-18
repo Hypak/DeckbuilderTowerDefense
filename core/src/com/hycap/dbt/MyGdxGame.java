@@ -43,6 +43,7 @@ public class MyGdxGame extends ApplicationAdapter {
 			public boolean touchUp(int screenX, int screenY, int pointer, int button) {
 				if (button == Input.Buttons.RIGHT) {
 					selectedIndex = null;
+					UIManager.removeSelectedInfo();
 					selectedViewTowers = new ArrayList<>();
 					return true;
 				}
@@ -134,8 +135,12 @@ public class MyGdxGame extends ApplicationAdapter {
 					}
 					if (selectedIndex != null && newSelectedIndex == selectedIndex) {
 						selectedIndex = null;
+						UIManager.removeSelectedInfo();
 					} else {
 						selectedIndex = newSelectedIndex;
+						if (GameState.gameState.deck.getHand().size() > selectedIndex) {
+							UIManager.setSelectedInfo(GameState.gameState.deck.getHandCard(selectedIndex));
+						}
 					}
 					return true;
 				}
