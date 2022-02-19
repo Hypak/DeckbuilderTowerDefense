@@ -278,7 +278,7 @@ public class UIManager {
         Label gameOver = new Label("Game Over", SkinClass.skin);
         table.add(gameOver).row();
 
-        GameStats stats = GameState.gameState.gameStats;
+        GameStatistics stats = GameState.gameState.gameStats;
         Table statsTable = new Table();
         Label radiusLabel = new Label(roundInfo.getText(), SkinClass.skin);
         Label basesDestroyed = new Label("Bases killed: " + stats.enemyBasesDestroyed +

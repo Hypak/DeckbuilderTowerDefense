@@ -188,8 +188,7 @@ public class Map {
         riftCoords.add(new Pair<>(base.position.getLeft(), base.position.getRight()));
     }
 
-    public boolean newTurn() {
-        boolean gameOver = true;
+    public void newTurn() {
         ++currentRadius;
         GameState.gameState.gameStats.setRadius(currentRadius);
         for (EnemyBase base : enemyBases) {
@@ -203,12 +202,10 @@ public class Map {
         for (Pair<Integer> buildingCoord : buildingCoords) {
             Building building = buildings[buildingCoord.getLeft()][buildingCoord.getRight()];
             if (building instanceof AttackableBuilding) {
-                gameOver = false;
                 AttackableBuilding attackableBuilding = (AttackableBuilding)building;
                 attackableBuilding.health = attackableBuilding.maxHealth;
             }
         }
-        return gameOver;
     }
 
 

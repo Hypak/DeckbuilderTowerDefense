@@ -18,7 +18,7 @@ public class GameState {
     public GameScreen.Difficulty difficulty;
     public Map map;
     public Deck deck;
-    public GameStats gameStats;
+    public GameStatistics gameStats;
     public int baseHandSize;
     public int baseEnergy;
     public int currentEnergy;
@@ -68,7 +68,7 @@ public class GameState {
         deck = new Deck();
         currentEnergy = baseEnergy;
 
-        gameStats = new GameStats(this);
+        gameStats = new GameStatistics(this);
 
         freeCardsPerTurn = new ArrayList<>();
 
@@ -82,11 +82,7 @@ public class GameState {
     }
 
     public void newTurn() {
-        if (map.newTurn()) {  // If game-over
-            UIManager.showEndGameUI();
-            return;
-        }
-
+        map.newTurn();
         currentEnergy = baseEnergy;
         gold += goldPerTurn;
         if (gold > maxGold) {
@@ -100,7 +96,7 @@ public class GameState {
     }
 
     public void update(float deltaT) {
-        if (map.getBuildingCoords().size() < 1) {
+        if (baseEnergy <= 0) {
             UIManager.showEndGameUI();
             return;
         }

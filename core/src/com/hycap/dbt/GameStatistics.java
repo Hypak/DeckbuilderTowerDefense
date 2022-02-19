@@ -1,6 +1,6 @@
 package com.hycap.dbt;
 
-public class GameStats {
+public class GameStatistics {
     int radius;
     int maxRadius;
     int enemyBasesDestroyed;
@@ -60,7 +60,7 @@ public class GameStats {
     }
 
 
-    public GameStats(GameState gameState) {
+    public GameStatistics(GameState gameState) {
         radius = gameState.map.currentRadius;
         maxRadius = gameState.map.SIZE / 2;
         enemyBasesDestroyed = 0;

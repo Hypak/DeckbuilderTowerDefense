@@ -1,9 +1,7 @@
 package com.hycap.dbt.buildings;
 
 import com.badlogic.gdx.graphics.Texture;
-import com.hycap.dbt.EnemyBase;
 import com.hycap.dbt.GameState;
-import com.hycap.dbt.GameStats;
 import com.hycap.dbt.Updatable;
 import com.hycap.dbt.enemies.Enemy;
 
