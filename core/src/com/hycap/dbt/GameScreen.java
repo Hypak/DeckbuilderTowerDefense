@@ -38,6 +38,7 @@ public class GameScreen extends ScreenAdapter {
 		GameState.gameState = new GameState(difficulty);
 		CameraManager.create();
 		UIManager.create(this);
+		UIManager.showingMenu = false;
 
 		TextureManager.setTextures();
 
