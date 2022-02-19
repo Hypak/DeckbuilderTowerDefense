@@ -39,6 +39,8 @@ public class TextureManager {
         TowerCard.texture = new Texture("TowerCard.png");
         WallBuilding.texture = new Texture("WallBuilding.png");
         WallCard.texture = new Texture("WallCard.png");
+        SpikesBuilding.texture = new Texture("SpikesBuilding.png");
+        SpikesCard.texture = new Texture("SpikesCard.png");
         SniperBuilding.texture = new Texture("SniperBuilding.png");
         SniperCard.texture = new Texture("SniperCard.png");
         EarthquakeBuilding.texture = new Texture("EarthquakeBuilding.png");

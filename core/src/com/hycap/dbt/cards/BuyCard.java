@@ -35,6 +35,7 @@ public class BuyCard implements ActionCard, BuyableCard{
         cardDrawWeights.put(new EarthquakeCard(), 1.5f);
         cardDrawWeights.put(new Recycle2Card(), 1f);
         cardDrawWeights.put(new LibraryCard(), 1.5f);
+        cardDrawWeights.put(new SpikesCard(), 2f);
 
         cardRemainingCount = new HashMap<>();
         cardRemainingCount.put(new LibraryCard(), 3);
