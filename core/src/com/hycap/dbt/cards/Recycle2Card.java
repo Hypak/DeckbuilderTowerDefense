@@ -27,7 +27,7 @@ public class Recycle2Card implements ActionCard, BuyableCard {
         final Table queryTable = new Table();
         queryTable.setFillParent(true);
 
-        Label label = new Label("Pick 2 cards to remove", SkinClass.skin);
+        Label label = new Label("Pick 2 cards to discard", SkinClass.skin);
         queryTable.add(label).row();
 
         final Table cardTable = new Table();

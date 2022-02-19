@@ -19,7 +19,8 @@ import java.util.List;
 public class BuyCard implements ActionCard, BuyableCard{
     public static Texture texture;
     public static Map<BuyableCard, Float> cardDrawWeights;
-    static int shownCardAmount = 3;
+    public static Map<BuyableCard, Integer> cardRemainingCount;
+    public static int shownCardAmount = 3;
     static {
         cardDrawWeights = new HashMap<>();
         cardDrawWeights.put(new CoffersCard(), 2f);
@@ -33,6 +34,10 @@ public class BuyCard implements ActionCard, BuyableCard{
         cardDrawWeights.put(new SniperCard(), 1.5f);
         cardDrawWeights.put(new EarthquakeCard(), 1.5f);
         cardDrawWeights.put(new Recycle2Card(), 1f);
+        cardDrawWeights.put(new LibraryCard(), 1.5f);
+
+        cardRemainingCount = new HashMap<>();
+        cardRemainingCount.put(new LibraryCard(), 3);
     }
 
     @Override
@@ -68,13 +73,38 @@ public class BuyCard implements ActionCard, BuyableCard{
             for (Map.Entry<BuyableCard, Float> entry : tempWeights.entrySet()) {
                 r -= entry.getValue();
                 if (r <= 0) {
-                    newCards.add((BuyableCard) entry.getKey().duplicate());
+                    BuyableCard newCard = (BuyableCard) entry.getKey().duplicate();
+                    if (!canBuy(newCard)) {
+                        --i;
+                        break;
+                    }
+                    newCards.add(newCard);
                     tempWeights.remove(entry.getKey());
                     break;
                 }
             }
         }
         return newCards;
+    }
+
+    void decreaseRemainingCount(Card card) {
+        for (BuyableCard key : cardRemainingCount.keySet()) {
+            if (key.getClass().equals(card.getClass())) {
+                cardRemainingCount.put(key, cardRemainingCount.get(key) - 1);
+            }
+        }
+    }
+
+    boolean canBuy(Card card) {
+        for (BuyableCard key : cardRemainingCount.keySet()) {
+            if (key.getClass().equals(card.getClass())) {
+                int countLeft = cardRemainingCount.get(key);
+                if (countLeft <= 0) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
     @Override
@@ -120,6 +150,7 @@ public class BuyCard implements ActionCard, BuyableCard{
                     gameState.deck.discardCard(thisCard);
                     gameState.blocked = false;
                     queryTable.remove();
+                    decreaseRemainingCount(card);
                     BuyNewCardTask.finished = true;
                     return true;
                 }

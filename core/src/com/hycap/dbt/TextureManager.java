@@ -33,6 +33,8 @@ public class TextureManager {
         MageCard.texture = new Texture("MageCard.png");
         PaverBuilding.texture = new Texture("PaverBuilding.png");
         PaverCard.texture = new Texture("PaverCard.png");
+        LibraryBuilding.texture = new Texture("LibraryBuilding.png");
+        LibraryCard.texture = new Texture("LibraryCard.png");
         TowerBuilding.texture = new Texture("TowerBuilding.png");
         TowerCard.texture = new Texture("TowerCard.png");
         WallBuilding.texture = new Texture("WallBuilding.png");
