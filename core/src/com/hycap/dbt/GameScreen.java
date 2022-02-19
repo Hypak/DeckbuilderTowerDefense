@@ -3,7 +3,6 @@ package com.hycap.dbt;
 import com.badlogic.gdx.*;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.hycap.dbt.buildings.*;
 import com.hycap.dbt.cards.*;
@@ -18,17 +17,25 @@ import com.hycap.dbt.tasks.TaskManager;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MyGdxGame extends ApplicationAdapter {
+public class GameScreen extends ScreenAdapter {
+	enum Difficulty {
+		EASY,
+		NORMAL,
+		HARD
+	}
+	public Difficulty difficulty;
 	SpriteBatch batch;
 
 	public Integer selectedIndex;
 	List<HasRange> selectedViewTowers;
 
-	@Override
-	public void create () {
-		SkinClass.skin = new Skin(Gdx.files.internal("gdx-skins-master/plain-james/skin/plain-james-ui.json"));
+	public GameScreen(Difficulty difficulty) {
+		this.difficulty = difficulty;
+	}
 
-		GameState.gameState = new GameState();
+	@Override
+	public void show() {
+		GameState.gameState = new GameState(difficulty);
 		CameraManager.create();
 		UIManager.create(this);
 
@@ -117,6 +124,7 @@ public class MyGdxGame extends ApplicationAdapter {
 				}
 				if (keycode == Input.Keys.ESCAPE) {
 					UIManager.hideAllCards();
+					UIManager.toggleMenuButton();
 					selectedViewTowers = new ArrayList<>();
 					selectedIndex = null;
 				}
@@ -177,7 +185,7 @@ public class MyGdxGame extends ApplicationAdapter {
 	}
 
 	@Override
-	public void render () {
+	public void render(float deltaT) {
 		ScreenUtils.clear(230/255f, 240/255f, 255/255f, 1);
 
 		TaskManager.update();
@@ -185,8 +193,8 @@ public class MyGdxGame extends ApplicationAdapter {
 		batch.setProjectionMatrix(CameraManager.camera.combined);
 		batch.begin();
 
-		for (int x = 0; x < GameState.gameState.map.WIDTH; ++x) {
-			for (int y = 0; y < GameState.gameState.map.HEIGHT; ++y) {
+		for (int x = 0; x < GameState.gameState.map.SIZE; ++x) {
+			for (int y = 0; y < GameState.gameState.map.SIZE; ++y) {
 				Building building = GameState.gameState.map.getBuilding(x, y);
 				if (building == null) {
 					if (!GameState.gameState.map.isEnemyBaseAt(x, y)) {

@@ -43,6 +43,7 @@ public abstract class AbstractTowerBuilding extends AttackableBuilding implement
                 GameState.gameState.map.destroyEnemyBase(base);
                 --i;
                 KillBaseTask.finished = true;
+                GameState.gameState.gameStats.incrementEnemyBasesDestroyed();
             }
         }
     }

@@ -6,11 +6,9 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.*;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
-import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.hycap.dbt.buildings.Building;
 import com.hycap.dbt.cards.Card;
 import com.hycap.dbt.tasks.EndTurnTask;
@@ -39,6 +37,12 @@ public class UIManager {
 
     static TextButton fastForwardButton;
     static Table fastForwardTable;
+
+    static boolean showingMenu = false;
+    static TextButton menuButton;
+    static TextButton cancelMenuButton;
+    static Table menuTable;
+    static boolean showingEndGameUI = false;
 
     public static void setSelectedInfo(Card card) {
         selectedInfo.setText(GetObjectInfo.getInfo(card));
@@ -79,7 +83,7 @@ public class UIManager {
         }
     }
 
-    public static void create(final MyGdxGame myGdxGame) {
+    public static void create(final GameScreen gameScreen) {
         stage = new Stage(new ExtendViewport(1920, 1080));
         handTable = new Table();
         cardCounts = new Label("Loading...", SkinClass.skin);
@@ -98,7 +102,7 @@ public class UIManager {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 if (!GameState.gameState.blocked && !GameState.gameState.animating) {
-                    myGdxGame.newTurn();
+                    gameScreen.newTurn();
                     EndTurnTask.finished = true;
                 }
             }
@@ -157,6 +161,26 @@ public class UIManager {
         fastForwardTable.setFillParent(true);
         fastForwardTable.align(Align.top);
 
+        menuButton = new TextButton("Menu", SkinClass.skin);
+        menuButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                DBTGame.game.setScreen(new TitleScreen());
+            }
+        });
+        cancelMenuButton = new TextButton("Back to game", SkinClass.skin);
+        cancelMenuButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                toggleMenuButton();
+            }
+        });
+        menuTable = new Table();
+        menuTable.add(menuButton).row();
+        menuTable.add(cancelMenuButton);
+        menuTable.setFillParent(true);
+        menuTable.align(Align.center);
+
         stage.addActor(cardTable);
         stage.addActor(handTable);
         stage.addActor(resourceTable);
@@ -166,15 +190,15 @@ public class UIManager {
         stage.addActor(fastForwardTable);
     }
 
-    public static void render(MyGdxGame myGdxGame) {
-        updateHandTable(myGdxGame);
+    public static void render(GameScreen gameScreen) {
+        updateHandTable(gameScreen);
         updateDisplays();
 
         stage.act(Gdx.graphics.getDeltaTime());
         stage.draw();
     }
 
-    public static void updateHandTable(final MyGdxGame myGdxGame) {
+    public static void updateHandTable(final GameScreen gameScreen) {
         handTable.reset();
         handTable.setFillParent(true);
         handTable.align(Align.bottom);
@@ -192,7 +216,7 @@ public class UIManager {
             image.setMinSize(108 * scale, 192 * scale);
             final ImageButton imageButton = new ImageButton(image, image);
             handTable.add(imageButton);
-            if (myGdxGame.selectedIndex != null && myGdxGame.selectedIndex == i) {
+            if (gameScreen.selectedIndex != null && gameScreen.selectedIndex == i) {
                 imageButton.padBottom(60);
             } else if (GameState.gameState.currentEnergy >= card.getEnergyCost()) {
                 imageButton.padBottom(30);
@@ -203,7 +227,7 @@ public class UIManager {
                 @Override
                 public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                     if (button == Input.Buttons.LEFT) {
-                        myGdxGame.selectedIndex = finalIndex;
+                        gameScreen.selectedIndex = finalIndex;
                         setSelectedInfo(card);
                         return true;
                     }
@@ -221,7 +245,7 @@ public class UIManager {
         cardCounts.setText(GameState.gameState.deck.getDrawPile().size() + " Cards in Draw Pile, "
                 + GameState.gameState.deck.getCards().size() + " Total");
         int radius = GameState.gameState.map.currentRadius;
-        int maxRadius = GameState.gameState.map.WIDTH / 2;
+        int maxRadius = GameState.gameState.map.SIZE / 2;
         StringBuilder roundInfoString = new StringBuilder();
         roundInfoString.append("Radius: ").append(Math.min(radius, maxRadius)).append(" / ").append(maxRadius);
         if (radius + GameState.gameState.map.extraViewRadius >= maxRadius) {
@@ -233,5 +257,50 @@ public class UIManager {
         roundInfo.setText(roundInfoString.toString());
 
         taskInfoLabel.setText(TaskManager.getAllTaskDescriptions());
+    }
+
+    public static void toggleMenuButton() {
+        if (showingMenu) {
+            showingMenu = false;
+            menuTable.remove();
+        } else {
+            showingMenu = true;
+            stage.addActor(menuTable);
+        }
+    }
+
+    public static void showEndGameUI() {
+        if (showingEndGameUI) {
+            return;
+        }
+        showingEndGameUI = true;
+        Table table = new Table();
+        Label gameOver = new Label("Game Over", SkinClass.skin);
+        table.add(gameOver).row();
+
+        GameStats stats = GameState.gameState.gameStats;
+        Table statsTable = new Table();
+        Label radiusLabel = new Label(roundInfo.getText(), SkinClass.skin);
+        Label basesDestroyed = new Label("Bases killed: " + stats.enemyBasesDestroyed +
+                " / " + stats.totalEnemyBases, SkinClass.skin);
+        Label buildingsPlaced = new Label("Buildings placed: " + stats.buildingsPlaced, SkinClass.skin);
+        Label cardsBought = new Label("Cards bought: " + stats.cardsBought, SkinClass.skin);
+        statsTable.add(radiusLabel).row();
+        statsTable.add(basesDestroyed).row();
+        statsTable.add(buildingsPlaced).row();
+        statsTable.add(cardsBought).row();
+        statsTable.padRight(30);
+
+        Button mainMenuButton = new TextButton("Menu", SkinClass.skin);
+        mainMenuButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                DBTGame.game.setScreen(new TitleScreen());
+            }
+        });
+        table.add(statsTable, mainMenuButton);
+        table.setFillParent(true);
+        table.align(Align.center);
+        stage.addActor(table);
     }
 }

@@ -7,6 +7,7 @@ import com.hycap.dbt.Pair;
 public class CentralBuilding extends AttackableBuilding {
     public static Texture texture;
     public static int goldCapacity = 3;
+    public static int energyPerTurn = 3;
 
     @Override
     public String getName() {
@@ -26,6 +27,8 @@ public class CentralBuilding extends AttackableBuilding {
     @Override
     public void onCreate(GameState gameState) {
         super.health = 100;
+        gameState.baseEnergy += energyPerTurn;
+        gameState.maxGold += goldCapacity;
         super.onCreate(gameState);
     }
 
@@ -34,6 +37,10 @@ public class CentralBuilding extends AttackableBuilding {
         gameState.maxGold -= goldCapacity;
         if (gameState.gold > gameState.maxGold) {
             gameState.gold = gameState.maxGold;
+        }
+        gameState.baseEnergy -= energyPerTurn;
+        if (gameState.currentEnergy > gameState.baseEnergy) {
+            gameState.currentEnergy = gameState.baseEnergy;
         }
     }
 

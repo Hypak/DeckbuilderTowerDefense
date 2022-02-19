@@ -152,6 +152,7 @@ public class BuyCard implements ActionCard, BuyableCard{
                     queryTable.remove();
                     decreaseRemainingCount(card);
                     BuyNewCardTask.finished = true;
+                    gameState.gameStats.incrementCardsBought();
                     return true;
                 }
             });

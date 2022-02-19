@@ -61,7 +61,7 @@ public class CameraManager {
     }
 
     public static void resetCamera() {
-        camera.position.set(GameState.gameState.map.WIDTH / 2f, GameState.gameState.map.HEIGHT / 2f, 0);
+        camera.position.set(GameState.gameState.map.SIZE / 2f, GameState.gameState.map.SIZE / 2f, 0);
         camera.zoom = 1;
     }
 

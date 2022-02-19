@@ -15,8 +15,10 @@ import java.util.Random;
 
 public class GameState {
     public static GameState gameState;
+    public GameScreen.Difficulty difficulty;
     public Map map;
     public Deck deck;
+    public GameStats gameStats;
     public int baseHandSize;
     public int baseEnergy;
     public int currentEnergy;
@@ -43,17 +45,30 @@ public class GameState {
 
     public Texture hitMarkTexture;
 
-    public GameState() {
-        map = new Map();
-        deck = new Deck();
-        baseHandSize = 6;
-        baseEnergy = 3;
-        currentEnergy = baseEnergy;
+    public GameState(GameScreen.Difficulty difficulty) {
+        this.difficulty = difficulty;
+        if (difficulty == GameScreen.Difficulty.EASY) {
+            baseHandSize = 6;
+            CentralBuilding.energyPerTurn = 4;
+        } else if (difficulty == GameScreen.Difficulty.NORMAL) {
+            baseHandSize = 6;
+            CentralBuilding.energyPerTurn = 3;
+        } else if (difficulty == GameScreen.Difficulty.HARD) {
+            baseHandSize = 5;
+            CentralBuilding.energyPerTurn = 3;
+        }
+        baseEnergy = 0;
         blocked = false;
         gold = 0;
-        maxGold = CentralBuilding.goldCapacity;
+        maxGold = 0;
         goldPerTurn = 0;
         runSpeed = 1;
+
+        map = new Map(this, difficulty);
+        deck = new Deck();
+        currentEnergy = baseEnergy;
+
+        gameStats = new GameStats(this);
 
         freeCardsPerTurn = new ArrayList<>();
 
@@ -67,7 +82,11 @@ public class GameState {
     }
 
     public void newTurn() {
-        map.newTurn();
+        if (map.newTurn()) {  // If game-over
+            UIManager.showEndGameUI();
+            return;
+        }
+
         currentEnergy = baseEnergy;
         gold += goldPerTurn;
         if (gold > maxGold) {
@@ -81,6 +100,13 @@ public class GameState {
     }
 
     public void update(float deltaT) {
+        if (map.getBuildingCoords().size() < 1) {
+            UIManager.showEndGameUI();
+            return;
+        }
+        if (UIManager.showingMenu) {
+            return;
+        }
         if (!animating) {
             projectiles = new ArrayList<>();
             enemyProjectiles = new ArrayList<>();

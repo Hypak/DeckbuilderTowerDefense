@@ -8,23 +8,27 @@ import com.hycap.dbt.tasks.BuildRiftTask;
 import com.hycap.dbt.tasks.BuildMineTask;
 import com.hycap.dbt.tasks.BuildTowerTask;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 public class Map {
-    public final int WIDTH = 101;
-    public final int HEIGHT = WIDTH;
+    public static java.util.Map<GameScreen.Difficulty, Integer> difficultyRadius;
+    static {
+        difficultyRadius = new HashMap<>();
+        difficultyRadius.put(GameScreen.Difficulty.EASY, 35);
+        difficultyRadius.put(GameScreen.Difficulty.NORMAL, 50);
+        difficultyRadius.put(GameScreen.Difficulty.HARD, 60);
+    }
+
+    public final int SIZE;
     final Building[][] buildings;
     final List<Pair<Integer>> buildingCoords;
     final List<Pair<Integer>> riftCoords;
     int energyPerRift = 1;
     public final List<EnemyBase> enemyBases;
     final List<EnemyBase> activeEnemyBases;
-    final int enemyBaseCount = 75;
-    final int fastEnemyBaseCount = 30;
-    final int bigEnemyBaseCount = 30;
+    final int enemyBaseCount;
+    final int fastEnemyBaseCount;
+    final int bigEnemyBaseCount;
     final int noBaseRadius = 18;
     final int noFastBaseRadius = 26;
     final int noBigBaseRadius = 35;
@@ -34,14 +38,28 @@ public class Map {
     int currentRadius = 2;
     final int extraViewRadius = 5;
 
-    public Map() {
-        buildings = new Building[WIDTH][HEIGHT];
+    public Map(GameState gameState, GameScreen.Difficulty difficulty) {
+        this.SIZE = 2 * difficultyRadius.get(difficulty) + 1;
+        if (difficulty == GameScreen.Difficulty.EASY) {
+            enemyBaseCount = 30;
+            fastEnemyBaseCount = 8;
+            bigEnemyBaseCount = 0;
+        } else if (difficulty == GameScreen.Difficulty.NORMAL) {
+            enemyBaseCount = 75;
+            fastEnemyBaseCount = 30;
+            bigEnemyBaseCount = 30;
+        } else {
+            enemyBaseCount = 115;
+            fastEnemyBaseCount = 45;
+            bigEnemyBaseCount = 45;
+        }
+        buildings = new Building[SIZE][SIZE];
         Building centralBuilding = new CentralBuilding();
-        centralBuilding.setPosition(new Pair<>(WIDTH / 2, HEIGHT / 2));
-        centralBuilding.onCreate(GameState.gameState);
-        buildings[WIDTH / 2][HEIGHT / 2] = centralBuilding;
+        centralBuilding.setPosition(new Pair<>(SIZE / 2, SIZE / 2));
+        centralBuilding.onCreate(gameState);
+        buildings[SIZE / 2][SIZE / 2] = centralBuilding;
         buildingCoords = new LinkedList<>();
-        buildingCoords.add(new Pair<>(WIDTH / 2, HEIGHT / 2));
+        buildingCoords.add(new Pair<>(SIZE / 2, SIZE / 2));
         riftCoords = new ArrayList<>();
 
         setBasicBaseRadii = new ArrayList<>();
@@ -73,27 +91,27 @@ public class Map {
         Random random = new Random();
         generateSetBases();
         for (int i = 0; i < enemyBaseCount - setBasicBaseRadii.size(); ++i) {
-            int x = random.nextInt(WIDTH);
-            int y = random.nextInt(HEIGHT);
-            if (Math.abs(x - WIDTH / 2) <= noBaseRadius && Math.abs(y - HEIGHT / 2) <= noBaseRadius || isEnemyBaseAt(x, y)) {
+            int x = random.nextInt(SIZE);
+            int y = random.nextInt(SIZE);
+            if (Math.abs(x - SIZE / 2) <= noBaseRadius && Math.abs(y - SIZE / 2) <= noBaseRadius || isEnemyBaseAt(x, y)) {
                 --i;
                 continue;
             }
             generateBasicEnemyBaseAt(x, y, 2);
         }
         for (int i = 0; i < fastEnemyBaseCount; ++i) {
-            int x = random.nextInt(WIDTH);
-            int y = random.nextInt(HEIGHT);
-            if (Math.abs(x - WIDTH / 2) <= noFastBaseRadius && Math.abs(y - HEIGHT / 2) <= noFastBaseRadius || isEnemyBaseAt(x, y)) {
+            int x = random.nextInt(SIZE);
+            int y = random.nextInt(SIZE);
+            if (Math.abs(x - SIZE / 2) <= noFastBaseRadius && Math.abs(y - SIZE / 2) <= noFastBaseRadius || isEnemyBaseAt(x, y)) {
                 --i;
                 continue;
             }
             generateFastEnemyBaseAt(x, y, 2);
         }
         for (int i = 0; i < bigEnemyBaseCount; ++i) {
-            int x = random.nextInt(WIDTH);
-            int y = random.nextInt(HEIGHT);
-            if (Math.abs(x - WIDTH / 2) <= noBigBaseRadius && Math.abs(y - HEIGHT / 2) <= noBigBaseRadius || isEnemyBaseAt(x, y)) {
+            int x = random.nextInt(SIZE);
+            int y = random.nextInt(SIZE);
+            if (Math.abs(x - SIZE / 2) <= noBigBaseRadius && Math.abs(y - SIZE / 2) <= noBigBaseRadius || isEnemyBaseAt(x, y)) {
                 --i;
                 continue;
             }
@@ -118,8 +136,8 @@ public class Map {
             x = y;
             y = tmp;
         }
-        x += WIDTH / 2;
-        y += HEIGHT / 2;
+        x += SIZE / 2;
+        y += SIZE / 2;
         return new Pair<>(x, y);
     }
 
@@ -170,8 +188,10 @@ public class Map {
         riftCoords.add(new Pair<>(base.position.getLeft(), base.position.getRight()));
     }
 
-    public void newTurn() {
+    public boolean newTurn() {
+        boolean gameOver = true;
         ++currentRadius;
+        GameState.gameState.gameStats.setRadius(currentRadius);
         for (EnemyBase base : enemyBases) {
             if (isInRadius(base.position.getLeft(), base.position.getRight())) {
                 base.startTurn();
@@ -183,21 +203,24 @@ public class Map {
         for (Pair<Integer> buildingCoord : buildingCoords) {
             Building building = buildings[buildingCoord.getLeft()][buildingCoord.getRight()];
             if (building instanceof AttackableBuilding) {
+                gameOver = false;
                 AttackableBuilding attackableBuilding = (AttackableBuilding)building;
                 attackableBuilding.health = attackableBuilding.maxHealth;
             }
         }
+        return gameOver;
     }
 
+
     public boolean isInRadius(int x, int y) {
-        int xRad = Math.abs(x - WIDTH / 2);
-        int yRad = Math.abs(y - HEIGHT / 2);
+        int xRad = Math.abs(x - SIZE / 2);
+        int yRad = Math.abs(y - SIZE / 2);
         return Math.max(xRad, yRad) <= currentRadius;
     }
 
     public boolean isInViewRadius(int x, int y) {
-        int xRad = Math.abs(x - WIDTH / 2);
-        int yRad = Math.abs(y - HEIGHT / 2);
+        int xRad = Math.abs(x - SIZE / 2);
+        int yRad = Math.abs(y - SIZE / 2);
         return Math.max(xRad, yRad) <= currentRadius + extraViewRadius;
     }
 
@@ -212,14 +235,14 @@ public class Map {
     }
 
     public Building getBuilding(int x, int y) {
-        if (x < 0 || y < 0 || x >= WIDTH || y >= HEIGHT) {
+        if (x < 0 || y < 0 || x >= SIZE || y >= SIZE) {
             return null;
         }
         return buildings[x][y];
     }
 
     public boolean canPlaceBuilding(int x, int y) {
-        if (x < 0 || y < 0 || x >= WIDTH || y >= HEIGHT) {
+        if (x < 0 || y < 0 || x >= SIZE || y >= SIZE) {
             return false;
         }
         if (this.buildings[x][y] != null) {
@@ -238,13 +261,13 @@ public class Map {
         if (x - 1 >= 0 && this.buildings[x-1][y] != null) {
             return true;
         }
-        if (x + 1 < WIDTH && this.buildings[x+1][y] != null) {
+        if (x + 1 < SIZE && this.buildings[x+1][y] != null) {
             return true;
         }
         if (y - 1 >= 0 && this.buildings[x][y-1] != null) {
             return true;
         }
-        if (y + 1 < HEIGHT && this.buildings[x][y+1] != null) {
+        if (y + 1 < SIZE && this.buildings[x][y+1] != null) {
             return true;
         }
         return false;
@@ -272,6 +295,7 @@ public class Map {
         } else if (building instanceof MageBuilding) {
             BuildMageTask.finished = true;
         }
+        ++GameState.gameState.gameStats.buildingsPlaced;
         return true;
     }
 
@@ -285,11 +309,12 @@ public class Map {
                 GameState.gameState.currentEnergy = GameState.gameState.baseEnergy;
             }
         }
+        buildingCoords.remove(coords);
     }
 
     public void removeBuilding(Building b) {
-        for (int x = 0; x < WIDTH; ++x) {
-            for (int y = 0; y < HEIGHT; ++y) {
+        for (int x = 0; x < SIZE; ++x) {
+            for (int y = 0; y < SIZE; ++y) {
                 if (buildings[x][y] != null && buildings[x][y].equals(b)) {
                     removeBuilding(x, y);
                 }
