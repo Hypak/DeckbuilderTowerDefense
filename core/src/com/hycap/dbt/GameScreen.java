@@ -194,8 +194,11 @@ public class GameScreen extends ScreenAdapter {
 		batch.setProjectionMatrix(CameraManager.camera.combined);
 		batch.begin();
 
-		for (int x = 0; x < GameState.gameState.map.SIZE; ++x) {
-			for (int y = 0; y < GameState.gameState.map.SIZE; ++y) {
+		int viewRadius = GameState.gameState.map.currentRadius + GameState.gameState.map.extraViewRadius;
+		int start = GameState.gameState.map.SIZE / 2 - viewRadius;
+		int end = GameState.gameState.map.SIZE / 2 + viewRadius;
+		for (int x = start; x <= end; ++x) {
+			for (int y = start; y <= end; ++y) {
 				Building building = GameState.gameState.map.getBuilding(x, y);
 				if (building == null) {
 					if (!GameState.gameState.map.isEnemyBaseAt(x, y)) {
@@ -210,6 +213,7 @@ public class GameScreen extends ScreenAdapter {
 				}
 			}
 		}
+
 		Card card;
 		if (selectedIndex != null && selectedIndex >= 0 && selectedIndex < GameState.gameState.deck.getHand().size()) {
 			card = GameState.gameState.deck.getHandCard(selectedIndex);
