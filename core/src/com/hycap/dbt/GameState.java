@@ -3,6 +3,7 @@ package com.hycap.dbt;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
 import com.hycap.dbt.buildings.CentralBuilding;
+import com.hycap.dbt.cards.BuyCard;
 import com.hycap.dbt.cards.Card;
 import com.hycap.dbt.enemies.Enemy;
 import com.hycap.dbt.projectiles.EnemyProjectile;
@@ -71,6 +72,7 @@ public class GameState {
         gameStats = new GameStatistics(this);
 
         freeCardsPerTurn = new ArrayList<>();
+        BuyCard.shownCardAmount = BuyCard.baseShownCardAmount;
 
         enemies = new ArrayList<>();
         updatableBuildings = new ArrayList<>();

@@ -20,7 +20,8 @@ public class BuyCard implements ActionCard, BuyableCard{
     public static Texture texture;
     public static Map<BuyableCard, Float> cardDrawWeights;
     public static Map<BuyableCard, Integer> cardRemainingCount;
-    public static int shownCardAmount = 3;
+    public static int baseShownCardAmount = 3;
+    public static int shownCardAmount = baseShownCardAmount;
     static {
         cardDrawWeights = new HashMap<>();
         cardDrawWeights.put(new CoffersCard(), 2f);
