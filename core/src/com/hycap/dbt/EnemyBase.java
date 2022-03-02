@@ -15,7 +15,7 @@ public class EnemyBase implements Updatable {
     List<Enemy> enemySpawns;
     float spawnDelay;
     Queue<Enemy> spawnsRemaining;
-    float timeUntilNextSpawn;
+    float animationTimeUntilNextSpawn;
     int turnsBetweenSpawn;
     int turnsUntilNextSpawn;
     int turnsUntilUpgrade;
@@ -26,7 +26,7 @@ public class EnemyBase implements Updatable {
         this.position = position;
         this.enemySpawns = enemySpawns;
         this.spawnDelay = spawnDelay;
-        timeUntilNextSpawn = spawnDelay;
+        animationTimeUntilNextSpawn = spawnDelay;
         turnsBetweenSpawn = 3;
         turnsUntilNextSpawn = 0;
         baseTurnsUntilUpgrade = 12;
@@ -55,18 +55,18 @@ public class EnemyBase implements Updatable {
             spawnsRemaining.add(enemy.clone());
         }
         turnsUntilNextSpawn = turnsBetweenSpawn;
-        timeUntilNextSpawn = 0;
+        animationTimeUntilNextSpawn = 0;
     }
 
     public void update(float deltaT) {
         if (spawnsRemaining.size() < 1) {
             return;
         }
-        timeUntilNextSpawn -= deltaT;
-        if (timeUntilNextSpawn <= 0) {
+        animationTimeUntilNextSpawn -= deltaT;
+        if (animationTimeUntilNextSpawn <= 0) {
             Enemy newEnemy = spawnsRemaining.poll();
             GameState.gameState.enemies.add(newEnemy);
-            timeUntilNextSpawn += spawnDelay;
+            animationTimeUntilNextSpawn += spawnDelay;
         }
     }
 
