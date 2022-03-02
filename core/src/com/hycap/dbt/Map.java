@@ -209,10 +209,15 @@ public class Map {
     }
 
 
-    public boolean isInRadius(int x, int y) {
+    private int getRadius(int x, int y) {
         int xRad = Math.abs(x - SIZE / 2);
         int yRad = Math.abs(y - SIZE / 2);
-        return Math.max(xRad, yRad) <= currentRadius;
+        return Math.max(xRad, yRad);
+    }
+
+    public boolean isInRadius(int x, int y) {
+        int radius = getRadius(x, y);
+        return radius <= currentRadius;
     }
 
     public boolean isInViewRadius(int x, int y) {
@@ -229,6 +234,31 @@ public class Map {
             }
         }
         return false;
+    }
+
+    public int getNextBaseRadius() {
+        int nextRadius = Integer.MAX_VALUE;
+        for (EnemyBase base : enemyBases) {
+            int radius = getRadius(base.position.getLeft(), base.position.getRight());
+            if (radius > this.currentRadius && radius < nextRadius) {
+                nextRadius = radius;
+            }
+        }
+        if (nextRadius == Integer.MAX_VALUE) {
+            nextRadius = 0;  // Nicer fail value than MAX_VALUE
+        }
+        return nextRadius;
+    }
+
+    public int getEnemyCountNextWave() {
+        int enemyCount = 0;
+        for (EnemyBase base : enemyBases) {
+            int radius = getRadius(base.position.getLeft(), base.position.getRight());
+            if (radius <= this.currentRadius + 1 && base.turnsUntilNextSpawn <= 1) {
+                enemyCount += base.enemySpawns.size();
+            }
+        }
+        return enemyCount;
     }
 
     public Building getBuilding(int x, int y) {

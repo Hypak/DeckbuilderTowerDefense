@@ -254,6 +254,11 @@ public class UIManager {
             }
             roundInfoString.append("\nRemaining bases: ").append(GameState.gameState.map.enemyBases.size());
         }
+        roundInfoString.append("\nNew base at radius: ").append(GameState.gameState.map.getNextBaseRadius());
+        int enemiesNextWave = GameState.gameState.map.getEnemyCountNextWave();
+        if (enemiesNextWave > 0) {
+            roundInfoString.append("\nEnemies next wave: ").append(enemiesNextWave);
+        }
         roundInfo.setText(roundInfoString.toString());
 
         taskInfoLabel.setText(TaskManager.getAllTaskDescriptions());
@@ -280,7 +285,8 @@ public class UIManager {
 
         GameStatistics stats = GameState.gameState.gameStats;
         Table statsTable = new Table();
-        Label radiusLabel = new Label(roundInfo.getText(), SkinClass.skin);
+        Label radiusLabel = new Label("Round: " + GameState.gameState.map.currentRadius +
+                " / " + GameState.gameState.map.SIZE / 2, SkinClass.skin);
         Label basesDestroyed = new Label("Bases killed: " + stats.enemyBasesDestroyed +
                 " / " + stats.totalEnemyBases, SkinClass.skin);
         Label buildingsPlaced = new Label("Buildings placed: " + stats.buildingsPlaced, SkinClass.skin);
