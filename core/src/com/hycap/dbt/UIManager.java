@@ -52,6 +52,10 @@ public class UIManager {
         selectedInfo.setText(GetObjectInfo.getInfo(building));
     }
 
+    public static void setSelectedInfo(EnemyBase base) {
+        selectedInfo.setText(GetObjectInfo.getInfo(base));
+    }
+
     public static void removeSelectedInfo() {
         selectedInfo.setText("");
     }

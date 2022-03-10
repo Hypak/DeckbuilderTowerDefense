@@ -16,6 +16,12 @@ public class FastEnemy extends BasicEnemy {
     public Enemy clone() {
         return new FastEnemy(new Vector2(position));
     }
+
+    @Override
+    public String getName() {
+        return "Fast Enemy";
+    }
+
     @Override
     public Texture getTexture() {
         return texture;

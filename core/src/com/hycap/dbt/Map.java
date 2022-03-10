@@ -208,7 +208,7 @@ public class Map {
     }
 
 
-    private int getRadius(int x, int y) {
+    public int getRadius(int x, int y) {
         int xRad = Math.abs(x - SIZE / 2);
         int yRad = Math.abs(y - SIZE / 2);
         return Math.max(xRad, yRad);
@@ -265,6 +265,15 @@ public class Map {
             return null;
         }
         return buildings[x][y];
+    }
+
+    public EnemyBase getEnemyBase(int x, int y) {
+        for (EnemyBase base : enemyBases) {
+            if (base.position.getLeft() == x && base.position.getRight() == y) {
+                return base;
+            }
+        }
+        return null;
     }
 
     public boolean canPlaceBuilding(int x, int y) {

@@ -19,9 +19,15 @@ public class BigEnemy extends BasicEnemy implements SetRenderScale {
     public Enemy clone() {
         return new BigEnemy(new Vector2(position));
     }
+
     @Override
     public Texture getTexture() {
         return texture;
+    }
+
+    @Override
+    public String getName() {
+        return "Big Enemy";
     }
 
     @Override

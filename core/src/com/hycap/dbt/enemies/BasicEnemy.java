@@ -39,6 +39,11 @@ public class BasicEnemy extends Enemy {
     }
 
     @Override
+    public String getName() {
+        return "Basic Enemy";
+    }
+
+    @Override
     public Texture getTexture() {
         return texture;
     }

@@ -83,6 +83,8 @@ public abstract class Enemy implements Updatable {
 
     public abstract Enemy clone();
 
+    public abstract String getName();
+
     public Texture getTexture() {
         return null;
     }

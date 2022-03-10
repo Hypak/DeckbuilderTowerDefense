@@ -76,6 +76,10 @@ public class GameScreen extends ScreenAdapter {
 					UIManager.setSelectedInfo(clickedBuilding);
 					ClickBuildingTask.finished = true;
 				}
+				EnemyBase base = GameState.gameState.map.getEnemyBase(x, y);
+				if (base != null) {
+					UIManager.setSelectedInfo(base);
+				}
 				if (GameState.gameState.blocked || GameState.gameState.animating) {
 					return false;
 				}

@@ -43,6 +43,12 @@ public class RangedEnemy extends Enemy {
     public Enemy clone() {
         return new RangedEnemy(new Vector2(position));
     }
+
+    @Override
+    public String getName() {
+        return "Ranged Enemy";
+    }
+
     @Override
     public Texture getTexture() {
         return texture;
