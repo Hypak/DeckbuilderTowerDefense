@@ -45,6 +45,7 @@ public class GameScreen extends ScreenAdapter {
 		batch = new SpriteBatch();
 
 		selectedViewTowers = new ArrayList<>();
+		UIManager.showingEndGameUI = false;
 
 		InputProcessor buildingProcessor = new InputAdapter() {
 			@Override
