@@ -63,7 +63,7 @@ public class TextureManager {
         EarthquakeProjectile.texture = new Texture("TowerProjectile.png");
         RangedEnemyProjectile.texture = new Texture("RangedEnemyProjectile.png");
 
-        grassTexture = new Texture("Grass.png");
+        grassTexture = new Texture("Grass2.png");
         riftTexture = new Texture("EnergyRift.png");
         circleTexture = new Texture("Circle.png");
         circleSizeMult = 32f / 512f;

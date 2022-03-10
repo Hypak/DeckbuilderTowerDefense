@@ -196,23 +196,15 @@ public class GameScreen extends ScreenAdapter {
 		batch.begin();
 
 		int viewRadius = GameState.gameState.map.currentRadius + GameState.gameState.map.extraViewRadius;
-		int start = GameState.gameState.map.SIZE / 2 - viewRadius;
-		int end = GameState.gameState.map.SIZE / 2 + viewRadius;
-		for (int x = start; x <= end; ++x) {
-			for (int y = start; y <= end; ++y) {
-				Building building = GameState.gameState.map.getBuilding(x, y);
-				if (building == null) {
-					if (!GameState.gameState.map.isEnemyBaseAt(x, y)) {
-						if (GameState.gameState.map.isInRadius(x, y)) {
-							TextureManager.draw(batch, TextureManager.grassTexture, x, y);
-						} else if (GameState.gameState.map.isInViewRadius(x, y)) {
-							TextureManager.draw(batch, TextureManager.grassTexture, x, y, 0.6f);
-						}
-					}
-				} else {
-					TextureManager.draw(batch, building.getTexture(), x, y);
-				}
-			}
+		int centrePos = GameState.gameState.map.SIZE / 2;
+		TextureManager.draw(batch, TextureManager.grassTexture, centrePos, centrePos,
+				0.6f, viewRadius * 2 + 1);
+		TextureManager.draw(batch, TextureManager.grassTexture, centrePos, centrePos,
+				1f, GameState.gameState.map.currentRadius * 2 + 1);
+
+		for (Pair<Integer> buildingCoords : GameState.gameState.map.getBuildingCoords()) {
+			Building building = GameState.gameState.map.getBuilding(buildingCoords.getLeft(), buildingCoords.getRight());
+			TextureManager.draw(batch, building.getTexture(), buildingCoords.getLeft(), buildingCoords.getRight());
 		}
 
 		Card card;
