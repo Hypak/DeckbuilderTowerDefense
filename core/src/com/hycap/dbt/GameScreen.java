@@ -202,9 +202,9 @@ public class GameScreen extends ScreenAdapter {
 		TextureManager.draw(batch, TextureManager.grassTexture, centrePos, centrePos,
 				1f, GameState.gameState.map.currentRadius * 2 + 1);
 
-		for (Pair<Integer> buildingCoords : GameState.gameState.map.getBuildingCoords()) {
-			Building building = GameState.gameState.map.getBuilding(buildingCoords.getLeft(), buildingCoords.getRight());
-			TextureManager.draw(batch, building.getTexture(), buildingCoords.getLeft(), buildingCoords.getRight());
+		for (Building building : GameState.gameState.map.getBuildingList()) {
+			TextureManager.draw(batch, building.getTexture(),
+					building.getPosition().getLeft(), building.getPosition().getRight());
 		}
 
 		Card card;

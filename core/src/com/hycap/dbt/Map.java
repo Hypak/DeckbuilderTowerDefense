@@ -21,7 +21,7 @@ public class Map {
 
     public final int SIZE;
     final Building[][] buildings;
-    final List<Pair<Integer>> buildingCoords;
+    final List<Building> buildingList;
     final List<Pair<Integer>> riftCoords;
     int energyPerRift = 1;
     public final List<EnemyBase> enemyBases;
@@ -58,8 +58,8 @@ public class Map {
         centralBuilding.setPosition(new Pair<>(SIZE / 2, SIZE / 2));
         centralBuilding.onCreate(gameState);
         buildings[SIZE / 2][SIZE / 2] = centralBuilding;
-        buildingCoords = new LinkedList<>();
-        buildingCoords.add(new Pair<>(SIZE / 2, SIZE / 2));
+        buildingList = new LinkedList<>();
+        buildingList.add(centralBuilding);
         riftCoords = new ArrayList<>();
 
         setBasicBaseRadii = new ArrayList<>();
@@ -199,8 +199,7 @@ public class Map {
                 }
             }
         }
-        for (Pair<Integer> buildingCoord : buildingCoords) {
-            Building building = buildings[buildingCoord.getLeft()][buildingCoord.getRight()];
+        for (Building building : buildingList) {
             if (building instanceof AttackableBuilding) {
                 AttackableBuilding attackableBuilding = (AttackableBuilding)building;
                 attackableBuilding.health = attackableBuilding.maxHealth;
@@ -310,7 +309,7 @@ public class Map {
         }
         this.buildings[x][y] = building;
         Pair<Integer> coords = new Pair<>(x, y);
-        this.buildingCoords.add(coords);
+        this.buildingList.add(building);
         if (riftCoords.contains(coords) && building instanceof AttackableBuilding) {
             GameState.gameState.baseEnergy += energyPerRift;
             BuildRiftTask.finished = true;
@@ -336,7 +335,7 @@ public class Map {
                 GameState.gameState.currentEnergy = GameState.gameState.baseEnergy;
             }
         }
-        buildingCoords.remove(coords);
+        buildingList.remove(building);
     }
 
     public void removeBuilding(Building b) {
@@ -349,7 +348,7 @@ public class Map {
         }
     }
 
-    public List<Pair<Integer>> getBuildingCoords() {
-        return buildingCoords;
+    public List<Building> getBuildingList() {
+        return buildingList;
     }
 }

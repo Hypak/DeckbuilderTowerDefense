@@ -2,6 +2,8 @@ package com.hycap.dbt;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
+import com.hycap.dbt.buildings.AttackableBuilding;
+import com.hycap.dbt.buildings.Building;
 import com.hycap.dbt.buildings.CentralBuilding;
 import com.hycap.dbt.cards.BuyCard;
 import com.hycap.dbt.cards.Card;
@@ -98,7 +100,14 @@ public class GameState {
     }
 
     public void update(float deltaT) {
-        if (baseEnergy <= 0) {
+        boolean attackableBuildingExists = false;
+        for (Building building : map.getBuildingList()) {
+            if (building instanceof AttackableBuilding) {
+                attackableBuildingExists = true;
+                break;
+            }
+        }
+        if (!attackableBuildingExists) {
             UIManager.showEndGameUI();
             return;
         }

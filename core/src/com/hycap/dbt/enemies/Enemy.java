@@ -3,7 +3,6 @@ package com.hycap.dbt.enemies;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
 import com.hycap.dbt.GameState;
-import com.hycap.dbt.Map;
 import com.hycap.dbt.Pair;
 import com.hycap.dbt.Updatable;
 import com.hycap.dbt.buildings.AttackableBuilding;
@@ -42,8 +41,8 @@ public abstract class Enemy implements Updatable {
 
     void setTargetNearest() {
         float closestSquareDist = Float.MAX_VALUE;
-        for(Pair<Integer> coords : GameState.gameState.map.getBuildingCoords()) {
-            Building building = GameState.gameState.map.getBuilding(coords.getLeft(), coords.getRight());
+        for (Building building : GameState.gameState.map.getBuildingList()) {
+            Pair<Integer> coords = building.getPosition();
             if (!(building instanceof AttackableBuilding)) {
                 continue;
             }
