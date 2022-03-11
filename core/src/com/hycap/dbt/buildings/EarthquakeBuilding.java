@@ -17,7 +17,7 @@ public class EarthquakeBuilding extends AbstractTowerBuilding {
         super.damage = 8;
         super.reloadTime = 1.8f;
         super.timeUntilNextReload = reloadTime;
-        super.range = 1.4f;
+        super.range = 1.7f;
         super.projectileType = new EarthquakeProjectile();
     }
 

@@ -1,5 +1,7 @@
 package com.hycap.dbt.enemies;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
 import com.hycap.dbt.GameState;
@@ -12,6 +14,13 @@ import com.hycap.dbt.tasks.KillEnemyTask;
 import java.util.Random;
 
 public abstract class Enemy implements Updatable {
+    static Sound attackSound;
+    static Sound dieSound;
+    static {
+        attackSound = Gdx.audio.newSound(Gdx.files.internal("EnemyHit.ogg"));
+        dieSound = Gdx.audio.newSound(Gdx.files.internal("EnemyDie.ogg"));
+    }
+
     Vector2 position;
     float moveSpeed;
     Vector2 target;
@@ -70,10 +79,12 @@ public abstract class Enemy implements Updatable {
 
     public void attack(float damage) {
         GameState.gameState.addHurtParticle(position);
+        attackSound.play();
         health -= damage;
         if (health <= 0) {
             GameState.gameState.enemies.remove(this);
             KillEnemyTask.finished = true;
+            dieSound.play();
         }
     }
 
