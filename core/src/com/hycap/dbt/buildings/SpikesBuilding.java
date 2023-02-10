@@ -45,7 +45,7 @@ public class SpikesBuilding extends Building implements Updatable {
 
     @Override
     public String getInfo() {
-        return "Spikes damage enemies that walk over them";
+        return "Spikes damage enemies that walk over them.";
     }
 
     @Override
