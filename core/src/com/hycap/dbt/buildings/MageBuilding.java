@@ -2,7 +2,6 @@ package com.hycap.dbt.buildings;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.hycap.dbt.GameState;
-import com.hycap.dbt.Pair;
 
 public class MageBuilding extends AttackableBuilding {
     public static Texture texture;
@@ -25,15 +24,21 @@ public class MageBuilding extends AttackableBuilding {
     }
 
     @Override
-    public void onCreate(GameState gameState) {
+    public void onCreate(GameState gameState, boolean onRift) {
         super.health = 50;
         gameState.baseEnergy += energyIncrease;
-        super.onCreate(gameState);
+        if (onRift) {
+            gameState.baseEnergy += energyIncrease;
+        }
+        super.onCreate(gameState, onRift);
     }
 
     @Override
     public void onDestroy(GameState gameState) {
         gameState.baseEnergy -= energyIncrease;
+        if (onRift) {
+            gameState.baseEnergy -= energyIncrease;
+        }
         if (gameState.currentEnergy > gameState.baseEnergy) {
             gameState.currentEnergy = gameState.baseEnergy;
         }

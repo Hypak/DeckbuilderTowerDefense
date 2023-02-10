@@ -2,7 +2,6 @@ package com.hycap.dbt.buildings;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.hycap.dbt.GameState;
-import com.hycap.dbt.Pair;
 
 public class PathBuilding extends Building implements CanBuildOver {
     public static Texture texture;
@@ -28,7 +27,7 @@ public class PathBuilding extends Building implements CanBuildOver {
     }
 
     @Override
-    public void onCreate(GameState gameState) {}
+    public void onCreate(GameState gameState, boolean onRift) {}
 
     @Override
     public void onDestroy(GameState gameState) {}

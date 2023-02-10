@@ -56,7 +56,7 @@ public class Map {
         buildings = new Building[SIZE][SIZE];
         Building centralBuilding = new CentralBuilding();
         centralBuilding.setPosition(new Pair<>(SIZE / 2, SIZE / 2));
-        centralBuilding.onCreate(gameState);
+        centralBuilding.onCreate(gameState, false);
         buildings[SIZE / 2][SIZE / 2] = centralBuilding;
         buildingList = new LinkedList<>();
         buildingList.add(centralBuilding);

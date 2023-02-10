@@ -32,9 +32,8 @@ public class SniperBuilding extends AbstractTowerBuilding {
 
 
     @Override
-    public void onCreate(GameState gameState) {
-
-        super.onCreate(gameState);
+    public void onCreate(GameState gameState, boolean onRift) {
+        super.onCreate(gameState, onRift);
     }
 
     @Override

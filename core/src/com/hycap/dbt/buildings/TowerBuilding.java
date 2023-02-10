@@ -31,10 +31,9 @@ public class TowerBuilding extends AbstractTowerBuilding implements Updatable {
     }
 
     @Override
-    public void onCreate(GameState gameState) {
-        super.onCreate(gameState);
+    public void onCreate(GameState gameState, boolean onRift) {
+        super.onCreate(gameState, onRift);
     }
-
     @Override
     public Building duplicate() {
         return new TowerBuilding();

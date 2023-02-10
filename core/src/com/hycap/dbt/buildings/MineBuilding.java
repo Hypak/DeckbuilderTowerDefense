@@ -2,7 +2,6 @@ package com.hycap.dbt.buildings;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.hycap.dbt.GameState;
-import com.hycap.dbt.Pair;
 
 public class MineBuilding extends AttackableBuilding {
     public static Texture texture;
@@ -27,20 +26,28 @@ public class MineBuilding extends AttackableBuilding {
     }
 
     @Override
-    public void onCreate(GameState gameState) {
+    public void onCreate(GameState gameState, boolean onRift) {
         super.health = 25;
         gameState.maxGold += goldCapacity;
         gameState.goldPerTurn += goldPerTurn;
-        super.onCreate(gameState);
+        if (onRift) {
+            gameState.maxGold += goldCapacity;
+            gameState.goldPerTurn += goldPerTurn;
+        }
+        super.onCreate(gameState, onRift);
     }
 
     @Override
     public void onDestroy(GameState gameState) {
         gameState.maxGold -= goldCapacity;
+        gameState.goldPerTurn -= goldPerTurn;
+        if (onRift) {
+            gameState.maxGold -= goldCapacity;
+            gameState.goldPerTurn -= goldPerTurn;
+        }
         if (gameState.gold > gameState.maxGold) {
             gameState.gold = gameState.maxGold;
         }
-        gameState.goldPerTurn -= goldPerTurn;
     }
 
     @Override

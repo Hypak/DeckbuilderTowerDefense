@@ -9,6 +9,8 @@ public abstract class Building {
     Pair<Integer> position;
     Vector2 vecPosition;
 
+    boolean onRift;
+
     public abstract String getName();
 
     public abstract String getInfo();
@@ -17,7 +19,9 @@ public abstract class Building {
 
     public abstract Texture getTexture();
 
-    public abstract void onCreate(GameState gameState);
+    public void onCreate(GameState gameState, boolean onRift) {
+        this.onRift = onRift;
+    }
 
     public abstract void onDestroy(GameState gameState);
 
@@ -32,4 +36,7 @@ public abstract class Building {
         return position;
     }
 
+    public boolean getOnRift() {
+        return onRift;
+    }
 }

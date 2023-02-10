@@ -2,7 +2,6 @@ package com.hycap.dbt.buildings;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.hycap.dbt.GameState;
-import com.hycap.dbt.Pair;
 
 public class CoffersBuilding extends AttackableBuilding {
     public static Texture texture;
@@ -25,15 +24,21 @@ public class CoffersBuilding extends AttackableBuilding {
     }
 
     @Override
-    public void onCreate(GameState gameState) {
+    public void onCreate(GameState gameState, boolean onRift) {
         super.health = 50;
         gameState.maxGold += goldCapacity;
-        super.onCreate(gameState);
+        if (onRift) {
+            gameState.maxGold += goldCapacity;
+        }
+        super.onCreate(gameState, onRift);
     }
 
     @Override
     public void onDestroy(GameState gameState) {
         gameState.maxGold -= goldCapacity;
+        if (onRift) {
+            gameState.maxGold -= goldCapacity;
+        }
         if (gameState.gold > gameState.maxGold) {
             gameState.gold = gameState.maxGold;
         }

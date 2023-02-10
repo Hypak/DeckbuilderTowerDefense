@@ -23,15 +23,22 @@ public class LibraryBuilding extends AttackableBuilding {
     }
 
     @Override
-    public void onCreate(GameState gameState) {
+    public void onCreate(GameState gameState, boolean onRift) {
         super.health = 25;
         BuyCard.shownCardAmount += buyCardIncreaseCount;
-        super.onCreate(gameState);
+        if (onRift) {
+            BuyCard.shownCardAmount += buyCardIncreaseCount;
+        }
+
+        super.onCreate(gameState, onRift);
     }
 
     @Override
     public void onDestroy(GameState gameState) {
         BuyCard.shownCardAmount -= buyCardIncreaseCount;
+        if (onRift) {
+            BuyCard.shownCardAmount -= buyCardIncreaseCount;
+        }
     }
 
     @Override

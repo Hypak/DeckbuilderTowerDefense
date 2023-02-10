@@ -2,7 +2,6 @@ package com.hycap.dbt.buildings;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.hycap.dbt.GameState;
-import com.hycap.dbt.Pair;
 
 public class CentralBuilding extends AttackableBuilding {
     public static Texture texture;
@@ -25,11 +24,11 @@ public class CentralBuilding extends AttackableBuilding {
     }
 
     @Override
-    public void onCreate(GameState gameState) {
+    public void onCreate(GameState gameState, boolean onRift) {
         super.health = 100;
         gameState.baseEnergy += energyPerTurn;
         gameState.maxGold += goldCapacity;
-        super.onCreate(gameState);
+        super.onCreate(gameState, onRift);
     }
 
     @Override

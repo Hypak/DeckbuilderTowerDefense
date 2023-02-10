@@ -14,6 +14,10 @@ public abstract class AbstractTowerBuilding extends AttackableBuilding implement
     public float range;
     public Projectile projectileType;
 
+    public static float riftDamageMult = 1.2f;
+    public static float riftReloadMult = 0.8f;
+    public static float riftRangeMult = 1.2f;
+
     public abstract String getName();
 
     @Override
@@ -26,12 +30,20 @@ public abstract class AbstractTowerBuilding extends AttackableBuilding implement
 
     @Override
     public String getStats() {
-        return "Damage: " + damage + "\nReload time: " + reloadTime + "\nRange: " + range + "\n" + super.getStats();
+        float roundedDamage = Math.round(damage * 10f) / 10f;
+        float roundedReloadTime = Math.round(reloadTime * 100f) / 100f;
+        float roundedRange = Math.round(range * 100f) / 100f;
+        return "Damage: " + roundedDamage + "\nReload time: " + roundedReloadTime + "\nRange: " + roundedRange + "\n" + super.getStats();
     }
 
     @Override
-    public void onCreate(GameState gameState) {
-        super.onCreate(gameState);
+    public void onCreate(GameState gameState, boolean onRift) {
+        super.onCreate(gameState, onRift);
+        if (onRift) {
+            damage *= riftDamageMult;
+            reloadTime *= riftReloadMult;
+            range *= riftRangeMult;
+        }
         gameState.updatableBuildings.add(this);
         for (int i = 0; i < GameState.gameState.map.enemyBases.size(); ++i) {
             EnemyBase base = GameState.gameState.map.enemyBases.get(i);

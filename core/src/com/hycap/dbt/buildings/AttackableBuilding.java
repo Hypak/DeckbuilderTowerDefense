@@ -18,13 +18,17 @@ public abstract class AttackableBuilding extends Building {
     boolean destroyed = false;
 
     @Override
-    public void onCreate(GameState gameState) {
+    public void onCreate(GameState gameState, boolean onRift) {
+        super.onCreate(gameState, onRift);
+        if (onRift) {
+            health *= 1.5;
+        }
         this.maxHealth = health;
     }
 
     @Override
     public String getStats() {
-        return "Max Health: " + maxHealth;
+        return "Max Health: " + Math.round(maxHealth);
     }
 
     public void attack(float damage) {

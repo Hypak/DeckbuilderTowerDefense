@@ -11,7 +11,7 @@ import java.util.List;
 public class SpikesBuilding extends Building implements Updatable {
     public static Texture texture;
 
-    public float damage = 2;
+    public float damage = 3;
     public float reloadTime = 0.5f;
     float timeUntilNextReload = 0;
     @Override
@@ -59,8 +59,13 @@ public class SpikesBuilding extends Building implements Updatable {
     }
 
     @Override
-    public void onCreate(GameState gameState) {
+    public void onCreate(GameState gameState, boolean onRift) {
         GameState.gameState.updatableBuildings.add(this);
+        if (onRift) {
+            damage *= 2;
+            reloadTime *= 0.5f;
+        }
+        super.onCreate(gameState, onRift);
     }
 
     @Override

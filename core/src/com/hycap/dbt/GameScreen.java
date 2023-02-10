@@ -93,7 +93,8 @@ public class GameScreen extends ScreenAdapter {
 						Building newBuilding = buildingCard.getBuilding().duplicate();
 						newBuilding.setPosition(new Pair<>(x, y));
 						if (GameState.gameState.map.placeBuilding(newBuilding, x, y)) {
-							newBuilding.onCreate(GameState.gameState);
+							boolean onRift = GameState.gameState.map.riftCoords.contains(newBuilding.getPosition());
+							newBuilding.onCreate(GameState.gameState, onRift);
 							GameState.gameState.currentEnergy -= card.getEnergyCost();
 							GameState.gameState.deck.discardCard(card);
 							selectedIndex = null;
@@ -229,8 +230,12 @@ public class GameScreen extends ScreenAdapter {
 				TextureManager.draw(batch, buildingCard.getBuilding().getTexture(), x, y, alpha);
 				if (buildingCard.getBuilding() instanceof HasRange) {
 					HasRange towerBuilding = (HasRange)(buildingCard.getBuilding());
+					float range = towerBuilding.getRange();
+					if (GameState.gameState.map.riftCoords.contains(new Pair<Integer>(x, y))) {
+						range *= AbstractTowerBuilding.riftRangeMult;
+					}
 					TextureManager.draw(batch, TextureManager.circleTexture, x, y, 0.5f,
-							towerBuilding.getRange() * 2 * TextureManager.circleSizeMult);
+							range * 2 * TextureManager.circleSizeMult);
 				}
 			}
 		}

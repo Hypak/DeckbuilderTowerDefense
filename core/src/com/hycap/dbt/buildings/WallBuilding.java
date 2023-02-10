@@ -22,9 +22,12 @@ public class WallBuilding extends AttackableBuilding {
 
 
     @Override
-    public void onCreate(GameState gameState) {
+    public void onCreate(GameState gameState, boolean onRift) {
         super.health = 175;
-        super.onCreate(gameState);
+        if (onRift) {
+            super.health *= 2;  // N.B. health is multiplied by 1.5 after this, total 3x health boost
+        }
+        super.onCreate(gameState, onRift);
     }
 
     @Override
