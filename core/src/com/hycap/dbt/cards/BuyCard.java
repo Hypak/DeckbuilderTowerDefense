@@ -1,13 +1,11 @@
 package com.hycap.dbt.cards;
 
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
-import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.hycap.dbt.GameState;
 import com.hycap.dbt.SkinClass;
@@ -24,19 +22,19 @@ public class BuyCard implements ActionCard, BuyableCard{
     public static int shownCardAmount = baseShownCardAmount;
     static {
         cardDrawWeights = new HashMap<>();
-        cardDrawWeights.put(new CoffersCard(), 2f);
+        cardDrawWeights.put(new CoffersCard(), 1.5f);
         cardDrawWeights.put(new Draw2Card(), 2f);
         cardDrawWeights.put(new Remove1Card(), 1f);
         cardDrawWeights.put(new BuyCard(), 1.5f);
-        cardDrawWeights.put(new MageCard(), 1f);
-        cardDrawWeights.put(new PaverCard(), 1f);
-        cardDrawWeights.put(new TowerCard(), 2f);
-        cardDrawWeights.put(new WallCard(), 2f);
+        cardDrawWeights.put(new MageCard(), 1.25f);
+        cardDrawWeights.put(new PaverCard(), 1.25f);
+        cardDrawWeights.put(new TowerCard(), 1.5f);
+        cardDrawWeights.put(new WallCard(), 1.75f);
         cardDrawWeights.put(new SniperCard(), 1.5f);
         cardDrawWeights.put(new EarthquakeCard(), 1.5f);
         cardDrawWeights.put(new Recycle2Card(), 1f);
         cardDrawWeights.put(new LibraryCard(), 1.5f);
-        cardDrawWeights.put(new SpikesCard(), 2f);
+        cardDrawWeights.put(new SpikesCard(), 1.75f);
 
         cardRemainingCount = new HashMap<>();
         cardRemainingCount.put(new LibraryCard(), 3);

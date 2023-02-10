@@ -13,7 +13,7 @@ public class LibraryCard extends BuildingCard implements BuyableCard, ExhaustCar
 
     @Override
     public int getBuyCost() {
-        return 6;
+        return 4;
     }
 
     @Override

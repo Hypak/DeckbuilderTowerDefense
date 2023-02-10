@@ -11,7 +11,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.hycap.dbt.GameState;
 import com.hycap.dbt.SkinClass;
-import com.hycap.dbt.tasks.BuyNewCardTask;
 
 public class Recycle2Card implements ActionCard, BuyableCard {
     public static Texture texture;
@@ -67,7 +66,7 @@ public class Recycle2Card implements ActionCard, BuyableCard {
 
     @Override
     public int getBuyCost() {
-        return 6;
+        return 4;
     }
 
     @Override
