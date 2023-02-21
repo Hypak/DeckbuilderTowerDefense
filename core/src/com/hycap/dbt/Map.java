@@ -312,10 +312,7 @@ public class Map {
         if (!canPlaceBuilding(x, y)) {
             return false;
         }
-        Building otherBuilding = getBuilding(x, y);
-        if (otherBuilding != null && building.getName().equals(otherBuilding.getName())) {
-            return false;
-        }
+
         this.buildings[x][y] = building;
         Pair<Integer> coords = new Pair<>(x, y);
         this.buildingList.add(building);
@@ -337,7 +334,10 @@ public class Map {
     public void removeBuilding(int x, int y) {
         Building building = buildings[x][y];
         Pair<Integer> coords = new Pair<>(x, y);
-        this.buildings[x][y] = new PathBuilding();
+        PathBuilding newPath = new PathBuilding();
+        this.buildings[x][y] = newPath;
+        newPath.setPosition(coords);
+        buildingList.add(newPath);
         if (riftCoords.contains(coords) && building instanceof AttackableBuilding) {
             GameState.gameState.baseEnergy -= energyPerRift;
             if (GameState.gameState.currentEnergy > GameState.gameState.baseEnergy) {
