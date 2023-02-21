@@ -3,7 +3,6 @@ package com.hycap.dbt.enemies;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
 import com.hycap.dbt.GameState;
-import com.hycap.dbt.projectiles.EnemyProjectile;
 import com.hycap.dbt.projectiles.RangedEnemyProjectile;
 
 public class RangedEnemy extends Enemy {
@@ -13,7 +12,7 @@ public class RangedEnemy extends Enemy {
     float timeUntilNextAttack;
 
     public RangedEnemy(Vector2 position) {
-        super(position);
+        super(position, (float) Math.PI / 6);
         super.moveSpeed = 0.75f;
         super.health = 8;
         attackTime = 0.7f;

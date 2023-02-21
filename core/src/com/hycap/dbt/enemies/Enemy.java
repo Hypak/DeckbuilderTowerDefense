@@ -29,11 +29,22 @@ public abstract class Enemy implements Updatable {
     float attackRange;
     float health;
     float offsetAngle;
-    float maxOffsetAngle = (float)Math.PI / 4;
+    float maxOffsetAngle = (float)Math.PI / 8;
+
+    static Random random;
+
+    static {
+        random = new Random();
+    }
 
     public Enemy(Vector2 position) {
         this.position = position;
-        offsetAngle = (new Random().nextFloat() - 0.5f) * maxOffsetAngle;
+        offsetAngle = 2f * (random.nextFloat() - 0.5f) * maxOffsetAngle;
+    }
+
+    public Enemy(Vector2 position, float maxOffsetAngle) {
+        this.position = position;
+        offsetAngle = 2f * (random.nextFloat() - 0.5f) * maxOffsetAngle;
     }
 
     public Vector2 getPosition() {
