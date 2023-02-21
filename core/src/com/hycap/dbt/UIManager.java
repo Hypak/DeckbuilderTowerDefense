@@ -10,6 +10,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.hycap.dbt.buildings.Building;
+import com.hycap.dbt.buildings.Upgradable;
 import com.hycap.dbt.cards.Card;
 import com.hycap.dbt.tasks.EndTurnTask;
 import com.hycap.dbt.tasks.TaskManager;
@@ -28,7 +29,9 @@ public class UIManager {
     static Table resourceTable;
 
     static Label selectedInfo;
+    static TextButton buildingUpgrade;
     static Table selectedInfoTable;
+
     static Label roundInfo;
     static Table roundInfoTable;
 
@@ -48,16 +51,40 @@ public class UIManager {
         selectedInfo.setText(GetObjectInfo.getInfo(card));
     }
 
-    public static void setSelectedInfo(Building building) {
+    public static void setSelectedInfo(final Building building) {
         selectedInfo.setText(GetObjectInfo.getInfo(building));
+        if (building instanceof Upgradable) {
+            final Upgradable upgradable = (Upgradable) building;
+            buildingUpgrade.remove();
+            buildingUpgrade = new TextButton("Upgrade " + upgradable.getUpgradeCost() + " Gold", SkinClass.skin);
+            buildingUpgrade.addListener(new ChangeListener() {
+                @Override
+                public void changed(ChangeEvent event, Actor actor) {
+                    if (upgradable.tryUpgrade(GameState.gameState)) {
+                        setSelectedInfo(building);
+                    }
+                }
+            });
+            selectedInfoTable = new Table();
+            selectedInfoTable.add(selectedInfo).row();
+            selectedInfoTable.add(buildingUpgrade).row();
+            selectedInfoTable.padRight(30);
+            selectedInfoTable.setFillParent(true);
+            selectedInfoTable.align(Align.right);
+            stage.addActor(selectedInfoTable);
+        } else {
+            buildingUpgrade.remove();
+        }
     }
 
     public static void setSelectedInfo(EnemyBase base) {
         selectedInfo.setText(GetObjectInfo.getInfo(base));
+        buildingUpgrade.remove();
     }
 
     public static void removeSelectedInfo() {
         selectedInfo.setText("");
+        buildingUpgrade.remove();
     }
 
     public static void hideAllCards() {
@@ -131,10 +158,12 @@ public class UIManager {
         selectedInfo.setAlignment(Align.right);
         selectedInfo.setWrap(true);
         selectedInfoTable = new Table();
-        selectedInfoTable.add(selectedInfo);
+        selectedInfoTable.add(selectedInfo).row();
+        selectedInfoTable.padRight(30);
         selectedInfoTable.setFillParent(true);
         selectedInfoTable.align(Align.right);
-        selectedInfoTable.padRight(30);
+
+        buildingUpgrade = new TextButton("Upgrade n Gold", SkinClass.skin);
 
         roundInfo = new Label("Loading...", SkinClass.skin);
         roundInfoTable = new Table();

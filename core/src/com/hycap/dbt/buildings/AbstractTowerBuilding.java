@@ -7,7 +7,7 @@ import com.hycap.dbt.enemies.Enemy;
 import com.hycap.dbt.projectiles.Projectile;
 import com.hycap.dbt.tasks.KillBaseTask;
 
-public abstract class AbstractTowerBuilding extends AttackableBuilding implements Updatable, HasRange {
+public abstract class AbstractTowerBuilding extends AttackableBuilding implements Updatable, HasRange, Upgradable, CanBuildOver {
     public float damage;
     public float reloadTime;
     float timeUntilNextReload;
@@ -17,6 +17,12 @@ public abstract class AbstractTowerBuilding extends AttackableBuilding implement
     public static float riftDamageMult = 1.2f;
     public static float riftReloadMult = 0.8f;
     public static float riftRangeMult = 1.2f;
+    public static float upgradeDamageMult = 1.2f;
+    public static float upgradeReloadMult = 0.9f;
+    public static float upgradeRangeMult = 1.1f;
+    public static int baseUpgradeCost = 8;
+    public static int upgradeCostInc = 6;
+    public int currentUpgradeCost;
 
     public abstract String getName();
 
@@ -39,6 +45,7 @@ public abstract class AbstractTowerBuilding extends AttackableBuilding implement
     @Override
     public void onCreate(GameState gameState, boolean onRift) {
         super.onCreate(gameState, onRift);
+        currentUpgradeCost = baseUpgradeCost;
         if (onRift) {
             damage *= riftDamageMult;
             reloadTime *= riftReloadMult;
@@ -63,6 +70,24 @@ public abstract class AbstractTowerBuilding extends AttackableBuilding implement
     @Override
     public void onDestroy(GameState gameState) {
         GameState.gameState.updatableBuildings.remove(this);
+    }
+
+    @Override
+    public boolean tryUpgrade(GameState gameState) {
+        if (gameState.gold < currentUpgradeCost) {
+            return false;
+        }
+        gameState.gold -= currentUpgradeCost;
+        currentUpgradeCost += upgradeCostInc;
+        damage *= upgradeDamageMult;
+        reloadTime *= upgradeReloadMult;
+        range *= upgradeRangeMult;
+        return true;
+    }
+
+    @Override
+    public int getUpgradeCost() {
+        return currentUpgradeCost;
     }
 
     @Override

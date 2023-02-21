@@ -3,7 +3,7 @@ package com.hycap.dbt.buildings;
 import com.badlogic.gdx.graphics.Texture;
 import com.hycap.dbt.GameState;
 
-public class MineBuilding extends AttackableBuilding {
+public class MineBuilding extends AttackableBuilding implements CanBuildOver {
     public static Texture texture;
 
     public static final int goldCapacity = 2;
@@ -21,7 +21,7 @@ public class MineBuilding extends AttackableBuilding {
 
     @Override
     public String getInfo() {
-        return "Generate " + MineBuilding.goldPerTurn + " gold per turn, and hold "
+        return "Generate " + MineBuilding.goldPerTurn + " gold per turn.\nHold "
                 + MineBuilding.goldCapacity + " more gold.";
     }
 
