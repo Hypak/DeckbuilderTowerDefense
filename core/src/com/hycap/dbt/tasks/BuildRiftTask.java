@@ -12,8 +12,7 @@ public class BuildRiftTask implements Task {
 
     @Override
     public List<Task> getNextTasks() {
-        List<Task> next = new ArrayList<>();
-        return next;
+        return new ArrayList<>();
     }
 
     @Override
