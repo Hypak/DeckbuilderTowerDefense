@@ -78,8 +78,8 @@ public class GameState {
         }
         baseEnergy = 0;
         blocked = false;
-        gold = 1231233;
-        maxGold = 1231233;
+        gold = 0;
+        maxGold = 0;
         goldPerTurn = 0;
         runSpeed = RunSpeed.SLOW;
         paused = false;
