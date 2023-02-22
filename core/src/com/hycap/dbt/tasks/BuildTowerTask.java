@@ -14,6 +14,7 @@ public class BuildTowerTask implements Task {
     public List<Task> getNextTasks() {
         List<Task> next = new ArrayList<>();
         next.add(new KillEnemyTask());
+        next.add(new UpgradeTask());
         return next;
     }
 

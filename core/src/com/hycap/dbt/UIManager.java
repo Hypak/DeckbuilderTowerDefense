@@ -16,6 +16,7 @@ import com.hycap.dbt.buildings.Upgradable;
 import com.hycap.dbt.cards.Card;
 import com.hycap.dbt.tasks.EndTurnTask;
 import com.hycap.dbt.tasks.TaskManager;
+import com.hycap.dbt.tasks.UpgradeTask;
 
 public class UIManager {
     static Stage stage;
@@ -95,6 +96,7 @@ public class UIManager {
                 public void changed(ChangeEvent event, Actor actor) {
                     if (upgradable.tryUpgrade(GameState.gameState)) {
                         setSelectedInfo(building);
+                        UpgradeTask.finished = true;
                     }
                 }
             });

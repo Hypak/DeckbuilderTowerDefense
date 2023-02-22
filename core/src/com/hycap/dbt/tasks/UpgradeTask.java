@@ -3,11 +3,11 @@ package com.hycap.dbt.tasks;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BuildMageTask implements Task {
-    public static boolean finished = false;
+public class UpgradeTask implements Task {
+    public static boolean finished;
     @Override
     public String getTaskText() {
-        return "Buy a mage card from the shop and build it.\nBuilding it will remove the card from your deck.";
+        return "Use gold to upgrade one of the towers in your base.";
     }
 
     @Override
