@@ -20,6 +20,7 @@ import com.hycap.dbt.tasks.UpgradeTask;
 
 public class UIManager {
     static Stage stage;
+    static TooltipManager tooltipManager;
     static Table handTable;
     static TextButton viewAllCards;
     static boolean showingAllCards = false;
@@ -178,6 +179,7 @@ public class UIManager {
 
     public static void create(final GameScreen gameScreen) {
         stage = new Stage(new ExtendViewport(1920, 1080));
+        tooltipManager = new TooltipManager();
         handTable = new Table();
         cardCounts = new Label("Loading...", SkinClass.skin);
         viewAllCards = new TextButton("View deck", SkinClass.skin);
@@ -189,8 +191,11 @@ public class UIManager {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 toggleShowCards();
+                tooltipManager.instant();
             }
         });
+        viewAllCards.addListener(new TextTooltip("V", tooltipManager, SkinClass.skin));
+
         endTurnButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
@@ -198,9 +203,11 @@ public class UIManager {
                     gameScreen.newTurn();
                     EndTurnTask.finished = true;
                 }
+                tooltipManager.instant();  // I don't know why I need this line lol
             }
         });
-
+        endTurnButton.addListener(new TextTooltip("E", tooltipManager, SkinClass.skin));
+        tooltipManager.instant();
         cardTable = new Table();
         cardTable.align(Align.center);
         cardTable.setFillParent(true);
