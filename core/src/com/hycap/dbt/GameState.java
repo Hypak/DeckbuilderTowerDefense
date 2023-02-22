@@ -17,7 +17,10 @@ import java.util.List;
 import java.util.Random;
 
 public class GameState {
+    public static float maxDeltaT = 1/600f;
+
     public static GameState gameState;
+
     public GameScreen.Difficulty difficulty;
     public Map map;
     public Deck deck;
@@ -32,13 +35,13 @@ public class GameState {
     public boolean blocked;
     public boolean animating;
 
-    public float runSpeed;
-    float fastForwardRunSpeed = 4.5f;
+    public RunSpeed runSpeed;
+    public boolean paused;
 
     public List<Card> freeCardsPerTurn;
 
     public List<Enemy> enemies;
-    public List<Updatable> updatableBuildings;
+    public List<EnemyBase> updatableBases;
     public List<Projectile> projectiles;
     public List<Projectile> projectilesToRemove;
     public List<EnemyProjectile> enemyProjectiles;
@@ -47,6 +50,19 @@ public class GameState {
     public List<MyParticle> particles;
 
     public Texture hitMarkTexture;
+
+    public enum RunSpeed {
+        SLOW (1f),
+        MEDIUM (3f),
+        FAST(9f);
+        private final float speed;
+        RunSpeed(float speed) {
+            this.speed = speed;
+        }
+        private float speed() {
+            return speed;
+        }
+    }
 
     public GameState(GameScreen.Difficulty difficulty) {
         this.difficulty = difficulty;
@@ -62,10 +78,11 @@ public class GameState {
         }
         baseEnergy = 0;
         blocked = false;
-        gold = 0;
-        maxGold = 0;
+        gold = 1231233;
+        maxGold = 1231233;
         goldPerTurn = 0;
-        runSpeed = 1;
+        runSpeed = RunSpeed.SLOW;
+        paused = false;
 
         map = new Map(this, difficulty);
         deck = new Deck();
@@ -77,7 +94,7 @@ public class GameState {
         BuyCard.shownCardAmount = BuyCard.baseShownCardAmount;
 
         enemies = new ArrayList<>();
-        updatableBuildings = new ArrayList<>();
+        updatableBases = new ArrayList<>();
         projectiles = new ArrayList<>();
         enemyProjectiles = new ArrayList<>();
 
@@ -93,6 +110,7 @@ public class GameState {
             gold = maxGold;
         }
         animating = true;
+        UIManager.startAnimating();
         deck.drawNewHand(baseHandSize);
         for (Card card : freeCardsPerTurn) {
             deck.addToHand(card);
@@ -100,6 +118,9 @@ public class GameState {
     }
 
     public void update(float deltaT) {
+        if (paused || UIManager.showingMenu) {
+            return;
+        }
         boolean attackableBuildingExists = false;
         for (Building building : map.getBuildingList()) {
             if (building instanceof AttackableBuilding) {
@@ -111,44 +132,99 @@ public class GameState {
             UIManager.showEndGameUI();
             return;
         }
-        if (UIManager.showingMenu) {
-            return;
-        }
         if (!animating) {
             projectiles = new ArrayList<>();
             enemyProjectiles = new ArrayList<>();
             return;
         }
         animating = false;
-        for (Updatable e : updatableBuildings) {
-            e.update(deltaT * runSpeed);
+
+        deltaT *= runSpeed.speed();
+        if (deltaT > maxDeltaT) {
+            int updateCounts = (int)Math.floor(deltaT / maxDeltaT);
+            float updateRem = deltaT - updateCounts * maxDeltaT;
+            for (int i = 0; i < updateCounts; ++i) {
+                performUpdate(maxDeltaT);
+                if (!animating) {
+                    break;
+                }
+                attackableBuildingExists = false;
+                for (Building building : map.getBuildingList()) {
+                    if (building instanceof AttackableBuilding) {
+                        attackableBuildingExists = true;
+                        break;
+                    }
+                }
+                if (!attackableBuildingExists) {
+                    break;
+                }
+            }
+            if (updateRem > 0 && animating) {
+                performUpdate(updateRem);
+            }
+        } else {
+            performUpdate(deltaT);
+        }
+
+        if (!animating) {
+            for (Building building : map.getBuildingList()) {
+                if (building instanceof AttackableBuilding) {
+                    AttackableBuilding attackableBuilding = (AttackableBuilding)building;
+                    attackableBuilding.newTurn();
+                }
+            }
+            UIManager.endAnimating();
+        }
+    }
+
+    private void performUpdate(float deltaT) {
+        for (Building building : map.buildingList) {
+            if (building instanceof Updatable) {
+                ((Updatable)building).update(deltaT);
+            }
+        }
+        for (Updatable e : updatableBases) {
+            e.update(deltaT);
             animating |= e.keepActive();
         }
         projectilesToRemove = new ArrayList<>();
         for (Updatable p : projectiles) {
-            p.update(deltaT * runSpeed);
+            p.update(deltaT);
             animating |= p.keepActive();
         }
         projectiles.removeAll(projectilesToRemove);
         enemyProjectilesToRemove = new ArrayList<>();
         for (Updatable p : enemyProjectiles) {
-            p.update(deltaT * runSpeed);
+            p.update(deltaT);
             animating |= p.keepActive();
         }
         enemyProjectiles.removeAll(enemyProjectilesToRemove);
         for (Enemy e : enemies) {
-            e.update(deltaT * runSpeed);
+            e.update(deltaT);
             animating |= e.keepActive();
         }
     }
 
-    public void toggleFastForward() {
-        if (runSpeed == 1) {
-            runSpeed = fastForwardRunSpeed;
-        } else {
-            runSpeed = 1;
-        }
+    public void setRunSpeed(RunSpeed speed) {
+        runSpeed = speed;
         FastforwardTask.finished = true;
+    }
+
+    public void nextRunSpeed() {
+        for (int i = 0; i < RunSpeed.values().length; ++i) {
+            if (RunSpeed.values()[i] == runSpeed) {
+                ++i;
+                if (i >= RunSpeed.values().length) {
+                    i = 0;
+                }
+                runSpeed = RunSpeed.values()[i];
+            }
+        }
+    }
+
+    public void skipAnimation() {
+        // Hopefully 20 minutes is long enough
+        update(1200);
     }
 
     public void addHurtParticle(Vector2 position) {

@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GameScreen extends ScreenAdapter {
+	public static GameScreen gameScreen;
 	enum Difficulty {
 		EASY,
 		NORMAL,
@@ -31,6 +32,7 @@ public class GameScreen extends ScreenAdapter {
 
 	public GameScreen(Difficulty difficulty) {
 		this.difficulty = difficulty;
+		gameScreen = this;
 	}
 
 	@Override
@@ -125,8 +127,9 @@ public class GameScreen extends ScreenAdapter {
 					CameraManager.resetCamera();
 					return true;
 				}
+
 				if (keycode == Input.Keys.TAB) {
-					GameState.gameState.toggleFastForward();
+					GameState.gameState.nextRunSpeed();
 					return true;
 				}
 				if (keycode == Input.Keys.ESCAPE) {
@@ -138,26 +141,11 @@ public class GameScreen extends ScreenAdapter {
 				if (keycode == Input.Keys.V) {
 					UIManager.toggleShowCards();
 				}
+				if (keycode >= Input.Keys.NUM_0 && keycode <= Input.Keys.NUM_9) {
+					pressNum(keycode);
+				}
 				if (GameState.gameState.blocked || GameState.gameState.animating) {
 					return false;
-				}
-				int newSelectedIndex;
-				if (keycode >= Input.Keys.NUM_0 && keycode <= Input.Keys.NUM_9) {
-					if (keycode == Input.Keys.NUM_0) {
-						newSelectedIndex = 9;
-					} else {
-						newSelectedIndex = keycode - Input.Keys.NUM_1;
-					}
-					if (selectedIndex != null && newSelectedIndex == selectedIndex) {
-						selectedIndex = null;
-						UIManager.removeSelectedInfo();
-					} else {
-						selectedIndex = newSelectedIndex;
-						if (GameState.gameState.deck.getHand().size() > selectedIndex) {
-							UIManager.setSelectedInfo(GameState.gameState.deck.getHandCard(selectedIndex));
-						}
-					}
-					return true;
 				}
 				if (keycode == Input.Keys.E) {
 					newTurn();
@@ -182,8 +170,44 @@ public class GameScreen extends ScreenAdapter {
 		newTurn();
 	}
 
+	void pressNum(int keycode) {
+		int newSelectedIndex;
+		if (keycode == Input.Keys.NUM_0) {
+			newSelectedIndex = 9;
+		} else {
+			newSelectedIndex = keycode - Input.Keys.NUM_1;
+		}
+		Deck deck = GameState.gameState.deck;
+		if (GameState.gameState.blocked) {
+			if (deck.cardsLeftToDiscard > 0) {
+				deck.discardCardAt(newSelectedIndex);
+				--deck.cardsLeftToDiscard;
+				if (deck.cardsLeftToDiscard <= 0) {
+					UIManager.queryTable.remove();
+					GameState.gameState.blocked = false;
+				} else {
+					Recycle2Card.createQueryTable(GameState.gameState, UIManager.stage);
+				}
+			} else if (BuyCard.cardSelection.size() > 0 && newSelectedIndex < BuyCard.cardSelection.size()) {
+				BuyCard.tryBuyCard(GameState.gameState, BuyCard.cardSelection.get(newSelectedIndex));
+			}
+			return;
+		}
+
+		if (selectedIndex != null && newSelectedIndex == selectedIndex) {
+			selectedIndex = null;
+			UIManager.removeSelectedInfo();
+		} else {
+			selectedIndex = newSelectedIndex;
+			if (GameState.gameState.deck.getHand().size() > selectedIndex) {
+				UIManager.setSelectedInfo(GameState.gameState.deck.getHandCard(selectedIndex));
+			}
+		}
+	}
+
 	void newTurn() {
 		GameState.gameState.newTurn();
+		GameState.gameState.paused = false;
 		selectedIndex = null;
 	}
 

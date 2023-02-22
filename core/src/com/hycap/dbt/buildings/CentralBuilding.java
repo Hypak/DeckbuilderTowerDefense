@@ -3,7 +3,7 @@ package com.hycap.dbt.buildings;
 import com.badlogic.gdx.graphics.Texture;
 import com.hycap.dbt.GameState;
 
-public class CentralBuilding extends AttackableBuilding {
+public class CentralBuilding extends AttackableBuilding implements CannotBeRemoved {
     public static Texture texture;
     public static int goldCapacity = 3;
     public static int energyPerTurn = 3;

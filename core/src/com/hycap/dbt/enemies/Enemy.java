@@ -27,7 +27,8 @@ public abstract class Enemy implements Updatable {
     AttackableBuilding targetBuilding;
     float targetDist;
     float attackRange;
-    float health;
+    public float health;
+    public float damageToTake;
     float offsetAngle;
     float maxOffsetAngle = (float)Math.PI / 8;
 
@@ -89,9 +90,12 @@ public abstract class Enemy implements Updatable {
     }
 
     public void attack(float damage) {
+        if (health <= 0) {
+            return;
+        }
+        health -= damage;
         GameState.gameState.addHurtParticle(position);
         attackSound.play();
-        health -= damage;
         if (health <= 0) {
             GameState.gameState.enemies.remove(this);
             KillEnemyTask.finished = true;

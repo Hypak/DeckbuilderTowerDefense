@@ -1,10 +1,8 @@
 package com.hycap.dbt.cards;
 
 import com.badlogic.gdx.graphics.Texture;
-import com.hycap.dbt.buildings.Building;
-import com.hycap.dbt.buildings.PathBuilding;
 
-public class Path0EnergyCard extends PathCard implements ExhaustCard {
+public class Path0EnergyCard extends PathCard implements ExhaustCard, EtherealCard {
     public static Texture texture;
 
     @Override

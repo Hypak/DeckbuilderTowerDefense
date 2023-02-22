@@ -3,7 +3,9 @@ package com.hycap.dbt.projectiles;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
 import com.hycap.dbt.GameState;
+import com.hycap.dbt.UIManager;
 import com.hycap.dbt.Updatable;
+import com.hycap.dbt.buildings.AbstractTowerBuilding;
 import com.hycap.dbt.enemies.Enemy;
 
 public abstract class Projectile implements Updatable {
@@ -12,6 +14,7 @@ public abstract class Projectile implements Updatable {
     public float projectileSpeed;
     public float projectileRadius;
     public float damage;
+    public AbstractTowerBuilding sourceBuilding = null;
 
     @Override
     public void update(float deltaT) {
@@ -24,7 +27,17 @@ public abstract class Projectile implements Updatable {
             move.scl(1 / targetDist);
             positionVector.add(move.scl(deltaT * projectileSpeed));
         } else {
+            if (sourceBuilding != null) {
+                if (targetEnemy.health <= damage) {
+                    sourceBuilding.damageDealt += targetEnemy.health;
+                    ++sourceBuilding.enemiesKilled;
+                } else {
+                    sourceBuilding.damageDealt += damage;
+                }
+                UIManager.updateInfoIfSelected(sourceBuilding);
+            }
             targetEnemy.attack(damage);
+            targetEnemy.damageToTake -= damage;
             GameState.gameState.projectilesToRemove.add(this);
         }
     }

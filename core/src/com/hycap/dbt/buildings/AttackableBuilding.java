@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.math.Vector2;
 import com.hycap.dbt.GameState;
+import com.hycap.dbt.UIManager;
 
 public abstract class AttackableBuilding extends Building {
     static Sound attackSound;
@@ -15,6 +16,7 @@ public abstract class AttackableBuilding extends Building {
 
     public float health;
     public float maxHealth;
+    float healthRepaired = 0;
     boolean destroyed = false;
 
     @Override
@@ -28,7 +30,11 @@ public abstract class AttackableBuilding extends Building {
 
     @Override
     public String getStats() {
-        return "Max Health: " + Math.round(maxHealth);
+        String res = "Max Health: " + Math.round(maxHealth);
+        if (healthRepaired > 0) {
+            res += "\nTotal Health Repaired: " + Math.round(healthRepaired);
+        }
+        return res;
     }
 
     public void attack(float damage) {
@@ -41,5 +47,13 @@ public abstract class AttackableBuilding extends Building {
             destroySound.play();
         }
         attackSound.play();
+    }
+
+    public void newTurn() {
+        if (maxHealth > health) {
+            healthRepaired += (maxHealth - health);
+            UIManager.updateInfoIfSelected(this);
+        }
+        health = maxHealth;
     }
 }

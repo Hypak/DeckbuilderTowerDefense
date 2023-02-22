@@ -60,7 +60,6 @@ public class SpikesBuilding extends Building implements Updatable {
 
     @Override
     public void onCreate(GameState gameState, boolean onRift) {
-        GameState.gameState.updatableBuildings.add(this);
         if (onRift) {
             damage *= 2;
             reloadTime *= 0.5f;
@@ -69,9 +68,7 @@ public class SpikesBuilding extends Building implements Updatable {
     }
 
     @Override
-    public void onDestroy(GameState gameState) {
-        GameState.gameState.updatableBuildings.remove(this);
-    }
+    public void onDestroy(GameState gameState) { }
 
     @Override
     public Building duplicate() {

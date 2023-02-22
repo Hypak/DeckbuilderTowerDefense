@@ -9,35 +9,47 @@ import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.hycap.dbt.Deck;
 import com.hycap.dbt.GameState;
 import com.hycap.dbt.SkinClass;
+import com.hycap.dbt.UIManager;
 
 public class Recycle2Card implements ActionCard, BuyableCard {
     public static Texture texture;
     @Override
     public boolean tryPlayCard(GameState gameState, Stage stage) {
-        if (!gameState.deck.drawNewCard()) {
+        final Deck deck = gameState.deck;
+        if (!deck.drawNewCard()) {
             return false;
         }
-        if (!gameState.deck.drawNewCard()) {
+        if (!deck.drawNewCard()) {
             return false;
         }
-        gameState.deck.discardCard(this);
-        final Table queryTable = new Table();
-        queryTable.setFillParent(true);
+        deck.discardCard(this);
+        deck.cardsLeftToDiscard = 2;
+        createQueryTable(gameState, stage);
+        return true;
+    }
+
+    public static void createQueryTable(GameState gameState, Stage stage) {
+        if (UIManager.queryTable != null) {
+            UIManager.queryTable.remove();
+        }
+        UIManager.queryTable = new Table();
+        UIManager.queryTable.setFillParent(true);
 
         Label label = new Label("Pick 2 cards to discard", SkinClass.skin);
-        queryTable.add(label).row();
+        UIManager.queryTable.add(label).row();
 
         final Table cardTable = new Table();
-        queryTable.setFillParent(true);
-        queryTable.add(cardTable);
+        UIManager.queryTable.setFillParent(true);
+        UIManager.queryTable.add(cardTable);
 
-        stage.addActor(queryTable);
+        stage.addActor(UIManager.queryTable);
 
         gameState.blocked = true;
-        final int[] cardsLeftToDiscard = {2};
-        for (final Card card : GameState.gameState.deck.getHand()) {
+        final Deck deck = GameState.gameState.deck;
+        for (final Card card : gameState.deck.getHand()) {
             TextureRegionDrawable image = new TextureRegionDrawable(new TextureRegion(card.getTexture()));
             image.setMinSize(108, 192);
             final ImageButton imageButton = new ImageButton(image, image);
@@ -47,16 +59,15 @@ public class Recycle2Card implements ActionCard, BuyableCard {
                 public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                     GameState.gameState.deck.discardCard(card);
                     imageButton.remove();
-                    --cardsLeftToDiscard[0];
-                    if (cardsLeftToDiscard[0] <= 0) {
+                    --deck.cardsLeftToDiscard;
+                    if (deck.cardsLeftToDiscard <= 0) {
                         GameState.gameState.blocked = false;
-                        queryTable.remove();
+                        UIManager.queryTable.remove();
                     }
                     return true;
                 }
             });
         }
-        return true;
     }
 
     @Override

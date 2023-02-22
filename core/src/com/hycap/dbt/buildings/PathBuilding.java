@@ -3,7 +3,7 @@ package com.hycap.dbt.buildings;
 import com.badlogic.gdx.graphics.Texture;
 import com.hycap.dbt.GameState;
 
-public class PathBuilding extends Building implements CanBuildOver {
+public class PathBuilding extends Building implements CannotBeRemoved, CanBeBuiltOver {
     public static Texture texture;
 
     @Override

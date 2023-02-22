@@ -194,15 +194,9 @@ public class Map {
         for (EnemyBase base : enemyBases) {
             if (isInRadius(base.position.getLeft(), base.position.getRight())) {
                 base.startTurn();
-                if (!GameState.gameState.updatableBuildings.contains(base)) {
-                    GameState.gameState.updatableBuildings.add(base);
+                if (!GameState.gameState.updatableBases.contains(base)) {
+                    GameState.gameState.updatableBases.add(base);
                 }
-            }
-        }
-        for (Building building : buildingList) {
-            if (building instanceof AttackableBuilding) {
-                AttackableBuilding attackableBuilding = (AttackableBuilding)building;
-                attackableBuilding.health = attackableBuilding.maxHealth;
             }
         }
     }
@@ -277,14 +271,11 @@ public class Map {
     }
 
     public boolean canPlaceBuilding(int x, int y) {
-        if (x < 0 || y < 0 || x >= SIZE || y >= SIZE) {
+        if (x < 0 || y < 0 || x >= SIZE || y >= SIZE || !isInRadius(x, y)) {
             return false;
         }
         if (this.buildings[x][y] != null) {
-            return this.buildings[x][y] instanceof CanBuildOver;
-        }
-        if (!isInRadius(x, y)) {
-            return false;
+            return this.buildings[x][y] instanceof CanBeBuiltOver;
         }
 
         Pair<Integer> position = new Pair<>(x, y);
@@ -312,7 +303,12 @@ public class Map {
         if (!canPlaceBuilding(x, y)) {
             return false;
         }
-
+        Building oldBuilding = this.buildings[x][y];
+        if (oldBuilding != null) {
+            if (building.getName().equals(oldBuilding.getName())) {
+                return false;
+            }
+        }
         this.buildings[x][y] = building;
         Pair<Integer> coords = new Pair<>(x, y);
         this.buildingList.add(building);
@@ -328,6 +324,14 @@ public class Map {
             BuildMageTask.finished = true;
         }
         ++GameState.gameState.gameStats.buildingsPlaced;
+        if (oldBuilding != null) {
+            this.buildingList.remove(oldBuilding);
+            UIManager.setSelectedInfo(building);
+            if (oldBuilding instanceof HasRange) {
+                GameScreen.gameScreen.selectedViewTowers.remove((HasRange) oldBuilding);
+            }
+            oldBuilding.onDestroy(GameState.gameState);
+        }
         return true;
     }
 

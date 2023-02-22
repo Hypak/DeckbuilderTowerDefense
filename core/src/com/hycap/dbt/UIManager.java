@@ -10,6 +10,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.hycap.dbt.buildings.Building;
+import com.hycap.dbt.buildings.CannotBeRemoved;
+import com.hycap.dbt.buildings.HasRange;
 import com.hycap.dbt.buildings.Upgradable;
 import com.hycap.dbt.cards.Card;
 import com.hycap.dbt.tasks.EndTurnTask;
@@ -30,7 +32,12 @@ public class UIManager {
 
     static Label selectedInfo;
     static TextButton buildingUpgrade;
+    static TextButton buildingRemove;
+    static int pressesUntilRemove;
+    static final int basePressesUntilRemove = 2;
+    static Table buildingButtonTable;
     static Table selectedInfoTable;
+    public static Building selectedBuilding = null;
 
     static Label roundInfo;
     static Table roundInfoTable;
@@ -38,7 +45,13 @@ public class UIManager {
     static Label taskInfoLabel;
     static Table taskInfoTable;
 
-    static TextButton fastForwardButton;
+    static TextButton pauseButton;
+    static TextButton slowSpeedButton;
+    static TextButton mediumSpeedButton;
+    static TextButton fastSpeedButton;
+    static TextButton revertButton;
+    static TextButton skipButton;
+
     static Table fastForwardTable;
 
     static boolean showingMenu = false;
@@ -47,12 +60,32 @@ public class UIManager {
     static Table menuTable;
     static boolean showingEndGameUI = false;
 
+    public static Table queryTable;
+
     public static void setSelectedInfo(Card card) {
+        removeSelectedInfo();
         selectedInfo.setText(GetObjectInfo.getInfo(card));
     }
 
+    public static void setSelectedInfo(EnemyBase base) {
+        removeSelectedInfo();
+        selectedInfo.setText(GetObjectInfo.getInfo(base));
+    }
+
     public static void setSelectedInfo(final Building building) {
+        removeSelectedInfo();
+        selectedBuilding = building;
         selectedInfo.setText(GetObjectInfo.getInfo(building));
+        buildingButtonTable = new Table();
+
+        selectedInfoTable = new Table();
+        selectedInfoTable.add(selectedInfo).row();
+        selectedInfoTable.add(buildingButtonTable).row();
+        selectedInfoTable.padRight(30);
+        selectedInfoTable.setFillParent(true);
+        selectedInfoTable.align(Align.right);
+        stage.addActor(selectedInfoTable);
+
         if (building instanceof Upgradable) {
             final Upgradable upgradable = (Upgradable) building;
             buildingUpgrade.remove();
@@ -65,26 +98,53 @@ public class UIManager {
                     }
                 }
             });
-            selectedInfoTable = new Table();
-            selectedInfoTable.add(selectedInfo).row();
-            selectedInfoTable.add(buildingUpgrade).row();
-            selectedInfoTable.padRight(30);
-            selectedInfoTable.setFillParent(true);
-            selectedInfoTable.align(Align.right);
-            stage.addActor(selectedInfoTable);
-        } else {
-            buildingUpgrade.remove();
+            buildingUpgrade.setDisabled(GameState.gameState.animating);
+
+            buildingButtonTable.add(buildingUpgrade).row();
+        }
+        if (!(building instanceof CannotBeRemoved)) {
+            buildingRemove.remove();
+            buildingRemove = new TextButton("Remove", SkinClass.skin);
+            pressesUntilRemove = basePressesUntilRemove;
+            buildingRemove.addListener(new ChangeListener() {
+                @Override
+                public void changed(ChangeEvent event, Actor actor) {
+                    --pressesUntilRemove;
+                    buildingRemove.setText("Confirm");
+                    if (pressesUntilRemove < 1) {
+                        GameState.gameState.map.removeBuilding(building);
+                        removeSelectedInfo();
+                        if (building instanceof HasRange) {
+                            GameScreen.gameScreen.selectedViewTowers.remove((HasRange) building);
+                        }
+                    }
+                }
+            });
+            buildingRemove.setDisabled(GameState.gameState.animating);
+            buildingButtonTable.add(buildingRemove).row();
         }
     }
 
-    public static void setSelectedInfo(EnemyBase base) {
-        selectedInfo.setText(GetObjectInfo.getInfo(base));
-        buildingUpgrade.remove();
+    public static void updateInfoIfSelected(final Building building) {
+        if (building.equals(selectedBuilding)) {
+            setSelectedInfo(selectedBuilding);
+        }
     }
 
     public static void removeSelectedInfo() {
         selectedInfo.setText("");
-        buildingUpgrade.remove();
+        selectedBuilding = null;
+        if (buildingButtonTable != null) {
+            buildingButtonTable.remove();
+        }
+    }
+
+    public static void startAnimating() {
+        buildingUpgrade.setDisabled(true);
+    }
+
+    public static void endAnimating() {
+        buildingUpgrade.setDisabled(false);
     }
 
     public static void hideAllCards() {
@@ -164,6 +224,8 @@ public class UIManager {
         selectedInfoTable.align(Align.right);
 
         buildingUpgrade = new TextButton("Upgrade n Gold", SkinClass.skin);
+        buildingRemove = new TextButton("Remove", SkinClass.skin);
+        buildingButtonTable = new Table(SkinClass.skin);
 
         roundInfo = new Label("Loading...", SkinClass.skin);
         roundInfoTable = new Table();
@@ -181,15 +243,58 @@ public class UIManager {
         taskInfoTable.padTop(30);
         taskInfoTable.padRight(30);
 
-        fastForwardButton = new TextButton(">>>", SkinClass.skin);
-        fastForwardButton.addListener(new ChangeListener() {
+        pauseButton = new TextButton("Pause", SkinClass.skin);
+        pauseButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                GameState.gameState.toggleFastForward();
+                GameState.gameState.paused = true;
+            }
+        });
+        slowSpeedButton = new TextButton(">", SkinClass.skin);
+        slowSpeedButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                GameState.gameState.setRunSpeed(GameState.RunSpeed.SLOW);
+                GameState.gameState.paused = false;
+            }
+        });
+        mediumSpeedButton = new TextButton(">>", SkinClass.skin);
+        mediumSpeedButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                GameState.gameState.setRunSpeed(GameState.RunSpeed.MEDIUM);
+                GameState.gameState.paused = false;
+            }
+        });
+        fastSpeedButton = new TextButton(">>>", SkinClass.skin);
+        fastSpeedButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                GameState.gameState.setRunSpeed(GameState.RunSpeed.FAST);
+                GameState.gameState.paused = false;
+            }
+        });
+        revertButton = new TextButton("<--", SkinClass.skin);
+        revertButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                // GameState.gameState = GameState.oldGameState;
+            }
+        });
+        skipButton = new TextButton("-->", SkinClass.skin);
+        skipButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                GameState.gameState.skipAnimation();
             }
         });
         fastForwardTable = new Table();
-        fastForwardTable.add(fastForwardButton);
+        fastForwardTable.add(pauseButton);
+        fastForwardTable.add(slowSpeedButton);
+        fastForwardTable.add(mediumSpeedButton);
+        fastForwardTable.add(fastSpeedButton);
+        fastForwardTable.add(revertButton);
+        fastForwardTable.add(skipButton);
         fastForwardTable.padTop(30);
         fastForwardTable.setFillParent(true);
         fastForwardTable.align(Align.top);

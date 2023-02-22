@@ -1,6 +1,7 @@
 package com.hycap.dbt;
 
 import com.hycap.dbt.buildings.Building;
+import com.hycap.dbt.buildings.Upgradable;
 import com.hycap.dbt.cards.Card;
 import com.hycap.dbt.cards.ExhaustCard;
 import com.hycap.dbt.enemies.Enemy;
@@ -18,6 +19,10 @@ public class GetObjectInfo {
 
     public static String getInfo(Building building) {
         StringBuilder string = new StringBuilder();
+        if (building instanceof Upgradable) {
+            Upgradable upgradable = (Upgradable) building;
+            string.append("Level ").append(upgradable.getUpgradeLevel()).append(" ");
+        }
         string.append(building.getName()).append("\n");
         string.append(building.getInfo()).append("\n");
         string.append(building.getStats());

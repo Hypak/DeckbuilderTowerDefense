@@ -9,6 +9,7 @@ public class Deck {
     private LinkedList<Card> drawPile;
     private List<Card> hand;
     private List<Card> discardPile;
+    public int cardsLeftToDiscard;
 
     public Deck() {
         this.cards = new ArrayList<>();
@@ -21,6 +22,8 @@ public class Deck {
         cards.add(new TowerCard());
         cards.add(new Recycle2Card());
         shuffleAll();
+
+        cardsLeftToDiscard = 0;
     }
 
     public List<Card> getHand() {
@@ -87,6 +90,11 @@ public class Deck {
     }
 
     public void drawNewHand(int handSize) {
+        for (Card card : hand) {
+            if (card instanceof EtherealCard) {
+                hand.remove(card);
+            }
+        }
         this.discardPile.addAll(hand);
         this.hand = new ArrayList<>();
         if (handSize > cards.size()) {

@@ -3,7 +3,7 @@ package com.hycap.dbt.buildings;
 import com.badlogic.gdx.graphics.Texture;
 import com.hycap.dbt.GameState;
 
-public class MineBuilding extends AttackableBuilding implements CanBuildOver {
+public class MineBuilding extends AttackableBuilding {
     public static Texture texture;
 
     public static final int goldCapacity = 2;
