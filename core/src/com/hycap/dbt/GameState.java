@@ -66,15 +66,19 @@ public class GameState {
 
     public GameState(GameScreen.Difficulty difficulty) {
         this.difficulty = difficulty;
-        if (difficulty == GameScreen.Difficulty.EASY) {
-            baseHandSize = 6;
-            CentralBuilding.energyPerTurn = 4;
-        } else if (difficulty == GameScreen.Difficulty.NORMAL) {
-            baseHandSize = 6;
-            CentralBuilding.energyPerTurn = 3;
-        } else if (difficulty == GameScreen.Difficulty.HARD) {
-            baseHandSize = 5;
-            CentralBuilding.energyPerTurn = 3;
+        switch (difficulty) {
+            case EASY:
+                baseHandSize = 6;
+                CentralBuilding.energyPerTurn = 4;
+                break;
+            case NORMAL:
+                baseHandSize = 6;
+                CentralBuilding.energyPerTurn = 3;
+                break;
+            case HARD:
+                baseHandSize = 5;
+                CentralBuilding.energyPerTurn = 3;
+                break;
         }
         baseEnergy = 0;
         blocked = false;
@@ -112,23 +116,14 @@ public class GameState {
         animating = true;
         UIManager.startAnimating();
         deck.drawNewHand(baseHandSize);
-        for (Card card : freeCardsPerTurn) {
-            deck.addToHand(card);
-        }
+        deck.addToHand(freeCardsPerTurn);
     }
 
     public void update(float deltaT) {
         if (paused || UIManager.showingMenu) {
             return;
         }
-        boolean attackableBuildingExists = false;
-        for (Building building : map.getBuildingList()) {
-            if (building instanceof AttackableBuilding) {
-                attackableBuildingExists = true;
-                break;
-            }
-        }
-        if (!attackableBuildingExists) {
+        if (map.areAllBuildingsDead()) {
             UIManager.showEndGameUI();
             return;
         }
@@ -142,25 +137,16 @@ public class GameState {
         deltaT *= runSpeed.speed();
         if (deltaT > maxDeltaT) {
             int updateCounts = (int)Math.floor(deltaT / maxDeltaT);
-            float updateRem = deltaT - updateCounts * maxDeltaT;
+            float updateRemainder = deltaT - updateCounts * maxDeltaT;
             for (int i = 0; i < updateCounts; ++i) {
                 performUpdate(maxDeltaT);
-                if (!animating) {
-                    break;
-                }
-                attackableBuildingExists = false;
-                for (Building building : map.getBuildingList()) {
-                    if (building instanceof AttackableBuilding) {
-                        attackableBuildingExists = true;
-                        break;
-                    }
-                }
-                if (!attackableBuildingExists) {
+                if (!animating || map.areAllBuildingsDead()) {
+                    animating = false;
                     break;
                 }
             }
-            if (updateRem > 0 && animating) {
-                performUpdate(updateRem);
+            if (updateRemainder > 0 && animating) {
+                performUpdate(updateRemainder);
             }
         } else {
             performUpdate(deltaT);
@@ -199,7 +185,7 @@ public class GameState {
             animating |= p.keepActive();
         }
         enemyProjectiles.removeAll(enemyProjectilesToRemove);
-        for (Enemy e : enemies) {
+        for (Updatable e : enemies) {
             e.update(deltaT);
             animating |= e.keepActive();
         }
@@ -217,7 +203,8 @@ public class GameState {
                 if (i >= RunSpeed.values().length) {
                     i = 0;
                 }
-                runSpeed = RunSpeed.values()[i];
+                setRunSpeed(RunSpeed.values()[i]);
+                break;
             }
         }
     }

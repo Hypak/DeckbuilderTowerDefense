@@ -199,7 +199,7 @@ public class GameScreen extends ScreenAdapter {
 			UIManager.removeSelectedInfo();
 		} else {
 			selectedIndex = newSelectedIndex;
-			if (GameState.gameState.deck.getHand().size() > selectedIndex) {
+			if (selectedIndex < GameState.gameState.deck.getHand().size()) {
 				UIManager.setSelectedInfo(GameState.gameState.deck.getHandCard(selectedIndex));
 			}
 		}
@@ -255,7 +255,7 @@ public class GameScreen extends ScreenAdapter {
 				if (buildingCard.getBuilding() instanceof HasRange) {
 					HasRange towerBuilding = (HasRange)(buildingCard.getBuilding());
 					float range = towerBuilding.getRange();
-					if (GameState.gameState.map.riftCoords.contains(new Pair<Integer>(x, y))) {
+					if (GameState.gameState.map.riftCoords.contains(new Pair<>(x, y))) {
 						range *= AbstractTowerBuilding.riftRangeMult;
 					}
 					TextureManager.draw(batch, TextureManager.circleTexture, x, y, 0.5f,

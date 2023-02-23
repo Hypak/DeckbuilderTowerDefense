@@ -364,4 +364,13 @@ public class Map {
     public List<Building> getBuildingList() {
         return buildingList;
     }
+
+    public boolean areAllBuildingsDead() {
+        for (Building building : getBuildingList()) {
+            if (building instanceof AttackableBuilding) {
+                return false;
+            }
+        }
+        return true;
+    }
 }
