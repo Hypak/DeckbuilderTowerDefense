@@ -20,7 +20,11 @@ public class CoffersBuilding extends AttackableBuilding {
 
     @Override
     public String getInfo() {
-        return "Store " + goldCapacity + " gold.";
+        int _goldCapacity = goldCapacity;
+        if (onRift) {
+            _goldCapacity *= 2;
+        }
+        return "Store " + _goldCapacity + " gold.";
     }
 
     @Override

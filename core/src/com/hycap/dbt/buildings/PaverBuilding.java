@@ -19,7 +19,11 @@ public class PaverBuilding extends AttackableBuilding {
 
     @Override
     public String getInfo() {
-        return "Produce a free path every turn.";
+        if (onRift) {
+            return "Produce two free paths every turn.";
+        } else {
+            return "Produce a free path every turn.";
+        }
     }
 
     @Override

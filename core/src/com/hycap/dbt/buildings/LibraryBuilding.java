@@ -14,7 +14,11 @@ public class LibraryBuilding extends AttackableBuilding {
 
     @Override
     public String getInfo() {
-        return "Get " + buyCardIncreaseCount + " more card to choose from when buying a card.";
+        int _buyCardIncreaseCount = buyCardIncreaseCount;
+        if (onRift) {
+            _buyCardIncreaseCount *= 2;
+        }
+        return "Get " + _buyCardIncreaseCount + " more card to choose from when buying a card.";
     }
 
     @Override

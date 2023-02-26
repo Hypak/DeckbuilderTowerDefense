@@ -17,7 +17,8 @@ import java.util.List;
 import java.util.Random;
 
 public class GameState {
-    private static final float maxDeltaT = 1/600f;
+    private static final float maxDeltaT = 1/60f;
+    private static final int skipSeconds = 1200;
 
     public static GameState gameState;
 
@@ -78,7 +79,7 @@ public class GameState {
             case EASY:
             default:
                 baseHandSize = 6;
-                CentralBuilding.energyPerTurn = 4;
+                CentralBuilding.energyPerTurn = 400;
                 break;
         }
         baseEnergy = 0;
@@ -130,8 +131,8 @@ public class GameState {
             return;
         }
         if (!animating) {
-            projectiles = new ArrayList<>();
-            enemyProjectiles = new ArrayList<>();
+            projectiles = new ArrayList<>(10);
+            enemyProjectiles = new ArrayList<>(10);
             return;
         }
         animating = false;
@@ -199,7 +200,7 @@ public class GameState {
     }
 
     void nextRunSpeed() {
-        RunSpeed[] values = RunSpeed.values();
+        final RunSpeed[] values = RunSpeed.values();
         for (int i = 0; i < RunSpeed.values().length; ++i) {
             if (values[i] == runSpeed) {
                 ++i;
@@ -212,9 +213,8 @@ public class GameState {
         }
     }
 
-    public void skipAnimation() {
-        // Hopefully 20 minutes is long enough
-        update(1200);
+    void skipAnimation() {
+        update(skipSeconds);
     }
 
     public void addHurtParticle(final Vector2 position) {

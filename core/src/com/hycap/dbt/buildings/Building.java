@@ -6,10 +6,10 @@ import com.hycap.dbt.GameState;
 import com.hycap.dbt.Pair;
 
 public abstract class Building {
-    Pair<Integer> position;
-    Vector2 vecPosition;
+    Pair<Integer> position = null;
+    Vector2 vecPosition = null;
 
-    boolean onRift;
+    boolean onRift = false;
 
     public abstract String getName();
 
@@ -34,9 +34,5 @@ public abstract class Building {
 
     public Pair<Integer> getPosition() {
         return position;
-    }
-
-    public boolean getOnRift() {
-        return onRift;
     }
 }

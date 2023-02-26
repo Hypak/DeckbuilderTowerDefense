@@ -21,8 +21,14 @@ public class MineBuilding extends AttackableBuilding {
 
     @Override
     public String getInfo() {
-        return "Generate " + goldPerTurn + " gold per turn.\nHold "
-                + goldCapacity + " more gold.";
+        int _goldCapacity = goldCapacity;
+        int _goldPerTurn = goldPerTurn;
+        if (onRift) {
+            _goldCapacity *= 2;
+            _goldPerTurn *= 2;
+        }
+        return "Generate " + _goldPerTurn + " gold per turn.\nHold "
+                + _goldCapacity + " more gold.";
     }
 
     @Override

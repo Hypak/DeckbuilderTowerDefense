@@ -20,7 +20,11 @@ public class MageBuilding extends AttackableBuilding {
 
     @Override
     public String getInfo() {
-        return "Generate " + energyIncrease + " more energy per turn.";
+        int _energyIncrease = energyIncrease;
+        if (onRift) {
+            _energyIncrease *= 2;
+        }
+        return "Generate " + _energyIncrease + " more energy per turn.";
     }
 
     @Override
