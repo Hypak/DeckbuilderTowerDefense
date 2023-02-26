@@ -52,17 +52,17 @@ public final class UIManager {
     private UIManager() {
     }
 
-    public static void setSelectedInfo(final Card card) {
+    static void setSelectedInfo(final Card card) {
         removeSelectedInfo();
         selectedInfo.setText(GetObjectInfo.getInfo(card));
     }
 
-    public static void setSelectedInfo(final EnemyBase base) {
+    static void setSelectedInfo(final EnemyBase base) {
         removeSelectedInfo();
         selectedInfo.setText(GetObjectInfo.getInfo(base));
     }
 
-    public static void setSelectedInfo(final Building building) {
+    static void setSelectedInfo(final Building building) {
         removeSelectedInfo();
         selectedBuilding = building;
         selectedInfo.setText(GetObjectInfo.getInfo(building));
@@ -122,7 +122,7 @@ public final class UIManager {
         }
     }
 
-    public static void removeSelectedInfo() {
+    static void removeSelectedInfo() {
         selectedInfo.setText("");
         selectedBuilding = null;
         if (buildingButtonTable != null) {
@@ -130,20 +130,20 @@ public final class UIManager {
         }
     }
 
-    public static void startAnimating() {
+    static void startAnimating() {
         buildingUpgrade.setDisabled(true);
     }
 
-    public static void endAnimating() {
+    static void endAnimating() {
         buildingUpgrade.setDisabled(false);
     }
 
-    public static void hideAllCards() {
+    static void hideAllCards() {
         showingAllCards = true;
         toggleShowCards();
     }
 
-    public static void toggleShowCards() {
+    static void toggleShowCards() {
         showingAllCards = !showingAllCards;
         // GameState.gameState.blocked = showingAllCards;
         cardTable.reset();
@@ -165,7 +165,7 @@ public final class UIManager {
         }
     }
 
-    public static void create(final GameScreen gameScreen) {
+    static void create(final GameScreen gameScreen) {
         stage = new Stage(new ExtendViewport(1920, 1080));
         tooltipManager = new TooltipManager();
         handTable = new Table();
@@ -173,7 +173,7 @@ public final class UIManager {
         viewAllCards = new TextButton("View deck", SkinClass.skin);
         goldDisplay = new Label("Loading...", SkinClass.skin);
         energyDisplay = new Label("Loading...", SkinClass.skin);
-        TextButton endTurnButton = new TextButton("End Turn", SkinClass.skin);
+        final TextButton endTurnButton = new TextButton("End Turn", SkinClass.skin);
 
         viewAllCards.addListener(new ChangeListener() {
             @Override
@@ -200,7 +200,7 @@ public final class UIManager {
         cardTable.align(Align.center);
         cardTable.setFillParent(true);
 
-        Table resourceTable = new Table();
+        final Table resourceTable = new Table();
         resourceTable.add(viewAllCards).row();
         resourceTable.add(cardCounts).row();
         resourceTable.add(goldDisplay).row();
@@ -225,7 +225,7 @@ public final class UIManager {
         buildingButtonTable = new Table(SkinClass.skin);
 
         roundInfo = new Label("Loading...", SkinClass.skin);
-        Table roundInfoTable = new Table();
+        final Table roundInfoTable = new Table();
         roundInfoTable.add(roundInfo);
         roundInfoTable.setFillParent(true);
         roundInfoTable.align(Align.topLeft);
@@ -233,21 +233,21 @@ public final class UIManager {
         roundInfoTable.padLeft(30);
 
         taskInfoLabel = new Label("Loading...", SkinClass.skin);
-        Table taskInfoTable = new Table();
+        final Table taskInfoTable = new Table();
         taskInfoTable.add(taskInfoLabel);
         taskInfoTable.setFillParent(true);
         taskInfoTable.align(Align.topRight);
         taskInfoTable.padTop(30);
         taskInfoTable.padRight(30);
 
-        TextButton pauseButton = new TextButton("Pause", SkinClass.skin);
+        final TextButton pauseButton = new TextButton("Pause", SkinClass.skin);
         pauseButton.addListener(new ChangeListener() {
             @Override
             public void changed(final ChangeEvent event, final Actor actor) {
                 GameState.gameState.paused = true;
             }
         });
-        TextButton slowSpeedButton = new TextButton(">", SkinClass.skin);
+        final TextButton slowSpeedButton = new TextButton(">", SkinClass.skin);
         slowSpeedButton.addListener(new ChangeListener() {
             @Override
             public void changed(final ChangeEvent event, final Actor actor) {
@@ -255,7 +255,7 @@ public final class UIManager {
                 GameState.gameState.paused = false;
             }
         });
-        TextButton mediumSpeedButton = new TextButton(">>", SkinClass.skin);
+        final TextButton mediumSpeedButton = new TextButton(">>", SkinClass.skin);
         mediumSpeedButton.addListener(new ChangeListener() {
             @Override
             public void changed(final ChangeEvent event, final Actor actor) {
@@ -263,7 +263,7 @@ public final class UIManager {
                 GameState.gameState.paused = false;
             }
         });
-        TextButton fastSpeedButton = new TextButton(">>>", SkinClass.skin);
+        final TextButton fastSpeedButton = new TextButton(">>>", SkinClass.skin);
         fastSpeedButton.addListener(new ChangeListener() {
             @Override
             public void changed(final ChangeEvent event, final Actor actor) {
@@ -271,26 +271,18 @@ public final class UIManager {
                 GameState.gameState.paused = false;
             }
         });
-        TextButton revertButton = new TextButton("<--", SkinClass.skin);
-        revertButton.addListener(new ChangeListener() {
-            @Override
-            public void changed(final ChangeEvent event, final Actor actor) {
-                // GameState.gameState = GameState.oldGameState;
-            }
-        });
-        TextButton skipButton = new TextButton("-->", SkinClass.skin);
+        final TextButton skipButton = new TextButton("-->", SkinClass.skin);
         skipButton.addListener(new ChangeListener() {
             @Override
             public void changed(final ChangeEvent event, final Actor actor) {
                 GameState.gameState.skipAnimation();
             }
         });
-        Table fastForwardTable = new Table();
+        final Table fastForwardTable = new Table();
         fastForwardTable.add(pauseButton);
         fastForwardTable.add(slowSpeedButton);
         fastForwardTable.add(mediumSpeedButton);
         fastForwardTable.add(fastSpeedButton);
-        fastForwardTable.add(revertButton);
         fastForwardTable.add(skipButton);
         fastForwardTable.padTop(30);
         fastForwardTable.setFillParent(true);
@@ -325,7 +317,7 @@ public final class UIManager {
         stage.addActor(fastForwardTable);
     }
 
-    public static void render(final GameScreen gameScreen) {
+    static void render(final GameScreen gameScreen) {
         updateHandTable(gameScreen);
         updateDisplays();
 
@@ -404,7 +396,7 @@ public final class UIManager {
         taskInfoLabel.setText(TaskManager.getAllTaskDescriptions());
     }
 
-    public static void toggleMenuButton() {
+    static void toggleMenuButton() {
         if (showingMenu) {
             showingMenu = false;
             menuTable.remove();
@@ -414,7 +406,7 @@ public final class UIManager {
         }
     }
 
-    public static void showEndGameUI() {
+    static void showEndGameUI() {
         if (showingEndGameUI) {
             return;
         }
