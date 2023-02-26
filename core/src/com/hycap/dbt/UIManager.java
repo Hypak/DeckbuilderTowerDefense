@@ -104,6 +104,7 @@ public final class UIManager {
                     buildingRemove.setText("Confirm");
                     if (pressesUntilRemove < 1) {
                         GameState.gameState.map.removeBuilding(building);
+                        building.onDestroy(GameState.gameState);
                         removeSelectedInfo();
                         if (building instanceof HasRange) {
                             GameScreen.gameScreen.selectedViewTowers.remove((HasRange) building);
