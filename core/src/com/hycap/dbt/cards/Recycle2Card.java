@@ -17,7 +17,7 @@ import com.hycap.dbt.UIManager;
 public class Recycle2Card implements ActionCard, BuyableCard {
     public static Texture texture;
     @Override
-    public boolean tryPlayCard(GameState gameState, Stage stage) {
+    public boolean tryPlayCard(final GameState gameState, final Stage stage) {
         final Deck deck = gameState.deck;
         if (!deck.drawNewCard()) {
             return false;
@@ -31,14 +31,14 @@ public class Recycle2Card implements ActionCard, BuyableCard {
         return true;
     }
 
-    public static void createQueryTable(GameState gameState, Stage stage) {
+    public static void createQueryTable(final GameState gameState, final Stage stage) {
         if (UIManager.queryTable != null) {
             UIManager.queryTable.remove();
         }
         UIManager.queryTable = new Table();
         UIManager.queryTable.setFillParent(true);
 
-        Label label = new Label("Pick 2 cards to discard", SkinClass.skin);
+        final Label label = new Label("Pick 2 cards to discard", SkinClass.skin);
         UIManager.queryTable.add(label).row();
 
         final Table cardTable = new Table();
@@ -50,13 +50,13 @@ public class Recycle2Card implements ActionCard, BuyableCard {
         gameState.blocked = true;
         final Deck deck = GameState.gameState.deck;
         for (final Card card : gameState.deck.getHand()) {
-            TextureRegionDrawable image = new TextureRegionDrawable(new TextureRegion(card.getTexture()));
+            final TextureRegionDrawable image = new TextureRegionDrawable(new TextureRegion(card.getTexture()));
             image.setMinSize(108, 192);
             final ImageButton imageButton = new ImageButton(image, image);
             cardTable.add(imageButton);
             imageButton.addListener(new InputListener() {
                 @Override
-                public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                public boolean touchDown(final InputEvent event, final float x, final float y, final int pointer, final int button) {
                     GameState.gameState.deck.discardCard(card);
                     imageButton.remove();
                     --deck.cardsLeftToDiscard;

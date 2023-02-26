@@ -23,22 +23,22 @@ public class PaverBuilding extends AttackableBuilding {
     }
 
     @Override
-    public void onCreate(GameState gameState, boolean onRift) {
+    public void onCreate(final GameState gameState, final boolean onRift) {
         GameState.gameState.freeCardsPerTurn.add(new Path0EnergyCard());
         if (onRift) {
             GameState.gameState.freeCardsPerTurn.add(new Path0EnergyCard());
         }
-        super.health = 50;
+        health = 50;
         super.onCreate(gameState, onRift);
     }
 
     @Override
-    public void onDestroy(GameState gameState) {
+    public void onDestroy(final GameState gameState) {
         int removeCount = 1;
         if (onRift) {
             ++removeCount;
         }
-        for (Card card : GameState.gameState.freeCardsPerTurn) {
+        for (final Card card : GameState.gameState.freeCardsPerTurn) {
             if (card instanceof Path0EnergyCard) {
                 GameState.gameState.freeCardsPerTurn.remove(card);
                 --removeCount;

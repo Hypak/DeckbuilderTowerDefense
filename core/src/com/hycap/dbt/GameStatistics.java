@@ -1,8 +1,8 @@
 package com.hycap.dbt;
 
 public class GameStatistics {
-    int radius;
-    int maxRadius;
+    private int radius;
+    private int maxRadius;
     int enemyBasesDestroyed;
     int totalEnemyBases;
     int buildingsPlaced;
@@ -11,20 +11,20 @@ public class GameStatistics {
     public int getRadius() {
         return radius;
     }
-    public void setRadius(int radius) {
+    void setRadius(final int radius) {
         this.radius = radius;
         DBTGame.recordsHolder.updateBestRound(GameState.gameState.difficulty, radius);
     }
     public int getMaxRadius() {
         return maxRadius;
     }
-    public void setMaxRadius(int maxRadius) {
+    public void setMaxRadius(final int maxRadius) {
         this.maxRadius = maxRadius;
     }
     public int getEnemyBasesDestroyed() {
         return enemyBasesDestroyed;
     }
-    public void setEnemyBasesDestroyed(int enemyBasesDestroyed) {
+    public void setEnemyBasesDestroyed(final int enemyBasesDestroyed) {
         this.enemyBasesDestroyed = enemyBasesDestroyed;
         DBTGame.recordsHolder.updateMostBases(GameState.gameState.difficulty, enemyBasesDestroyed);
     }
@@ -37,7 +37,7 @@ public class GameStatistics {
         return totalEnemyBases;
     }
 
-    public void setTotalEnemyBases(int totalEnemyBases) {
+    public void setTotalEnemyBases(final int totalEnemyBases) {
         this.totalEnemyBases = totalEnemyBases;
     }
 
@@ -45,26 +45,26 @@ public class GameStatistics {
         return buildingsPlaced;
     }
 
-    public void setBuildingsPlaced(int buildingsPlaced) {
+    public void setBuildingsPlaced(final int buildingsPlaced) {
         this.buildingsPlaced = buildingsPlaced;
     }
 
     public int getCardsBought() {
         return cardsBought;
     }
-    public void setCardsBought(int cardsBought) {
+    public void setCardsBought(final int cardsBought) {
         this.cardsBought = cardsBought;
     }
     public void incrementCardsBought() {
-        ++this.cardsBought;
+        ++cardsBought;
     }
 
 
-    public GameStatistics(GameState gameState) {
+    GameStatistics(final GameState gameState) {
         radius = gameState.map.currentRadius;
         maxRadius = gameState.map.SIZE / 2;
         enemyBasesDestroyed = 0;
-        totalEnemyBases = gameState.map.enemyBases.size();
+        totalEnemyBases = gameState.map.enemyBaseManager.enemyBases.size();
         buildingsPlaced = 0;
         cardsBought = 0;
     }

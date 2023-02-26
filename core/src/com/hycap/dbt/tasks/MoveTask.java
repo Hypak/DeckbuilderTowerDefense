@@ -1,8 +1,5 @@
 package com.hycap.dbt.tasks;
 
-import com.badlogic.gdx.math.Vector3;
-import com.hycap.dbt.CameraManager;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,7 +13,7 @@ public class MoveTask implements Task {
 
     @Override
     public List<Task> getNextTasks() {
-        List<Task> next = new ArrayList<>();
+        final List<Task> next = new ArrayList<>();
         next.add(new ScrollTask());
         return next;
     }

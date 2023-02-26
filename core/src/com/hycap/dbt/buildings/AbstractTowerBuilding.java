@@ -8,25 +8,25 @@ import com.hycap.dbt.projectiles.Projectile;
 import com.hycap.dbt.tasks.KillBaseTask;
 
 public abstract class AbstractTowerBuilding extends AttackableBuilding implements Updatable, HasRange, Upgradable {
-    public float damage;
-    public float reloadTime;
+    float damage;
+    float reloadTime;
     float timeUntilNextReload;
-    public float range;
-    public Projectile projectileType;
+    float range;
+    Projectile projectileType;
 
-    public static float riftDamageMult = 1.2f;
-    public static float riftReloadMult = 0.8f;
-    public static float riftRangeMult = 1.2f;
-    public static float upgradeDamageMult = 1.2f;
-    public static float upgradeReloadMult = 0.9f;
-    public static float upgradeRangeMult = 1.1f;
-    public static int baseUpgradeCost = 8;
-    public static float upgradeCostMult = 1.5f;
-    public int currentUpgradeCost;
+    private static final float riftDamageMult = 1.2f;
+    private static final float riftReloadMult = 0.8f;
+    public static final float riftRangeMult = 1.2f;
+    private static final float upgradeDamageMult = 1.2f;
+    private static final float upgradeReloadMult = 0.9f;
+    private static final float upgradeRangeMult = 1.1f;
+    private static final int baseUpgradeCost = 8;
+    private static final float upgradeCostMult = 1.5f;
+    private int currentUpgradeCost;
     public float damageDealt = 0;
     public int enemiesKilled = 0;
-    public int basesDestroyed = 0;
-    public int upgradeLevel = 1;
+    private int basesDestroyed = 0;
+    private int upgradeLevel = 1;
 
     public abstract String getName();
 
@@ -40,10 +40,10 @@ public abstract class AbstractTowerBuilding extends AttackableBuilding implement
 
     @Override
     public String getStats() {
-        float roundedDamage = Math.round(damage * 10f) / 10f;
-        float roundedReloadTime = Math.round(reloadTime * 100f) / 100f;
-        float roundedRange = Math.round(range * 100f) / 100f;
-        float roundedDamageDealt = Math.round(damageDealt);
+        final float roundedDamage = Math.round(damage * 10f) / 10f;
+        final float roundedReloadTime = Math.round(reloadTime * 100f) / 100f;
+        final float roundedRange = Math.round(range * 100f) / 100f;
+        final float roundedDamageDealt = Math.round(damageDealt);
         String res = "Damage: " + roundedDamage + "\nReload time: " + roundedReloadTime + "\nRange: " + roundedRange +
                  "\n" + super.getStats() + "\nDamage Dealt: " + roundedDamageDealt + "\nEnemies Killed: " + enemiesKilled;
         if (basesDestroyed > 0) {
@@ -53,7 +53,7 @@ public abstract class AbstractTowerBuilding extends AttackableBuilding implement
     }
 
     @Override
-    public void onCreate(GameState gameState, boolean onRift) {
+    public void onCreate(final GameState gameState, final boolean onRift) {
         super.onCreate(gameState, onRift);
         currentUpgradeCost = baseUpgradeCost;
         if (onRift) {
@@ -64,28 +64,28 @@ public abstract class AbstractTowerBuilding extends AttackableBuilding implement
         killBasesInRange();
     }
 
-    void killBasesInRange() {
-        for (int i = 0; i < GameState.gameState.map.enemyBases.size(); ++i) {
-            EnemyBase base = GameState.gameState.map.enemyBases.get(i);
-            int xDiff = base.position.getLeft() - position.getLeft();
-            int yDiff = base.position.getRight() - position.getRight();
-            float squareDist = xDiff*xDiff + yDiff*yDiff;
+    private void killBasesInRange() {
+        for (int i = 0; i < GameState.gameState.map.enemyBaseManager.enemyBases.size(); ++i) {
+            final EnemyBase base = GameState.gameState.map.enemyBaseManager.enemyBases.get(i);
+            final int xDiff = base.position.getLeft() - position.getLeft();
+            final int yDiff = base.position.getRight() - position.getRight();
+            final float squareDist = xDiff*xDiff + yDiff*yDiff;
             if (squareDist <= range * range) {
                 GameState.gameState.addHurtParticle(new Vector2(base.position.getLeft(), base.position.getRight()));
-                GameState.gameState.map.destroyEnemyBase(base);
+                GameState.gameState.map.enemyBaseManager.destroyEnemyBase(base);
                 --i;
                 KillBaseTask.finished = true;
                 GameState.gameState.gameStats.incrementEnemyBasesDestroyed();
-                ++this.basesDestroyed;
+                ++basesDestroyed;
             }
         }
     }
 
     @Override
-    public void onDestroy(GameState gameState) { }
+    public void onDestroy(final GameState gameState) { }
 
     @Override
-    public boolean tryUpgrade(GameState gameState) {
+    public boolean tryUpgrade(final GameState gameState) {
         if (gameState.gold < currentUpgradeCost) {
             return false;
         }
@@ -110,17 +110,17 @@ public abstract class AbstractTowerBuilding extends AttackableBuilding implement
     }
 
     @Override
-    public void update(float deltaT) {
+    public void update(final float deltaT) {
         timeUntilNextReload -= deltaT;
         if (timeUntilNextReload <= 0) {
             float closestEnemyDist = range;
             Enemy closestEnemy = null;
-            for (Enemy enemy : GameState.gameState.enemies) {
+            for (final Enemy enemy : GameState.gameState.enemies) {
                 if (enemy.damageToTake >= enemy.health) {
                     continue;
                 }
-                Vector2 diff = new Vector2(vecPosition).sub(enemy.getPosition());
-                float dist = diff.len();
+                final Vector2 diff = new Vector2(vecPosition).sub(enemy.getPosition());
+                final float dist = diff.len();
                 if (dist < closestEnemyDist) {
                     closestEnemyDist = dist;
                     closestEnemy = enemy;
@@ -133,9 +133,9 @@ public abstract class AbstractTowerBuilding extends AttackableBuilding implement
         }
     }
 
-    public void attackEnemy(Enemy enemy) {
+    void attackEnemy(final Enemy enemy) {
         enemy.damageToTake += damage;
-        Projectile newProjectile = projectileType.duplicate();
+        final Projectile newProjectile = projectileType.duplicate();
         newProjectile.positionVector = new Vector2(position.getLeft(), position.getRight());
         newProjectile.targetEnemy = enemy;
         newProjectile.damage = damage;

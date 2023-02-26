@@ -12,7 +12,7 @@ public class KillEnemyTask implements Task {
 
     @Override
     public List<Task> getNextTasks() {
-        List<Task> next = new ArrayList<>();
+        final List<Task> next = new ArrayList<>();
         next.add(new FastforwardTask());
         next.add(new KillBaseTask());
         return next;

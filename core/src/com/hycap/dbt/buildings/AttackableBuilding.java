@@ -7,25 +7,25 @@ import com.hycap.dbt.GameState;
 import com.hycap.dbt.UIManager;
 
 public abstract class AttackableBuilding extends Building {
-    static Sound attackSound;
-    static Sound destroySound;
+    private static final Sound attackSound;
+    private static final Sound destroySound;
     static {
         attackSound = Gdx.audio.newSound(Gdx.files.internal("BuildingHit.ogg"));
         destroySound = Gdx.audio.newSound(Gdx.files.internal("BuildingDestroy.ogg"));
     }
 
-    public float health;
-    public float maxHealth;
-    float healthRepaired = 0;
-    boolean destroyed = false;
+    float health;
+    private float maxHealth;
+    private float healthRepaired = 0;
+    private boolean destroyed = false;
 
     @Override
-    public void onCreate(GameState gameState, boolean onRift) {
+    public void onCreate(final GameState gameState, final boolean onRift) {
         super.onCreate(gameState, onRift);
         if (onRift) {
             health *= 1.5;
         }
-        this.maxHealth = health;
+        maxHealth = health;
     }
 
     @Override
@@ -37,7 +37,7 @@ public abstract class AttackableBuilding extends Building {
         return res;
     }
 
-    public void attack(float damage) {
+    public void attack(final float damage) {
         health -= damage;
         GameState.gameState.addHurtParticle(new Vector2(position.getLeft(), position.getRight()));
         if (health < 0 && !destroyed) {

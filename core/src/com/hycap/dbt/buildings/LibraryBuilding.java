@@ -6,7 +6,7 @@ import com.hycap.dbt.cards.BuyCard;
 
 public class LibraryBuilding extends AttackableBuilding {
     public static Texture texture;
-    static int buyCardIncreaseCount = 1;
+    private static final int buyCardIncreaseCount = 1;
     @Override
     public String getName() {
         return "Library";
@@ -23,8 +23,8 @@ public class LibraryBuilding extends AttackableBuilding {
     }
 
     @Override
-    public void onCreate(GameState gameState, boolean onRift) {
-        super.health = 25;
+    public void onCreate(final GameState gameState, final boolean onRift) {
+        health = 25;
         BuyCard.shownCardAmount += buyCardIncreaseCount;
         if (onRift) {
             BuyCard.shownCardAmount += buyCardIncreaseCount;
@@ -34,7 +34,7 @@ public class LibraryBuilding extends AttackableBuilding {
     }
 
     @Override
-    public void onDestroy(GameState gameState) {
+    public void onDestroy(final GameState gameState) {
         BuyCard.shownCardAmount -= buyCardIncreaseCount;
         if (onRift) {
             BuyCard.shownCardAmount -= buyCardIncreaseCount;

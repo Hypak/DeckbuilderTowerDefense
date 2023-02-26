@@ -6,8 +6,8 @@ public class EarthquakeProjectile extends Projectile {
     public static Texture texture;
 
     public EarthquakeProjectile() {
-        super.projectileRadius = 0.4f;
-        super.projectileSpeed = 4;
+        projectileRadius = 0.4f;
+        projectileSpeed = 4;
     }
 
     @Override
@@ -22,6 +22,6 @@ public class EarthquakeProjectile extends Projectile {
 
     @Override
     public float getTextureScale() {
-        return super.projectileRadius;
+        return projectileRadius;
     }
 }

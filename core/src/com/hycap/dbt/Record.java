@@ -1,13 +1,13 @@
 package com.hycap.dbt;
 
-public class Record {
+class Record {
     public int mostRounds;
     public int mostBasesDestroyed;
-    public Record(int mostRounds, int mostBasesDestroyed) {
+    Record(final int mostRounds, final int mostBasesDestroyed) {
         this.mostRounds = mostRounds;
         this.mostBasesDestroyed = mostBasesDestroyed;
     }
-    public void updateRecord(int mostRounds, int mostBasesDestroyed) {
+    void updateRecord(final int mostRounds, final int mostBasesDestroyed) {
         if (mostRounds > this.mostRounds) {
             this.mostRounds = mostRounds;
         }
@@ -16,7 +16,7 @@ public class Record {
         }
     }
 
-    public void updateRecord(Record record) {
+    void updateRecord(final Record record) {
         updateRecord(record.mostRounds, record.mostBasesDestroyed);
     }
 }

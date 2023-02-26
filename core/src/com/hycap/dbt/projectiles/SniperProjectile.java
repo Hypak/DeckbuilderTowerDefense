@@ -6,8 +6,8 @@ public class SniperProjectile extends Projectile {
     public static Texture texture;
 
     public SniperProjectile() {
-        super.projectileSpeed = 10;
-        super.projectileRadius = 0.5f;
+        projectileSpeed = 10;
+        projectileRadius = 0.5f;
     }
 
     @Override
@@ -22,6 +22,6 @@ public class SniperProjectile extends Projectile {
 
     @Override
     public float getTextureScale() {
-        return super.projectileRadius;
+        return projectileRadius;
     }
 }

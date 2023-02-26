@@ -4,11 +4,11 @@ public class Pair<T> {
     private T left;
     private T right;
 
-    public void setLeft(T left) {
+    public void setLeft(final T left) {
         this.left = left;
     }
 
-    public void setRight(T right) {
+    public void setRight(final T right) {
         this.right = right;
     }
 
@@ -20,15 +20,15 @@ public class Pair<T> {
         return right;
     }
 
-    public Pair(T left, T right) {
+    public Pair(final T left, final T right) {
         this.left = left;
         this.right = right;
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (o instanceof Pair) {
-            Pair pair = (Pair)o;
+            final Pair pair = (Pair)o;
             return pair.getLeft().equals(left) && pair.getRight().equals(right);
         }
         return false;

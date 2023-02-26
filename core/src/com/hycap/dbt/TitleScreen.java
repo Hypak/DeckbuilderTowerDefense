@@ -12,13 +12,12 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.ScreenUtils;
 
-public class TitleScreen extends ScreenAdapter {
+class TitleScreen extends ScreenAdapter {
 
-    Table startTable;
-    Stage stage;
+    private Stage stage;
 
     @Override
-    public void render(float deltaT) {
+    public void render(final float deltaT) {
         ScreenUtils.clear(230/255f, 240/255f, 255/255f, 1);
 
         stage.act(deltaT);
@@ -28,21 +27,21 @@ public class TitleScreen extends ScreenAdapter {
     @Override
     public void show() {
         stage = new Stage();
-        startTable = new Table();
-        String[] names = new String[]{"Easy", "Normal", "Hard"};
+        Table startTable = new Table();
+        final String[] names = new String[]{"Easy", "Normal", "Hard"};
         for (int i = 0; i < names.length; ++i) {
             final GameScreen.Difficulty difficulty = GameScreen.Difficulty.values()[i];
-            Button button = new TextButton("Start " + names[i] + " Game", SkinClass.skin);
+            final Button button = new TextButton("Start " + names[i] + " Game", SkinClass.skin);
             button.addListener(new ClickListener() {
                 @Override
-                public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+                public void touchUp(final InputEvent event, final float x, final float y, final int pointer, final int button) {
                     DBTGame.game.setScreen(new GameScreen(difficulty));
                 }
             });
-            Record record = DBTGame.recordsHolder.records.get(difficulty);
-            Label roundLabel = new Label("Best Round: " + record.mostRounds +
+            final Record record = DBTGame.recordsHolder.records.get(difficulty);
+            final Label roundLabel = new Label("Best Round: " + record.mostRounds +
                     " / " + Map.difficultyRadius.get(difficulty), SkinClass.skin);
-            Label baseLabel = new Label("Most Bases Destroyed: " + record.mostBasesDestroyed, SkinClass.skin);
+            final Label baseLabel = new Label("Most Bases Destroyed: " + record.mostBasesDestroyed, SkinClass.skin);
             startTable.add(button).pad(15);
             startTable.add(roundLabel).pad(15);
             startTable.add(baseLabel).row();
@@ -54,8 +53,4 @@ public class TitleScreen extends ScreenAdapter {
         Gdx.input.setInputProcessor(stage);
     }
 
-    @Override
-    public void hide() {
-        super.hide();
-    }
 }

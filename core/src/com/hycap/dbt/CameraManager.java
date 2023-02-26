@@ -9,25 +9,31 @@ import com.badlogic.gdx.math.Vector3;
 import com.hycap.dbt.tasks.MoveTask;
 import com.hycap.dbt.tasks.ScrollTask;
 
-public class CameraManager {
-    public static OrthographicCamera camera;
-    public static float panSpeed = 15;
-    public static InputProcessor cameraProcessor;
+final class CameraManager {
+    static OrthographicCamera camera;
+    private static final float panSpeed = 15;
+    static InputProcessor cameraProcessor;
 
-    public static void create() {
+    private CameraManager() {
+    }
+
+    static {
         camera = new OrthographicCamera();
+    }
+
+    static void create() {
         camera.setToOrtho(false, 20,
                 20f * Gdx.graphics.getHeight() / Gdx.graphics.getWidth());
         resetCamera();
         cameraProcessor = new InputAdapter() {
             @Override
-            public boolean scrolled(float amountX, float amountY) {
-                double zoomSpeed = 1.1f;
-                float zoomMult = (float) Math.pow(zoomSpeed, amountY);
+            public boolean scrolled(final float amountX, final float amountY) {
+                final double zoomSpeed = 1.1f;
+                final float zoomMult = (float) Math.pow(zoomSpeed, amountY);
                 camera.zoom *= zoomMult;
-                Vector3 mousePos = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
+                final Vector3 mousePos = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
                 camera.unproject(mousePos);
-                Vector3 moveVec = new Vector3(camera.position).sub(mousePos);
+                final Vector3 moveVec = new Vector3(camera.position).sub(mousePos);
                 moveVec.scl(zoomMult - 1);
                 camera.translate(moveVec);
                 ScrollTask.finished = true;
@@ -36,8 +42,8 @@ public class CameraManager {
         };
     }
 
-    public static void update() {
-        float move = Gdx.graphics.getDeltaTime() * camera.zoom * panSpeed;
+    static void update() {
+        final float move = Gdx.graphics.getDeltaTime() * camera.zoom * panSpeed;
         if (Gdx.input.isKeyPressed(Input.Keys.W) || Gdx.input.isKeyPressed(Input.Keys.UP)) {
             camera.position.y += move;
             MoveTask.finished = true;
@@ -60,7 +66,7 @@ public class CameraManager {
         camera.update();
     }
 
-    public static void resetCamera() {
+    static void resetCamera() {
         camera.position.set(GameState.gameState.map.SIZE / 2f, GameState.gameState.map.SIZE / 2f, 0);
         camera.zoom = (GameState.gameState.map.currentRadius + 4) / 6f;
     }

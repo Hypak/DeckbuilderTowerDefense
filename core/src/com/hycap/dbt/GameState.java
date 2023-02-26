@@ -17,15 +17,15 @@ import java.util.List;
 import java.util.Random;
 
 public class GameState {
-    public static float maxDeltaT = 1/600f;
+    private static final float maxDeltaT = 1/600f;
 
     public static GameState gameState;
 
-    public GameScreen.Difficulty difficulty;
-    public Map map;
-    public Deck deck;
-    public GameStatistics gameStats;
-    public int baseHandSize;
+    public final GameScreen.Difficulty difficulty;
+    public final Map map;
+    public final Deck deck;
+    public final GameStatistics gameStats;
+    private final int baseHandSize;
     public int baseEnergy;
     public int currentEnergy;
 
@@ -33,30 +33,30 @@ public class GameState {
     public int maxGold;
     public int goldPerTurn;
     public boolean blocked;
-    public boolean animating;
+    boolean animating;
 
-    public RunSpeed runSpeed;
-    public boolean paused;
+    private RunSpeed runSpeed;
+    boolean paused;
 
-    public List<Card> freeCardsPerTurn;
+    public final List<Card> freeCardsPerTurn;
 
-    public List<Enemy> enemies;
-    public List<EnemyBase> updatableBases;
+    public final List<Enemy> enemies;
+    final List<EnemyBase> updatableBases;
     public List<Projectile> projectiles;
-    public List<Projectile> projectilesToRemove;
+    public List<Projectile> projectilesToRemove = null;
     public List<EnemyProjectile> enemyProjectiles;
-    public List<EnemyProjectile> enemyProjectilesToRemove;
+    public List<EnemyProjectile> enemyProjectilesToRemove = null;
 
-    public List<MyParticle> particles;
+    final List<MyParticle> particles;
 
-    public Texture hitMarkTexture;
+    private final Texture hitMarkTexture;
 
     public enum RunSpeed {
         SLOW (1f),
         MEDIUM (3f),
         FAST(9f);
         private final float speed;
-        RunSpeed(float speed) {
+        RunSpeed(final float speed) {
             this.speed = speed;
         }
         private float speed() {
@@ -64,13 +64,9 @@ public class GameState {
         }
     }
 
-    public GameState(GameScreen.Difficulty difficulty) {
+    public GameState(final GameScreen.Difficulty difficulty) {
         this.difficulty = difficulty;
         switch (difficulty) {
-            case EASY:
-                baseHandSize = 6;
-                CentralBuilding.energyPerTurn = 4;
-                break;
             case NORMAL:
                 baseHandSize = 6;
                 CentralBuilding.energyPerTurn = 3;
@@ -79,9 +75,15 @@ public class GameState {
                 baseHandSize = 5;
                 CentralBuilding.energyPerTurn = 3;
                 break;
+            case EASY:
+            default:
+                baseHandSize = 6;
+                CentralBuilding.energyPerTurn = 4;
+                break;
         }
         baseEnergy = 0;
         blocked = false;
+        animating = false;
         gold = 0;
         maxGold = 0;
         goldPerTurn = 0;
@@ -106,7 +108,7 @@ public class GameState {
         hitMarkTexture = new Texture("HitMark.png");
     }
 
-    public void newTurn() {
+    void newTurn() {
         map.newTurn();
         currentEnergy = baseEnergy;
         gold += goldPerTurn;
@@ -136,8 +138,8 @@ public class GameState {
 
         deltaT *= runSpeed.speed();
         if (deltaT > maxDeltaT) {
-            int updateCounts = (int)Math.floor(deltaT / maxDeltaT);
-            float updateRemainder = deltaT - updateCounts * maxDeltaT;
+            final int updateCounts = (int)Math.floor(deltaT / maxDeltaT);
+            final float updateRemainder = deltaT - updateCounts * maxDeltaT;
             for (int i = 0; i < updateCounts; ++i) {
                 performUpdate(maxDeltaT);
                 if (!animating || map.areAllBuildingsDead()) {
@@ -153,9 +155,9 @@ public class GameState {
         }
 
         if (!animating) {
-            for (Building building : map.getBuildingList()) {
+            for (final Building building : map.getBuildingList()) {
                 if (building instanceof AttackableBuilding) {
-                    AttackableBuilding attackableBuilding = (AttackableBuilding)building;
+                    final AttackableBuilding attackableBuilding = (AttackableBuilding)building;
                     attackableBuilding.newTurn();
                 }
             }
@@ -163,42 +165,43 @@ public class GameState {
         }
     }
 
-    private void performUpdate(float deltaT) {
-        for (Building building : map.buildingList) {
+    private void performUpdate(final float deltaT) {
+        for (final Building building : map.buildingList) {
             if (building instanceof Updatable) {
                 ((Updatable)building).update(deltaT);
             }
         }
-        for (Updatable e : updatableBases) {
+        for (final Updatable e : updatableBases) {
             e.update(deltaT);
             animating |= e.keepActive();
         }
         projectilesToRemove = new ArrayList<>();
-        for (Updatable p : projectiles) {
+        for (final Updatable p : projectiles) {
             p.update(deltaT);
             animating |= p.keepActive();
         }
         projectiles.removeAll(projectilesToRemove);
         enemyProjectilesToRemove = new ArrayList<>();
-        for (Updatable p : enemyProjectiles) {
+        for (final Updatable p : enemyProjectiles) {
             p.update(deltaT);
             animating |= p.keepActive();
         }
         enemyProjectiles.removeAll(enemyProjectilesToRemove);
-        for (Updatable e : enemies) {
+        for (final Updatable e : enemies) {
             e.update(deltaT);
             animating |= e.keepActive();
         }
     }
 
-    public void setRunSpeed(RunSpeed speed) {
+    void setRunSpeed(final RunSpeed speed) {
         runSpeed = speed;
         FastforwardTask.finished = true;
     }
 
-    public void nextRunSpeed() {
+    void nextRunSpeed() {
+        RunSpeed[] values = RunSpeed.values();
         for (int i = 0; i < RunSpeed.values().length; ++i) {
-            if (RunSpeed.values()[i] == runSpeed) {
+            if (values[i] == runSpeed) {
                 ++i;
                 if (i >= RunSpeed.values().length) {
                     i = 0;
@@ -214,13 +217,13 @@ public class GameState {
         update(1200);
     }
 
-    public void addHurtParticle(Vector2 position) {
-        float variation = 0.3f;
-        Random random = new Random();
-        Vector2 particlePos = new Vector2(position);
+    public void addHurtParticle(final Vector2 position) {
+        final float variation = 0.3f;
+        final Random random = new Random();
+        final Vector2 particlePos = new Vector2(position);
         particlePos.x += variation * (random.nextFloat() - 0.5f);
         particlePos.y += variation * (random.nextFloat() - 0.5f);
-        MyParticle newParticle = new MyParticle(hitMarkTexture, particlePos, 0.25f, true, 0.4f);
+        final MyParticle newParticle = new MyParticle(hitMarkTexture, particlePos, 0.25f, true, 0.4f);
         particles.add(newParticle);
     }
 }

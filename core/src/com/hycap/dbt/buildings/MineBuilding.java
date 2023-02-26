@@ -6,8 +6,8 @@ import com.hycap.dbt.GameState;
 public class MineBuilding extends AttackableBuilding {
     public static Texture texture;
 
-    public static final int goldCapacity = 2;
-    public static final int goldPerTurn = 1;
+    private static final int goldCapacity = 2;
+    private static final int goldPerTurn = 1;
 
     @Override
     public String getName() {
@@ -21,13 +21,13 @@ public class MineBuilding extends AttackableBuilding {
 
     @Override
     public String getInfo() {
-        return "Generate " + MineBuilding.goldPerTurn + " gold per turn.\nHold "
-                + MineBuilding.goldCapacity + " more gold.";
+        return "Generate " + goldPerTurn + " gold per turn.\nHold "
+                + goldCapacity + " more gold.";
     }
 
     @Override
-    public void onCreate(GameState gameState, boolean onRift) {
-        super.health = 25;
+    public void onCreate(final GameState gameState, final boolean onRift) {
+        health = 25;
         gameState.maxGold += goldCapacity;
         gameState.goldPerTurn += goldPerTurn;
         if (onRift) {
@@ -38,7 +38,7 @@ public class MineBuilding extends AttackableBuilding {
     }
 
     @Override
-    public void onDestroy(GameState gameState) {
+    public void onDestroy(final GameState gameState) {
         gameState.maxGold -= goldCapacity;
         gameState.goldPerTurn -= goldPerTurn;
         if (onRift) {

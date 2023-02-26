@@ -14,8 +14,8 @@ import com.hycap.dbt.tasks.KillEnemyTask;
 import java.util.Random;
 
 public abstract class Enemy implements Updatable {
-    static Sound attackSound;
-    static Sound dieSound;
+    private static final Sound attackSound;
+    private static final Sound dieSound;
     static {
         attackSound = Gdx.audio.newSound(Gdx.files.internal("EnemyHit.ogg"));
         dieSound = Gdx.audio.newSound(Gdx.files.internal("EnemyDie.ogg"));
@@ -23,27 +23,27 @@ public abstract class Enemy implements Updatable {
 
     Vector2 position;
     float moveSpeed;
-    Vector2 target;
+    private Vector2 target;
     AttackableBuilding targetBuilding;
     float targetDist;
     float attackRange;
     public float health;
     public float damageToTake;
-    float offsetAngle;
-    float maxOffsetAngle = (float)Math.PI / 8;
+    private final float offsetAngle;
 
-    static Random random;
+    private static final Random random;
 
     static {
         random = new Random();
     }
 
-    public Enemy(Vector2 position) {
+    Enemy(final Vector2 position) {
         this.position = position;
+        float maxOffsetAngle = (float) Math.PI / 8;
         offsetAngle = 2f * (random.nextFloat() - 0.5f) * maxOffsetAngle;
     }
 
-    public Enemy(Vector2 position, float maxOffsetAngle) {
+    Enemy(final Vector2 position, final float maxOffsetAngle) {
         this.position = position;
         offsetAngle = 2f * (random.nextFloat() - 0.5f) * maxOffsetAngle;
     }
@@ -60,15 +60,15 @@ public abstract class Enemy implements Updatable {
         return position.y;
     }
 
-    void setTargetNearest() {
+    private void setTargetNearest() {
         float closestSquareDist = Float.MAX_VALUE;
-        for (Building building : GameState.gameState.map.getBuildingList()) {
-            Pair<Integer> coords = building.getPosition();
+        for (final Building building : GameState.gameState.map.getBuildingList()) {
+            final Pair<Integer> coords = building.getPosition();
             if (!(building instanceof AttackableBuilding)) {
                 continue;
             }
-            Vector2 vecCoords = new Vector2(coords.getLeft(), coords.getRight());
-            float squareDist = vecCoords.sub(position).len2();
+            final Vector2 vecCoords = new Vector2(coords.getLeft(), coords.getRight());
+            final float squareDist = vecCoords.sub(position).len2();
             if (squareDist < closestSquareDist) {
                 closestSquareDist = squareDist;
                 target = new Vector2(coords.getLeft(), coords.getRight());
@@ -78,18 +78,18 @@ public abstract class Enemy implements Updatable {
     }
 
     @Override
-    public void update(float deltaT) {
+    public void update(final float deltaT) {
         setTargetNearest();
-        Vector2 move = new Vector2(target).sub(position);
+        final Vector2 move = new Vector2(target).sub(position);
         targetDist = move.len();
         if (targetDist > attackRange) {
             move.scl(1 / targetDist);
-            Vector2 rotatedMove = move.rotateRad(offsetAngle);
+            final Vector2 rotatedMove = move.rotateRad(offsetAngle);
             position.add(rotatedMove.scl(deltaT * moveSpeed));
         }
     }
 
-    public void attack(float damage) {
+    public void attack(final float damage) {
         if (health <= 0) {
             return;
         }

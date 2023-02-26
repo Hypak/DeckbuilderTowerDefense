@@ -1,6 +1,5 @@
 package com.hycap.dbt.cards;
 
-import com.hycap.dbt.GameState;
 import com.hycap.dbt.buildings.Building;
 
 public abstract class BuildingCard implements Card {

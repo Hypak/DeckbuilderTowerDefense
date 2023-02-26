@@ -15,16 +15,17 @@ import com.hycap.dbt.tasks.BuyNewCardTask;
 import java.util.*;
 import java.util.List;
 
+@SuppressWarnings("StringConcatenationMissingWhitespace")
 public class BuyCard implements ActionCard, BuyableCard{
     public static Texture texture;
-    public static Map<BuyableCard, Float> cardDrawWeights;
-    public static Map<BuyableCard, Integer> cardRemainingCount;
-    public static int baseShownCardAmount = 3;
+    private static final Map<BuyableCard, Float> cardDrawWeights;
+    private static final Map<BuyableCard, Integer> cardRemainingCount;
+    public static final int baseShownCardAmount = 3;
     public static int shownCardAmount = baseShownCardAmount;
     public static List<BuyableCard> cardSelection;
     static {
         cardSelection = new ArrayList<>();
-        cardDrawWeights = new HashMap<>();
+        cardDrawWeights = new HashMap<>(14);
         cardDrawWeights.put(new CoffersCard(), 1.5f);
         cardDrawWeights.put(new Draw2Card(), 2f);
         cardDrawWeights.put(new Remove1Card(), 1f);
@@ -40,7 +41,7 @@ public class BuyCard implements ActionCard, BuyableCard{
         cardDrawWeights.put(new SpikesCard(), 1.75f);
         cardDrawWeights.put(new MineCard(), 1.75f);
 
-        cardRemainingCount = new HashMap<>();
+        cardRemainingCount = new HashMap<>(1);
         cardRemainingCount.put(new LibraryCard(), 3);
     }
 
@@ -64,20 +65,20 @@ public class BuyCard implements ActionCard, BuyableCard{
         return new BuyCard();
     }
 
-    private List<BuyableCard> getNewCardSelection(int size) {
-        Map<BuyableCard, Float> tempWeights = new HashMap<>(cardDrawWeights);
-        List<BuyableCard> newCards = new ArrayList<>();
-        Random random = new Random();
+    private List<BuyableCard> getNewCardSelection(final int size) {
+        final Map<BuyableCard, Float> tempWeights = new HashMap<>(cardDrawWeights);
+        final List<BuyableCard> newCards = new ArrayList<>();
+        final Random random = new Random();
         for (int i = 0; i < size; ++i) {
             float total = 0;
-            for (float v : tempWeights.values()) {
+            for (final float v : tempWeights.values()) {
                 total += v;
             }
             float r = random.nextFloat() * total;
-            for (Map.Entry<BuyableCard, Float> entry : tempWeights.entrySet()) {
+            for (final Map.Entry<BuyableCard, Float> entry : tempWeights.entrySet()) {
                 r -= entry.getValue();
                 if (r <= 0) {
-                    BuyableCard newCard = (BuyableCard) entry.getKey().duplicate();
+                    final BuyableCard newCard = (BuyableCard) entry.getKey().duplicate();
                     if (!canBuy(newCard)) {
                         --i;
                         break;
@@ -91,18 +92,18 @@ public class BuyCard implements ActionCard, BuyableCard{
         return newCards;
     }
 
-    static void decreaseRemainingCount(Card card) {
-        for (BuyableCard key : cardRemainingCount.keySet()) {
+    private static void decreaseRemainingCount(final Card card) {
+        for (final BuyableCard key : cardRemainingCount.keySet()) {
             if (key.getClass().equals(card.getClass())) {
                 cardRemainingCount.put(key, cardRemainingCount.get(key) - 1);
             }
         }
     }
 
-    boolean canBuy(Card card) {
-        for (BuyableCard key : cardRemainingCount.keySet()) {
+    private boolean canBuy(final Card card) {
+        for (final BuyableCard key : cardRemainingCount.keySet()) {
             if (key.getClass().equals(card.getClass())) {
-                int countLeft = cardRemainingCount.get(key);
+                final int countLeft = cardRemainingCount.get(key);
                 if (countLeft <= 0) {
                     return false;
                 }
@@ -112,12 +113,12 @@ public class BuyCard implements ActionCard, BuyableCard{
     }
 
     @Override
-    public boolean tryPlayCard(final GameState gameState, Stage stage) {
+    public boolean tryPlayCard(final GameState gameState, final Stage stage) {
         cardSelection = getNewCardSelection(shownCardAmount);
         UIManager.queryTable = new Table();
         UIManager.queryTable.setFillParent(true);
 
-        Label label = new Label("Pick a card to buy", SkinClass.skin);
+        final Label label = new Label("Pick a card to buy", SkinClass.skin);
         UIManager.queryTable.add(label).row();
 
         final Table cardTable = new Table();
@@ -129,14 +130,14 @@ public class BuyCard implements ActionCard, BuyableCard{
         gameState.blocked = true;
 
         for (final BuyableCard card : cardSelection) {
-            Label costLabel = new Label(card.getBuyCost() + "G", SkinClass.skin);
+            final Label costLabel = new Label(card.getBuyCost() + "G", SkinClass.skin);
             cardTable.add(costLabel);
         }
         cardTable.row();
 
         gameState.deck.discardCard(this);
         for (final BuyableCard card : cardSelection) {
-            TextureRegionDrawable image = new TextureRegionDrawable(new TextureRegion(card.getTexture()));
+            final TextureRegionDrawable image = new TextureRegionDrawable(new TextureRegion(card.getTexture()));
             image.setMinSize(108, 192);
             final ImageButton imageButton = new ImageButton(image, image);
             cardTable.add(imageButton);
@@ -145,15 +146,15 @@ public class BuyCard implements ActionCard, BuyableCard{
             }
             imageButton.addListener(new InputListener() {
                 @Override
-                public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                public boolean touchDown(final InputEvent event, final float x, final float y, final int pointer, final int button) {
                     return tryBuyCard(gameState, card);
                 }
             });
         }
-        TextButton passButton = new TextButton("Pass", SkinClass.skin);
+        final TextButton passButton = new TextButton("Pass", SkinClass.skin);
         passButton.addListener(new InputListener() {
             @Override
-            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+            public boolean touchDown(final InputEvent event, final float x, final float y, final int pointer, final int button) {
                 gameState.blocked = false;
                 UIManager.queryTable.remove();
                 return true;
@@ -164,7 +165,7 @@ public class BuyCard implements ActionCard, BuyableCard{
         return true;
     }
 
-    public static boolean tryBuyCard(GameState gameState, BuyableCard card) {
+    public static boolean tryBuyCard(final GameState gameState, final BuyableCard card) {
         if (gameState.gold < card.getBuyCost()) {
             return false;
         }

@@ -13,7 +13,7 @@ public class EndTurnTask implements Task {
 
     @Override
     public List<Task> getNextTasks() {
-        List<Task> next = new ArrayList<>();
+        final List<Task> next = new ArrayList<>();
         next.add(new PlayActionTask());
         next.add(new ClickBuildingTask());
         return next;

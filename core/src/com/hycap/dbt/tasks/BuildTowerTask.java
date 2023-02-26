@@ -12,7 +12,7 @@ public class BuildTowerTask implements Task {
 
     @Override
     public List<Task> getNextTasks() {
-        List<Task> next = new ArrayList<>();
+        final List<Task> next = new ArrayList<>();
         next.add(new KillEnemyTask());
         next.add(new UpgradeTask());
         return next;

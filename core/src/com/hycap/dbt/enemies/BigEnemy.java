@@ -6,13 +6,13 @@ import com.hycap.dbt.SetRenderScale;
 
 public class BigEnemy extends BasicEnemy implements SetRenderScale {
     public static Texture texture;
-    public BigEnemy(Vector2 position) {
+    public BigEnemy(final Vector2 position) {
         super(position);
-        super.moveSpeed = 0.75f;
-        super.health = 40;
-        super.attackTime = 1f;
-        super.attackDamage = 20;
-        super.attackRange = 0.75f;
+        moveSpeed = 0.75f;
+        health = 40;
+        attackTime = 1f;
+        attackDamage = 20;
+        attackRange = 0.75f;
     }
 
     @Override
@@ -31,7 +31,7 @@ public class BigEnemy extends BasicEnemy implements SetRenderScale {
     }
 
     @Override
-    public float genRenderScale() {
+    public float getRenderScale() {
         return 1.5f;
     }
 }

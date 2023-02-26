@@ -6,7 +6,7 @@ import com.hycap.dbt.GameState;
 public class CoffersBuilding extends AttackableBuilding {
     public static Texture texture;
 
-    public static final int goldCapacity = 8;
+    private static final int goldCapacity = 8;
 
     @Override
     public String getName() {
@@ -20,12 +20,12 @@ public class CoffersBuilding extends AttackableBuilding {
 
     @Override
     public String getInfo() {
-        return "Store " + CoffersBuilding.goldCapacity + " gold.";
+        return "Store " + goldCapacity + " gold.";
     }
 
     @Override
-    public void onCreate(GameState gameState, boolean onRift) {
-        super.health = 50;
+    public void onCreate(final GameState gameState, final boolean onRift) {
+        health = 50;
         gameState.maxGold += goldCapacity;
         if (onRift) {
             gameState.maxGold += goldCapacity;
@@ -34,7 +34,7 @@ public class CoffersBuilding extends AttackableBuilding {
     }
 
     @Override
-    public void onDestroy(GameState gameState) {
+    public void onDestroy(final GameState gameState) {
         gameState.maxGold -= goldCapacity;
         if (onRift) {
             gameState.maxGold -= goldCapacity;

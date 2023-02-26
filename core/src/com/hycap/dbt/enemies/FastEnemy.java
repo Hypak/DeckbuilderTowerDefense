@@ -5,11 +5,11 @@ import com.badlogic.gdx.math.Vector2;
 
 public class FastEnemy extends BasicEnemy {
     public static Texture texture;
-    public FastEnemy(Vector2 position) {
+    public FastEnemy(final Vector2 position) {
         super(position);
-        super.moveSpeed = 1.8f;
-        super.health = 10;
-        super.attackTime = 0.35f;
+        moveSpeed = 1.8f;
+        health = 10;
+        attackTime = 0.35f;
     }
 
     @Override

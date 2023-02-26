@@ -6,7 +6,7 @@ import com.hycap.dbt.GameState;
 public class MageBuilding extends AttackableBuilding {
     public static Texture texture;
 
-    public static int energyIncrease = 1;
+    private static final int energyIncrease = 1;
 
     @Override
     public String getName() {
@@ -20,12 +20,12 @@ public class MageBuilding extends AttackableBuilding {
 
     @Override
     public String getInfo() {
-        return "Generate " + MageBuilding.energyIncrease + " more energy per turn.";
+        return "Generate " + energyIncrease + " more energy per turn.";
     }
 
     @Override
-    public void onCreate(GameState gameState, boolean onRift) {
-        super.health = 50;
+    public void onCreate(final GameState gameState, final boolean onRift) {
+        health = 50;
         gameState.baseEnergy += energyIncrease;
         if (onRift) {
             gameState.baseEnergy += energyIncrease;
@@ -34,7 +34,7 @@ public class MageBuilding extends AttackableBuilding {
     }
 
     @Override
-    public void onDestroy(GameState gameState) {
+    public void onDestroy(final GameState gameState) {
         gameState.baseEnergy -= energyIncrease;
         if (onRift) {
             gameState.baseEnergy -= energyIncrease;

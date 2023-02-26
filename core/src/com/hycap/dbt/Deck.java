@@ -11,8 +11,8 @@ public class Deck {
     private List<Card> discardPile;
     public int cardsLeftToDiscard;
 
-    public Deck() {
-        this.cards = new ArrayList<>();
+    Deck() {
+        cards = new ArrayList<>();
         for (int i = 0; i < 7; ++i) {
             cards.add(new PathCard());
         }
@@ -30,7 +30,7 @@ public class Deck {
         return hand;
     }
 
-    public Card getHandCard(int index) {
+    Card getHandCard(final int index) {
         return hand.get(index);
     }
 
@@ -38,7 +38,7 @@ public class Deck {
         return cards;
     }
 
-    public LinkedList<Card> getDrawPile() {
+    LinkedList<Card> getDrawPile() {
         return drawPile;
     }
 
@@ -46,79 +46,80 @@ public class Deck {
         return discardPile;
     }
 
-    public void discardCardAt(int index) {
-        this.discardPile.add(hand.get(index));
-        this.hand.remove(index);
+    void discardCardAt(final int index) {
+        discardPile.add(hand.get(index));
+        hand.remove(index);
     }
 
-    public void addToDraw(Card card) {
-        this.cards.add(card);
-        this.drawPile.addLast(card);
+    public void addToDraw(final Card card) {
+        cards.add(card);
+        drawPile.addLast(card);
     }
 
-    public void addToHand(Card card) {
-        this.cards.add(card);
-        this.hand.add(card);
+    public void addToHand(final Card card) {
+        cards.add(card);
+        hand.add(card);
     }
 
-    public void addToHand(Collection<Card> cards) {
+    void addToHand(final Collection<Card> cards) {
         this.cards.addAll(cards);
-        this.hand.addAll(cards);
+        hand.addAll(cards);
     }
 
-    public void removeCard(Card card) {
-        this.cards.remove(card);
-        this.drawPile.remove(card);
-        this.hand.remove(card);
-        this.discardPile.remove(card);
+    public void removeCard(final Card card) {
+        cards.remove(card);
+        drawPile.remove(card);
+        hand.remove(card);
+        discardPile.remove(card);
     }
 
-    public void discardCard(Card card) {
-        if (this.hand.contains(card)) {
-            this.discardPile.add(card);
-            this.hand.remove(card);
+    public void discardCard(final Card card) {
+        if (hand.contains(card)) {
+            discardPile.add(card);
+            hand.remove(card);
         }
     }
 
-    public void shuffleAll() {
-        List<Card> shuffledCards = new ArrayList<>(cards);
+    private void shuffleAll() {
+        final List<Card> shuffledCards = new ArrayList<>(cards);
         Collections.shuffle(shuffledCards);
-        this.drawPile = new LinkedList<>(shuffledCards);
-        this.hand = new ArrayList<>();
-        this.discardPile = new ArrayList<>();
+        drawPile = new LinkedList<>(shuffledCards);
+        hand = new ArrayList<>();
+        discardPile = new ArrayList<>();
     }
 
-    public void shuffleDiscard() {
+    private void shuffleDiscard() {
         Collections.shuffle(discardPile);
-        this.drawPile.addAll(this.discardPile);
-        this.discardPile = new ArrayList<>();
+        drawPile.addAll(discardPile);
+        discardPile = new ArrayList<>();
     }
 
-    public void drawNewHand(int handSize) {
-        for (Card card : hand) {
+    void drawNewHand(final int handSize) {
+        int size = handSize;
+        for (final Card card : hand) {
             if (card instanceof EtherealCard) {
                 hand.remove(card);
             }
         }
-        this.discardPile.addAll(hand);
-        this.hand = new ArrayList<>();
-        if (handSize > cards.size()) {
-            handSize = cards.size();
+        discardPile.addAll(hand);
+        hand = new ArrayList<>();
+        if (size > cards.size()) {
+            size = cards.size();
         }
-        for (int i = 0; i < handSize; ++i) {
-            Card newCard = this.drawPile.poll();
+        for (int i = 0; i < size; ++i) {
+            Card newCard = drawPile.poll();
             if (newCard == null) {
                 shuffleDiscard();
-                newCard = this.drawPile.poll();
+                newCard = drawPile.poll();
             }
             hand.add(newCard);
         }
     }
 
     public boolean drawNewCard() {
-        if (this.drawPile.size() == 0) {
+        if (drawPile.isEmpty()) {
             shuffleDiscard();
-            if (this.drawPile.size() == 0) {
+            if (drawPile.isEmpty()) {
                 return false;  // Out of cards
             }
         }

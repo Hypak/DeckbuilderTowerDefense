@@ -5,20 +5,20 @@ import com.badlogic.gdx.Preferences;
 import java.util.HashMap;
 import java.util.Map;
 public class RecordsHolder {
-    public Map<GameScreen.Difficulty, Record> records;
-    Preferences preferences = Gdx.app.getPreferences("DBTD/Records");
+    public final Map<GameScreen.Difficulty, Record> records;
+    private final Preferences preferences = Gdx.app.getPreferences("DBTD/Records");
     public RecordsHolder() {
         records = new HashMap<>();
         if (preferences.contains("notEmpty")) {
-            Record easyRecord = new Record(preferences.getInteger("easyRounds"),
+            final Record easyRecord = new Record(preferences.getInteger("easyRounds"),
                     preferences.getInteger("easyBases"));
             records.put(GameScreen.Difficulty.EASY, easyRecord);
 
-            Record normalRecord = new Record(preferences.getInteger("normalRounds"),
+            final Record normalRecord = new Record(preferences.getInteger("normalRounds"),
                     preferences.getInteger("normalBases"));
             records.put(GameScreen.Difficulty.NORMAL, normalRecord);
 
-            Record hardRecord = new Record(preferences.getInteger("hardRounds"),
+            final Record hardRecord = new Record(preferences.getInteger("hardRounds"),
                     preferences.getInteger("hardBases"));
             records.put(GameScreen.Difficulty.HARD, hardRecord);
         } else {
@@ -41,16 +41,16 @@ public class RecordsHolder {
         preferences.flush();
     }
 
-    public void updateRecord(GameScreen.Difficulty difficulty, Record newRecord) {
+    public void updateRecord(final GameScreen.Difficulty difficulty, final Record newRecord) {
         records.get(difficulty).updateRecord(newRecord);
         updatePrefs();
     }
 
-    public void updateBestRound(GameScreen.Difficulty difficulty, int bestRound) {
+    public void updateBestRound(final GameScreen.Difficulty difficulty, final int bestRound) {
         records.get(difficulty).updateRecord(bestRound, 0);
         updatePrefs();
     }
-    public void updateMostBases(GameScreen.Difficulty difficulty, int mostBases) {
+    public void updateMostBases(final GameScreen.Difficulty difficulty, final int mostBases) {
         records.get(difficulty).updateRecord(0, mostBases);
         updatePrefs();
     }

@@ -7,18 +7,18 @@ import com.hycap.dbt.enemies.Enemy;
 import com.hycap.dbt.projectiles.EarthquakeProjectile;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Collection;
 
 public class EarthquakeBuilding extends AbstractTowerBuilding {
     public static Texture texture;
 
     public EarthquakeBuilding() {
-        super.health = 75;
-        super.damage = 8;
-        super.reloadTime = 1.8f;
-        super.timeUntilNextReload = reloadTime;
-        super.range = 1.7f;
-        super.projectileType = new EarthquakeProjectile();
+        health = 75;
+        damage = 8;
+        reloadTime = 1.8f;
+        timeUntilNextReload = reloadTime;
+        range = 1.7f;
+        projectileType = new EarthquakeProjectile();
     }
 
     @Override
@@ -37,30 +37,26 @@ public class EarthquakeBuilding extends AbstractTowerBuilding {
     }
 
     @Override
-    public float getRange() {
-        return range;
-    }
-
-    @Override
     public Building duplicate() {
         return new EarthquakeBuilding();
     }
 
     @Override
-    public void update(float deltaT) {
+    public void update(final float deltaT) {
         timeUntilNextReload -= deltaT;
         if (timeUntilNextReload <= 0) {
-            List<Enemy> enemiesToAttack = new ArrayList<>();
-            for (Enemy enemy : GameState.gameState.enemies) {
-                Vector2 diff = new Vector2(vecPosition).sub(enemy.getPosition());
-                float dist = diff.len();
+            final Collection<Enemy> enemiesToAttack = new ArrayList<>();
+            for (final Enemy enemy : GameState.gameState.enemies) {
+                final Vector2 position = enemy.getPosition();
+                final Vector2 diff = new Vector2(vecPosition).sub(position);
+                final float dist = diff.len();
                 if (dist < range) {
                     enemiesToAttack.add(enemy);
                 }
             }
-            if (enemiesToAttack.size() > 0) {
-                for (Enemy enemy : enemiesToAttack) {
-                    super.attackEnemy(enemy);
+            if (!enemiesToAttack.isEmpty()) {
+                for (final Enemy enemy : enemiesToAttack) {
+                    attackEnemy(enemy);
                 }
                 timeUntilNextReload = reloadTime;
             }

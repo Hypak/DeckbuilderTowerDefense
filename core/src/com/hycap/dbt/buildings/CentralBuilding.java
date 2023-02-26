@@ -5,7 +5,7 @@ import com.hycap.dbt.GameState;
 
 public class CentralBuilding extends AttackableBuilding implements CannotBeRemoved {
     public static Texture texture;
-    public static int goldCapacity = 3;
+    private static final int goldCapacity = 3;
     public static int energyPerTurn = 3;
 
     @Override
@@ -24,15 +24,15 @@ public class CentralBuilding extends AttackableBuilding implements CannotBeRemov
     }
 
     @Override
-    public void onCreate(GameState gameState, boolean onRift) {
-        super.health = 100;
+    public void onCreate(final GameState gameState, final boolean onRift) {
+        health = 100;
         gameState.baseEnergy += energyPerTurn;
         gameState.maxGold += goldCapacity;
         super.onCreate(gameState, onRift);
     }
 
     @Override
-    public void onDestroy(GameState gameState) {
+    public void onDestroy(final GameState gameState) {
         gameState.maxGold -= goldCapacity;
         if (gameState.gold > gameState.maxGold) {
             gameState.gold = gameState.maxGold;

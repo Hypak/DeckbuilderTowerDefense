@@ -27,10 +27,10 @@ public class PathBuilding extends Building implements CannotBeRemoved, CanBeBuil
     }
 
     @Override
-    public void onCreate(GameState gameState, boolean onRift) {}
+    public void onCreate(final GameState gameState, final boolean onRift) {}
 
     @Override
-    public void onDestroy(GameState gameState) {}
+    public void onDestroy(final GameState gameState) {}
 
 
     @Override

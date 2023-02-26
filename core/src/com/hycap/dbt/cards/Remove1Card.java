@@ -7,8 +7,6 @@ import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
-import com.badlogic.gdx.utils.Align;
-import com.hycap.dbt.Deck;
 import com.hycap.dbt.GameState;
 import com.hycap.dbt.SkinClass;
 
@@ -43,7 +41,7 @@ public class Remove1Card implements ActionCard, BuyableCard {
             final Table queryTable = new Table();
             queryTable.setFillParent(true);
 
-            Label label = new Label("Pick card to remove", SkinClass.skin);
+            final Label label = new Label("Pick card to remove", SkinClass.skin);
             queryTable.add(label).row();
 
             final Table cardTable = new Table();
@@ -57,13 +55,13 @@ public class Remove1Card implements ActionCard, BuyableCard {
 
 
             for (final Card card : gameState.deck.getHand()) {
-                TextureRegionDrawable image = new TextureRegionDrawable(new TextureRegion(card.getTexture()));
+                final TextureRegionDrawable image = new TextureRegionDrawable(new TextureRegion(card.getTexture()));
                 image.setMinSize(108, 192);
                 final ImageButton imageButton = new ImageButton(image, image);
                 cardTable.add(imageButton);
                 imageButton.addListener(new InputListener() {
                     @Override
-                    public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                    public boolean touchDown(final InputEvent event, final float x, final float y, final int pointer, final int button) {
                         gameState.deck.removeCard(card);
                         gameState.deck.discardCard(thisCard);
                         gameState.blocked = false;
@@ -72,10 +70,10 @@ public class Remove1Card implements ActionCard, BuyableCard {
                     }
                 });
             }
-            TextButton passButton = new TextButton("Pass", SkinClass.skin);
+            final TextButton passButton = new TextButton("Pass", SkinClass.skin);
             passButton.addListener(new InputListener() {
                 @Override
-                public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                public boolean touchDown(final InputEvent event, final float x, final float y, final int pointer, final int button) {
                     gameState.deck.discardCard(thisCard);
                     gameState.blocked = false;
                     queryTable.remove();

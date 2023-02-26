@@ -6,8 +6,8 @@ public class RangedEnemyProjectile extends EnemyProjectile {
     public static Texture texture;
 
     public RangedEnemyProjectile() {
-        super.projectileRadius = 0.4f;
-        super.projectileSpeed = 2.5f;
+        projectileRadius = 0.4f;
+        projectileSpeed = 2.5f;
     }
 
     @Override
@@ -22,6 +22,6 @@ public class RangedEnemyProjectile extends EnemyProjectile {
 
     @Override
     public float getTextureScale() {
-        return super.projectileRadius;
+        return projectileRadius;
     }
 }

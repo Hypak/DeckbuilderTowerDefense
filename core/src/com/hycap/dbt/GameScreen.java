@@ -24,13 +24,13 @@ public class GameScreen extends ScreenAdapter {
 		NORMAL,
 		HARD
 	}
-	public Difficulty difficulty;
-	SpriteBatch batch;
+	private final Difficulty difficulty;
+	private SpriteBatch batch;
 
-	public Integer selectedIndex;
-	List<HasRange> selectedViewTowers;
+	Integer selectedIndex = null;
+	List<HasRange> selectedViewTowers = null;
 
-	public GameScreen(Difficulty difficulty) {
+	GameScreen(final Difficulty difficulty) {
 		this.difficulty = difficulty;
 		gameScreen = this;
 	}
@@ -49,9 +49,9 @@ public class GameScreen extends ScreenAdapter {
 		selectedViewTowers = new ArrayList<>();
 		UIManager.showingEndGameUI = false;
 
-		InputProcessor buildingProcessor = new InputAdapter() {
+		final InputProcessor buildingProcessor = new InputAdapter() {
 			@Override
-			public boolean touchUp(int screenX, int screenY, int pointer, int button) {
+			public boolean touchUp(final int screenX, final int screenY, final int pointer, final int button) {
 				if (button == Input.Buttons.RIGHT) {
 					selectedIndex = null;
 					UIManager.removeSelectedInfo();
@@ -61,13 +61,13 @@ public class GameScreen extends ScreenAdapter {
 				if (button != Input.Buttons.LEFT) {
 					return false;
 				}
-				Vector3 mousePos = new Vector3(screenX, screenY, 0);
+				final Vector3 mousePos = new Vector3(screenX, screenY, 0);
 				CameraManager.camera.unproject(mousePos);
-				int x = Math.round(mousePos.x);
-				int y = Math.round(mousePos.y);
-				Building clickedBuilding = GameState.gameState.map.getBuilding(x, y);
+				final int x = Math.round(mousePos.x);
+				final int y = Math.round(mousePos.y);
+				final Building clickedBuilding = GameState.gameState.map.getBuilding(x, y);
 				if (clickedBuilding instanceof HasRange) {
-					HasRange rangeBuilding = (HasRange) clickedBuilding;
+					final HasRange rangeBuilding = (HasRange) clickedBuilding;
 					if (selectedViewTowers.contains(rangeBuilding)) {
 						selectedViewTowers.remove(rangeBuilding);
 					} else {
@@ -78,7 +78,7 @@ public class GameScreen extends ScreenAdapter {
 					UIManager.setSelectedInfo(clickedBuilding);
 					ClickBuildingTask.finished = true;
 				}
-				EnemyBase base = GameState.gameState.map.getEnemyBase(x, y);
+				final EnemyBase base = GameState.gameState.map.enemyBaseManager.getEnemyBaseAt(x, y);
 				if (base != null) {
 					UIManager.setSelectedInfo(base);
 				}
@@ -86,16 +86,16 @@ public class GameScreen extends ScreenAdapter {
 					return false;
 				}
 				if (selectedIndex != null && selectedIndex >= 0 && selectedIndex < GameState.gameState.deck.getHand().size()) {
-					Card card = GameState.gameState.deck.getHandCard(selectedIndex);
+					final Card card = GameState.gameState.deck.getHandCard(selectedIndex);
 					if (GameState.gameState.currentEnergy < card.getEnergyCost()) {
 						return false;
 					}
 					if (card instanceof BuildingCard) {
-						BuildingCard buildingCard = (BuildingCard)card;
-						Building newBuilding = buildingCard.getBuilding().duplicate();
+						final BuildingCard buildingCard = (BuildingCard)card;
+						final Building newBuilding = buildingCard.getBuilding().duplicate();
 						newBuilding.setPosition(new Pair<>(x, y));
 						if (GameState.gameState.map.placeBuilding(newBuilding, x, y)) {
-							boolean onRift = GameState.gameState.map.riftCoords.contains(newBuilding.getPosition());
+							final boolean onRift = GameState.gameState.map.riftCoords.contains(newBuilding.getPosition());
 							newBuilding.onCreate(GameState.gameState, onRift);
 							GameState.gameState.currentEnergy -= card.getEnergyCost();
 							GameState.gameState.deck.discardCard(card);
@@ -105,7 +105,7 @@ public class GameScreen extends ScreenAdapter {
 							}
 						}
 					} else if (card instanceof ActionCard) {
-						ActionCard actionCard = (ActionCard) card;
+						final ActionCard actionCard = (ActionCard) card;
 						if (actionCard.tryPlayCard(GameState.gameState, UIManager.stage)) {
 							GameState.gameState.currentEnergy -= card.getEnergyCost();
 							selectedIndex = null;
@@ -120,9 +120,9 @@ public class GameScreen extends ScreenAdapter {
 			}
 		};
 
-		InputProcessor shortcutProcessor = new InputAdapter() {
+		final InputProcessor shortcutProcessor = new InputAdapter() {
 			@Override
-			public boolean keyUp(int keycode) {
+			public boolean keyUp(final int keycode) {
 				if (keycode == Input.Keys.SPACE) {
 					CameraManager.resetCamera();
 					return true;
@@ -157,7 +157,7 @@ public class GameScreen extends ScreenAdapter {
 			}
 
 			@Override
-			public boolean touchUp(int screenX, int screenY, int pointer, int button) {
+			public boolean touchUp(final int screenX, final int screenY, final int pointer, final int button) {
 				if (button == Input.Buttons.MIDDLE) {
 					CameraManager.resetCamera();
 					return true;
@@ -170,14 +170,14 @@ public class GameScreen extends ScreenAdapter {
 		newTurn();
 	}
 
-	void pressNum(int keycode) {
-		int newSelectedIndex;
+	private void pressNum(final int keycode) {
+		final int newSelectedIndex;
 		if (keycode == Input.Keys.NUM_0) {
 			newSelectedIndex = 9;
 		} else {
 			newSelectedIndex = keycode - Input.Keys.NUM_1;
 		}
-		Deck deck = GameState.gameState.deck;
+		final Deck deck = GameState.gameState.deck;
 		if (GameState.gameState.blocked) {
 			if (deck.cardsLeftToDiscard > 0) {
 				deck.discardCardAt(newSelectedIndex);
@@ -188,7 +188,7 @@ public class GameScreen extends ScreenAdapter {
 				} else {
 					Recycle2Card.createQueryTable(GameState.gameState, UIManager.stage);
 				}
-			} else if (BuyCard.cardSelection.size() > 0 && newSelectedIndex < BuyCard.cardSelection.size()) {
+			} else if (!BuyCard.cardSelection.isEmpty() && newSelectedIndex < BuyCard.cardSelection.size()) {
 				BuyCard.tryBuyCard(GameState.gameState, BuyCard.cardSelection.get(newSelectedIndex));
 			}
 			return;
@@ -211,12 +211,12 @@ public class GameScreen extends ScreenAdapter {
 		selectedIndex = null;
 	}
 
-	public void resize (int width, int height) {
+	public void resize (final int width, final int height) {
 		UIManager.stage.getViewport().update(width, height, true);
 	}
 
 	@Override
-	public void render(float deltaT) {
+	public void render(final float deltaT) {
 		ScreenUtils.clear(230/255f, 240/255f, 255/255f, 1);
 
 		TaskManager.update();
@@ -224,27 +224,27 @@ public class GameScreen extends ScreenAdapter {
 		batch.setProjectionMatrix(CameraManager.camera.combined);
 		batch.begin();
 
-		int viewRadius = GameState.gameState.map.currentRadius + GameState.gameState.map.extraViewRadius;
-		int centrePos = GameState.gameState.map.SIZE / 2;
+		final int viewRadius = GameState.gameState.map.currentRadius + GameState.gameState.map.extraViewRadius;
+		final int centrePos = GameState.gameState.map.SIZE / 2;
 		TextureManager.draw(batch, TextureManager.grassTexture, centrePos, centrePos,
 				0.6f, viewRadius * 2 + 1);
 		TextureManager.draw(batch, TextureManager.grassTexture, centrePos, centrePos,
 				1f, GameState.gameState.map.currentRadius * 2 + 1);
 
-		for (Building building : GameState.gameState.map.getBuildingList()) {
+		for (final Building building : GameState.gameState.map.getBuildingList()) {
 			TextureManager.draw(batch, building.getTexture(),
 					building.getPosition().getLeft(), building.getPosition().getRight());
 		}
 
-		Card card;
+		final Card card;
 		if (selectedIndex != null && selectedIndex >= 0 && selectedIndex < GameState.gameState.deck.getHand().size()) {
 			card = GameState.gameState.deck.getHandCard(selectedIndex);
 			if (!GameState.gameState.blocked && selectedIndex != null && card instanceof BuildingCard) {
-				BuildingCard buildingCard = (BuildingCard) GameState.gameState.deck.getHandCard(selectedIndex);
-				Vector3 mousePos = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
+				final BuildingCard buildingCard = (BuildingCard) GameState.gameState.deck.getHandCard(selectedIndex);
+				final Vector3 mousePos = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
 				CameraManager.camera.unproject(mousePos);
-				int x = Math.round(mousePos.x);
-				int y = Math.round(mousePos.y);
+				final int x = Math.round(mousePos.x);
+				final int y = Math.round(mousePos.y);
 				float alpha = 0;
 				if (GameState.gameState.map.canPlaceBuilding(x, y)) {
 					alpha = 0.9f;
@@ -253,7 +253,7 @@ public class GameScreen extends ScreenAdapter {
 				}
 				TextureManager.draw(batch, buildingCard.getBuilding().getTexture(), x, y, alpha);
 				if (buildingCard.getBuilding() instanceof HasRange) {
-					HasRange towerBuilding = (HasRange)(buildingCard.getBuilding());
+					final HasRange towerBuilding = (HasRange)(buildingCard.getBuilding());
 					float range = towerBuilding.getRange();
 					if (GameState.gameState.map.riftCoords.contains(new Pair<>(x, y))) {
 						range *= AbstractTowerBuilding.riftRangeMult;
@@ -263,43 +263,43 @@ public class GameScreen extends ScreenAdapter {
 				}
 			}
 		}
-		for (EnemyBase enemyBase : GameState.gameState.map.enemyBases) {
-			int x = enemyBase.position.getLeft();
-			int y = enemyBase.position.getRight();
+		for (final EnemyBase enemyBase : GameState.gameState.map.enemyBaseManager.enemyBases) {
+			final int x = enemyBase.position.getLeft();
+			final int y = enemyBase.position.getRight();
 			if (GameState.gameState.map.isInRadius(x, y)) {
 				TextureManager.draw(batch, enemyBase.getTexture(), x, y);
 			} else if (GameState.gameState.map.isInViewRadius(x, y)) {
 				TextureManager.draw(batch, enemyBase.getTexture(), x, y, 0.6f);
 			}
 		}
-		for (Pair<Integer> coords : GameState.gameState.map.riftCoords) {
+		for (final Pair<Integer> coords : GameState.gameState.map.riftCoords) {
 			TextureManager.draw(batch, TextureManager.riftTexture, coords.getLeft(), coords.getRight());
 		}
-		for (Enemy enemy : GameState.gameState.enemies) {
+		for (final Enemy enemy : GameState.gameState.enemies) {
 			float scale = 1;
 			if (enemy instanceof SetRenderScale) {
-				scale = ((SetRenderScale)enemy).genRenderScale();
+				scale = ((SetRenderScale)enemy).getRenderScale();
 			}
 			TextureManager.draw(batch, enemy.getTexture(), enemy.getX(), enemy.getY(), 1, scale);
 		}
-		for (HasRange building : selectedViewTowers) {
-			int x = building.getPosition().getLeft();
-			int y = building.getPosition().getRight();
+		for (final HasRange building : selectedViewTowers) {
+			final int x = building.getPosition().getLeft();
+			final int y = building.getPosition().getRight();
 			TextureManager.draw(batch, TextureManager.circleTexture, x, y, 0.5f,
 					building.getRange() * 2 * TextureManager.circleSizeMult);
 		}
-		for (Projectile projectile : GameState.gameState.projectiles) {
-			float x = projectile.positionVector.x;
-			float y = projectile.positionVector.y;
+		for (final Projectile projectile : GameState.gameState.projectiles) {
+			final float x = projectile.positionVector.x;
+			final float y = projectile.positionVector.y;
 			TextureManager.draw(batch, projectile.getTexture(), x, y, 1, projectile.getTextureScale());
 		}
-		for (EnemyProjectile projectile : GameState.gameState.enemyProjectiles) {
-			float x = projectile.positionVector.x;
-			float y = projectile.positionVector.y;
+		for (final EnemyProjectile projectile : GameState.gameState.enemyProjectiles) {
+			final float x = projectile.positionVector.x;
+			final float y = projectile.positionVector.y;
 			TextureManager.draw(batch, projectile.getTexture(), x, y, 1, projectile.getTextureScale());
 		}
 		for (int i = 0; i < GameState.gameState.particles.size(); ++i) {
-			boolean keep = GameState.gameState.particles.get(i).render(batch, Gdx.graphics.getDeltaTime());
+			final boolean keep = GameState.gameState.particles.get(i).render(batch, Gdx.graphics.getDeltaTime());
 			if (!keep) {
 				GameState.gameState.particles.remove(i);
 				--i;

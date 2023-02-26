@@ -14,11 +14,14 @@ import com.hycap.dbt.projectiles.RangedEnemyProjectile;
 import com.hycap.dbt.projectiles.SniperProjectile;
 import com.hycap.dbt.projectiles.TowerProjectile;
 
-public class TextureManager {
+final class TextureManager {
     public static Texture grassTexture;
     public static Texture riftTexture;
     public static Texture circleTexture;
     public static float circleSizeMult;
+
+    private TextureManager() {
+    }
 
     public static void setTextures() {
         CentralBuilding.texture = new Texture("CentralBuilding.png");
@@ -69,24 +72,24 @@ public class TextureManager {
         circleSizeMult = 32f / 512f;
     }
 
-    public static void draw(Batch batch, Texture texture, float x, float y, float alpha, float scale) {
-        Sprite sprite = new Sprite(texture);
+    public static void draw(final Batch batch, final Texture texture, final float x, final float y, final float alpha, final float scale) {
+        final Sprite sprite = new Sprite(texture);
         sprite.setAlpha(alpha);
         sprite.setScale(scale / 32f);
         sprite.setPosition(x - texture.getWidth() / 2f, y - texture.getHeight() / 2f);
         sprite.draw(batch);
     }
 
-    public static void draw(Batch batch, Texture texture, float x, float y, float alpha) {
-        Sprite sprite = new Sprite(texture);
+    public static void draw(final Batch batch, final Texture texture, final float x, final float y, final float alpha) {
+        final Sprite sprite = new Sprite(texture);
         sprite.setAlpha(alpha);
         sprite.setScale(1 / 32f);
         sprite.setPosition(x - texture.getWidth() / 2f, y - texture.getHeight() / 2f);
         sprite.draw(batch);
     }
 
-    public static void draw(Batch batch, Texture texture, float x, float y) {
-        Sprite sprite = new Sprite(texture);
+    public static void draw(final Batch batch, final Texture texture, final float x, final float y) {
+        final Sprite sprite = new Sprite(texture);
         sprite.setScale(1 / 32f);
         sprite.setPosition(x - texture.getWidth() / 2f, y - texture.getHeight() / 2f);
         sprite.draw(batch);

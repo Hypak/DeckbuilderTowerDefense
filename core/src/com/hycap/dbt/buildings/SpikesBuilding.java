@@ -6,28 +6,28 @@ import com.hycap.dbt.Updatable;
 import com.hycap.dbt.enemies.Enemy;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Collection;
 
 public class SpikesBuilding extends Building implements Updatable {
     public static Texture texture;
 
-    public float damage = 3;
-    public float reloadTime = 0.5f;
-    float timeUntilNextReload = 0;
+    private float damage = 3;
+    private float reloadTime = 0.5f;
+    private float timeUntilNextReload = 0;
     @Override
-    public void update(float deltaT) {
+    public void update(final float deltaT) {
         timeUntilNextReload -= deltaT;
         if (timeUntilNextReload <= 0) {
-            List<Enemy> enemiesToAttack = new ArrayList<>();
-            for (Enemy enemy : GameState.gameState.enemies) {
-                float xDiff = Math.abs(enemy.getX() - super.vecPosition.x);
-                float yDiff = Math.abs(enemy.getY() - super.vecPosition.y);
+            final Collection<Enemy> enemiesToAttack = new ArrayList<>();
+            for (final Enemy enemy : GameState.gameState.enemies) {
+                final float xDiff = Math.abs(enemy.getX() - vecPosition.x);
+                final float yDiff = Math.abs(enemy.getY() - vecPosition.y);
                 if (Math.max(xDiff, yDiff) <= 1f) {
                     enemiesToAttack.add(enemy);
                     timeUntilNextReload = reloadTime;
                 }
             }
-            for (Enemy enemy : enemiesToAttack) {
+            for (final Enemy enemy : enemiesToAttack) {
                 enemy.attack(damage);
             }
         }
@@ -59,7 +59,7 @@ public class SpikesBuilding extends Building implements Updatable {
     }
 
     @Override
-    public void onCreate(GameState gameState, boolean onRift) {
+    public void onCreate(final GameState gameState, final boolean onRift) {
         if (onRift) {
             damage *= 2;
             reloadTime *= 0.5f;
@@ -68,7 +68,7 @@ public class SpikesBuilding extends Building implements Updatable {
     }
 
     @Override
-    public void onDestroy(GameState gameState) { }
+    public void onDestroy(final GameState gameState) { }
 
     @Override
     public Building duplicate() {

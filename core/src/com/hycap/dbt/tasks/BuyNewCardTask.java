@@ -12,7 +12,7 @@ public class BuyNewCardTask implements Task {
 
     @Override
     public List<Task> getNextTasks() {
-        List<Task> next = new ArrayList<>();
+        final List<Task> next = new ArrayList<>();
         next.add(new BuildMageTask());
         return next;
     }

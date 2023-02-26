@@ -3,12 +3,16 @@ package com.hycap.dbt.tasks;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TaskManager {
-    public static List<Task> tasks;
+public final class TaskManager {
+    private static final List<Task> tasks;
     static {
         tasks = new ArrayList<>();
         tasks.add(new MoveTask());
     }
+
+    private TaskManager() {
+    }
+
     public static void update() {
         for (int i = 0; i < tasks.size(); ++i) {
             if (tasks.get(i).isFinished()) {
@@ -19,11 +23,11 @@ public class TaskManager {
         }
     }
     public static String getAllTaskDescriptions() {
-        if (tasks.size() == 0) {
+        if (tasks.isEmpty()) {
             return "";
         }
-        StringBuilder string = new StringBuilder("Tasks:\n");
-        for (Task task : tasks) {
+        final StringBuilder string = new StringBuilder("Tasks:\n");
+        for (final Task task : tasks) {
             string.append("\t-").append(task.getTaskText()).append("\n");
         }
         return string.toString();

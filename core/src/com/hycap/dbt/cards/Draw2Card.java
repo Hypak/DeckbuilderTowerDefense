@@ -2,7 +2,6 @@ package com.hycap.dbt.cards;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.hycap.dbt.Deck;
 import com.hycap.dbt.GameState;
 
 public class Draw2Card implements ActionCard, BuyableCard {
@@ -29,7 +28,7 @@ public class Draw2Card implements ActionCard, BuyableCard {
     }
 
     @Override
-    public boolean tryPlayCard(GameState gameState, Stage stage) {
+    public boolean tryPlayCard(final GameState gameState, final Stage stage) {
         if (!gameState.deck.drawNewCard()) {
             return false;  // No card to draw
         }

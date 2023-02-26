@@ -11,18 +11,18 @@ import com.hycap.dbt.enemies.Enemy;
 public abstract class Projectile implements Updatable {
     public Enemy targetEnemy;
     public Vector2 positionVector;
-    public float projectileSpeed;
-    public float projectileRadius;
+    float projectileSpeed;
+    float projectileRadius;
     public float damage;
     public AbstractTowerBuilding sourceBuilding = null;
 
     @Override
-    public void update(float deltaT) {
+    public void update(final float deltaT) {
         if (targetEnemy == null) {
             GameState.gameState.projectilesToRemove.add(this);
         }
-        Vector2 move = new Vector2(targetEnemy.getPosition()).sub(positionVector);
-        float targetDist = move.len();
+        final Vector2 move = new Vector2(targetEnemy.getPosition()).sub(positionVector);
+        final float targetDist = move.len();
         if (targetDist > projectileRadius) {
             move.scl(1 / targetDist);
             positionVector.add(move.scl(deltaT * projectileSpeed));

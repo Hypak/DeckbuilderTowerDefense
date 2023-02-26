@@ -6,9 +6,12 @@ import com.hycap.dbt.cards.Card;
 import com.hycap.dbt.cards.ExhaustCard;
 import com.hycap.dbt.enemies.Enemy;
 
-public class GetObjectInfo {
-    public static String getInfo(Card card) {
-        StringBuilder string = new StringBuilder();
+final class GetObjectInfo {
+    private GetObjectInfo() {
+    }
+
+    static String getInfo(final Card card) {
+        final StringBuilder string = new StringBuilder();
         string.append(card.getName()).append("\n");
         string.append(card.getInfo());
         if (card instanceof ExhaustCard) {
@@ -17,10 +20,10 @@ public class GetObjectInfo {
         return string.toString();
     }
 
-    public static String getInfo(Building building) {
-        StringBuilder string = new StringBuilder();
+    static String getInfo(final Building building) {
+        final StringBuilder string = new StringBuilder();
         if (building instanceof Upgradable) {
-            Upgradable upgradable = (Upgradable) building;
+            final Upgradable upgradable = (Upgradable) building;
             string.append("Level ").append(upgradable.getUpgradeLevel()).append(" ");
         }
         string.append(building.getName()).append("\n");
@@ -29,14 +32,14 @@ public class GetObjectInfo {
         return string.toString();
     }
 
-    public static String getInfo(EnemyBase base) {
-        int radius = GameState.gameState.map.getRadius(base.position.getLeft(), base.position.getRight());
+    static String getInfo(final EnemyBase base) {
+        final int radius = GameState.gameState.map.getRadius(base.position.getLeft(), base.position.getRight());
         int turnsUntilInRange = radius - GameState.gameState.map.currentRadius;
         if (turnsUntilInRange < 0) {
             turnsUntilInRange = 0;
         }
-        StringBuilder string = new StringBuilder();
-        int turnsUntilNextSpawn = base.turnsUntilNextSpawn + turnsUntilInRange;
+        final StringBuilder string = new StringBuilder();
+        final int turnsUntilNextSpawn = base.turnsUntilNextSpawn + turnsUntilInRange;
         string.append("Next spawn in ").append(turnsUntilNextSpawn);
         if (turnsUntilNextSpawn == 1) {
             string.append(" turn\n");
@@ -44,10 +47,10 @@ public class GetObjectInfo {
             string.append(" turns\n");
         }
         string.append("Spawns:\n");
-        for (Enemy enemy : base.enemySpawns) {
+        for (final Enemy enemy : base.enemySpawns) {
             string.append(enemy.getName()).append("\n");
         }
-        int turnsUntilUpgrade = base.turnsUntilUpgrade + turnsUntilInRange;
+        final int turnsUntilUpgrade = base.turnsUntilUpgrade + turnsUntilInRange;
         string.append("Next upgrade in ").append(turnsUntilUpgrade);
         if (turnsUntilUpgrade == 1) {
             string.append(" turn\n");
