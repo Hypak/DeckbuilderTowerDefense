@@ -1,6 +1,7 @@
 d:assets:assets:0:application/unknown:1
 i:TowerProjectile.png:TowerProjectile-e0bd1457023c37ff075b13b195ce9407.png:252:image/png:1
 i:MageBuilding.png:MageBuilding-d879e3709d74070ca044e07f4ba42965.png:397:image/png:1
+a:BuildingHit.ogg:BuildingHit-131893d6eb0a13765c93b97d7ecdfa11.ogg:4004:application/unknown:1
 i:Path0EnergyCard.png:Path0EnergyCard-43de183bcb784a07f810fb4b663bff83.png:500:image/png:1
 i:BasicEnemy.png:BasicEnemy-5146721e609274b62c702d64dc898ef3.png:232:image/png:1
 i:EarthquakeCard.png:EarthquakeCard-1e739478d6f742fd93634476a793b101.png:490:image/png:1
@@ -9,7 +10,6 @@ i:MineCard.png:MineCard-7f5ef9464ff1f0cf74215653986114b3.png:472:image/png:1
 i:PaverCard.png:PaverCard-4ede5a3d9edbc53a45cc4d116a387942.png:516:image/png:1
 i:EarthquakeBuilding.png:EarthquakeBuilding-4e385ffcc302f4fa1522445eae44050f.png:380:image/png:1
 i:SpikesBuilding.png:SpikesBuilding-4494b5d13d63f9aad181a5a84e732391.png:351:image/png:1
-a:BuildingDestroy.wav:BuildingDestroy-3dfdb395162ed0174e85ef0449cbe6fa.wav:23639:audio/x-wav:1
 i:TowerBuilding.png:TowerBuilding-fd28d20fcc6d1c6a8288339c145fbbc7.png:351:image/png:1
 i:EnergyRift.png:EnergyRift-1916c34653ecc18ecc1d76bf960930f4.png:263:image/png:1
 i:Circle.png:Circle-db55bd44c8af5f9e2ad76d149654554d.png:9683:image/png:1
@@ -71,8 +71,8 @@ t:gdx-skins-master/plain-james/skin/font-export.fnt:gdx-skins-master/plain-james
 i:SpikesCard.png:SpikesCard-b79ed16c1931a321a44dbeb225dfa8e2.png:499:image/png:1
 i:WallBuilding.png:WallBuilding-4e9e35e18c6a048b14cb4be00fe6eb6d.png:266:image/png:1
 i:EnemyBase.png:EnemyBase-0e68d5a29061b5610d1a206cec3b70ed.png:198:image/png:1
+a:EnemyHit.ogg:EnemyHit-ebd5b49e3b85bc84fd48d6dc55188885.ogg:3860:application/unknown:1
 i:HitMark.png:HitMark-9511b2e0b7dc4703893dc4508ca052c1.png:299:image/png:1
-a:BuildingHitEffect.wav:BuildingHitEffect-c1b557944bb1880df22da194947c704f.wav:721:audio/x-wav:1
 i:LibraryBuilding.png:LibraryBuilding-d9cb1a3ab86c79b2e599c9bfa016d891.png:471:image/png:1
 i:Remove1Card.png:Remove1Card-cef43bc0229038e0af238557c5af201c.png:502:image/png:1
 i:PathCard.png:PathCard-6042b2b998f4a7e29345fff8fd0d9f47.png:519:image/png:1
@@ -80,10 +80,13 @@ i:SniperBuilding.png:SniperBuilding-598e7edc2735bf1dc2e98b8493cbfc4a.png:381:ima
 i:LibraryCard.png:LibraryCard-0a0d3268cd8b0a748b94b50d377aec5f.png:540:image/png:1
 i:Recycle2Card.png:Recycle2Card-5d265acc21613b9039fa6ec32a8b75c8.png:545:image/png:1
 i:WallCard.png:WallCard-2875ce01deb7b78a6d8468cb58951d94.png:448:image/png:1
+a:BuildingHitEffect.ogg:BuildingHitEffect-f482d6546f9c11f43a83476be30cee28.ogg:3016:application/unknown:1
 i:RangedEnemy.png:RangedEnemy-0dccc4873ff463eee58f98918b13704d.png:231:image/png:1
 i:CoffersCard.png:CoffersCard-39f3f5920dc356f60a89d5978c945639.png:481:image/png:1
+a:EnemyDie.ogg:EnemyDie-3cb135d05df155b82fc69e5431da2524.ogg:10294:application/unknown:1
 i:Draw2Card.png:Draw2Card-331e1fceeb76f721200fd535232fa33d.png:459:image/png:1
 i:PathBuilding.png:PathBuilding-de364122c0a4bfa2205176738d6f2f1b.png:329:image/png:1
+a:BuildingDestroy.ogg:BuildingDestroy-98d4e3ab5f9040fd60728b5f72e9b92f.ogg:7923:application/unknown:1
 i:CoffersBuilding.png:CoffersBuilding-4f53dae707e24f045b424209ae24aa4f.png:368:image/png:1
 t:com/badlogic/gdx/graphics/g3d/particles/particles.fragment.glsl:particles.fragment-b90524761fdf09b0a836056d590c30b8.glsl:820:application/unknown:1
 t:com/badlogic/gdx/graphics/g3d/particles/particles.vertex.glsl:particles.vertex-f25b8b2fae10b9bfa09bfdd484923148.glsl:2886:application/unknown:1
