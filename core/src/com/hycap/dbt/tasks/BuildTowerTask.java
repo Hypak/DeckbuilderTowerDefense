@@ -19,7 +19,7 @@ public class BuildTowerTask implements Task {
     }
 
     @Override
-    public boolean isFinished() {
+    public boolean isCompleted() {
         return finished;
     }
 }

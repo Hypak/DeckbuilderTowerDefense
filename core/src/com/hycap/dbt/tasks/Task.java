@@ -5,5 +5,5 @@ import java.util.List;
 interface Task {
     String getTaskText();
     List<Task> getNextTasks();
-    boolean isFinished();
+    boolean isCompleted();
 }

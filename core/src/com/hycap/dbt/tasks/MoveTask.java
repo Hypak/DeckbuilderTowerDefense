@@ -19,7 +19,7 @@ public class MoveTask implements Task {
     }
 
     @Override
-    public boolean isFinished() {
+    public boolean isCompleted() {
         return finished;
     }
 }

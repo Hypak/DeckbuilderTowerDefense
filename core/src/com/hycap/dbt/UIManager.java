@@ -41,6 +41,8 @@ public final class UIManager {
 
     private static Label roundInfo;
 
+    private static Button taskButton;
+    private static boolean showingAllCompletedTasks = false;
     private static Label taskInfoLabel;
 
     static boolean showingMenu = false;
@@ -233,8 +235,17 @@ public final class UIManager {
         roundInfoTable.padTop(30);
         roundInfoTable.padLeft(30);
 
+        taskButton = new TextButton("Tasks", SkinClass.skin);
+        taskButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(final ChangeEvent event, final Actor actor) {
+                showingAllCompletedTasks = !showingAllCompletedTasks;
+            }
+        });
         taskInfoLabel = new Label("Loading...", SkinClass.skin);
         final Table taskInfoTable = new Table();
+        taskButton.align(Align.left);
+        taskInfoTable.add(taskButton).row();
         taskInfoTable.add(taskInfoLabel);
         taskInfoTable.setFillParent(true);
         taskInfoTable.align(Align.topRight);
@@ -394,7 +405,11 @@ public final class UIManager {
         }
         roundInfo.setText(roundInfoString.toString());
 
-        taskInfoLabel.setText(TaskManager.getAllTaskDescriptions());
+        if (showingAllCompletedTasks) {
+            taskInfoLabel.setText(TaskManager.getAllCompletedTaskDescriptions());
+        } else {
+            taskInfoLabel.setText(TaskManager.getAllActiveTaskDescriptions());
+        }
     }
 
     static void toggleMenuButton() {

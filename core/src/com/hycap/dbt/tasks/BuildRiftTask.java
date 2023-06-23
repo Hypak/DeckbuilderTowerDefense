@@ -7,7 +7,7 @@ public class BuildRiftTask implements Task {
     public static boolean finished = false;
     @Override
     public String getTaskText() {
-        return "Build over a rift to generate more energy and to power-up the placed building.";
+        return "Build over a rift to generate more energy\nand power-up the placed building.";
     }
 
     @Override
@@ -16,7 +16,7 @@ public class BuildRiftTask implements Task {
     }
 
     @Override
-    public boolean isFinished() {
+    public boolean isCompleted() {
         return finished;
     }
 }

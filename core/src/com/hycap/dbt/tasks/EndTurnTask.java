@@ -20,7 +20,7 @@ public class EndTurnTask implements Task {
     }
 
     @Override
-    public boolean isFinished() {
+    public boolean isCompleted() {
         return finished;
     }
 }

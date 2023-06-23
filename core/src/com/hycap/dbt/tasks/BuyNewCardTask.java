@@ -18,7 +18,7 @@ public class BuyNewCardTask implements Task {
     }
 
     @Override
-    public boolean isFinished() {
+    public boolean isCompleted() {
         return finished;
     }
 }

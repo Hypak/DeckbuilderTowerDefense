@@ -163,6 +163,28 @@ public class GameScreen extends ScreenAdapter {
 					CameraManager.resetCamera();
 					return true;
 				}
+				if (button == Input.Buttons.BACK) {
+					if (selectedIndex == null) {
+						selectedIndex = GameState.gameState.deck.getHand().size() - 1;
+						return true;
+					}
+					--selectedIndex;
+					if (selectedIndex < 0) {
+						selectedIndex = null;
+					}
+					return true;
+				}
+				if (button == Input.Buttons.FORWARD) {
+					if (selectedIndex == null) {
+						selectedIndex = 0;
+						return true;
+					}
+					++selectedIndex;
+					if (selectedIndex >= GameState.gameState.deck.getHand().size()) {
+						selectedIndex = null;
+					}
+					return true;
+				}
 				return false;
 			}
 		};
