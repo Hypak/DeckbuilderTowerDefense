@@ -76,10 +76,14 @@ public class GameState {
                 baseHandSize = 5;
                 CentralBuilding.energyPerTurn = 3;
                 break;
+            case CREATIVE:
+                baseHandSize = 10;
+                CentralBuilding.energyPerTurn = 100;
+                break;
             case EASY:
             default:
                 baseHandSize = 6;
-                CentralBuilding.energyPerTurn = 400;
+                CentralBuilding.energyPerTurn = 4;
                 break;
         }
         baseEnergy = 0;

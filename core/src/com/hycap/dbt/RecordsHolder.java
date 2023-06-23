@@ -5,7 +5,7 @@ import com.badlogic.gdx.Preferences;
 import java.util.HashMap;
 import java.util.Map;
 public class RecordsHolder {
-    public final Map<GameScreen.Difficulty, Record> records;
+    private final Map<GameScreen.Difficulty, Record> records;
     private final Preferences preferences = Gdx.app.getPreferences("DBTD/Records");
     public RecordsHolder() {
         records = new HashMap<>();
@@ -41,17 +41,25 @@ public class RecordsHolder {
         preferences.flush();
     }
 
+    public Record getRecord(final GameScreen.Difficulty difficulty) {
+        if (records.containsKey(difficulty)) {
+            return records.get(difficulty);
+        } else {
+            return new Record(0, 0);
+        }
+    }
+
     public void updateRecord(final GameScreen.Difficulty difficulty, final Record newRecord) {
-        records.get(difficulty).updateRecord(newRecord);
+        getRecord(difficulty).updateRecord(newRecord);
         updatePrefs();
     }
 
     public void updateBestRound(final GameScreen.Difficulty difficulty, final int bestRound) {
-        records.get(difficulty).updateRecord(bestRound, 0);
+        getRecord(difficulty).updateRecord(bestRound, 0);
         updatePrefs();
     }
     public void updateMostBases(final GameScreen.Difficulty difficulty, final int mostBases) {
-        records.get(difficulty).updateRecord(0, mostBases);
+        getRecord(difficulty).updateRecord(0, mostBases);
         updatePrefs();
     }
 }

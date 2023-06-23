@@ -20,6 +20,7 @@ import java.util.List;
 public class GameScreen extends ScreenAdapter {
 	public static GameScreen gameScreen;
 	enum Difficulty {
+		CREATIVE,
 		EASY,
 		NORMAL,
 		HARD

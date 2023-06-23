@@ -28,7 +28,7 @@ class TitleScreen extends ScreenAdapter {
     public void show() {
         stage = new Stage();
         Table startTable = new Table();
-        final String[] names = new String[]{"Easy", "Normal", "Hard"};
+        final String[] names = new String[]{"Creative", "Easy", "Normal", "Hard"};
         for (int i = 0; i < names.length; ++i) {
             final GameScreen.Difficulty difficulty = GameScreen.Difficulty.values()[i];
             final Button button = new TextButton("Start " + names[i] + " Game", SkinClass.skin);
@@ -38,7 +38,7 @@ class TitleScreen extends ScreenAdapter {
                     DBTGame.game.setScreen(new GameScreen(difficulty));
                 }
             });
-            final Record record = DBTGame.recordsHolder.records.get(difficulty);
+            final Record record = DBTGame.recordsHolder.getRecord(difficulty);
             final Label roundLabel = new Label("Best Round: " + record.mostRounds +
                     " / " + Map.difficultyRadius.get(difficulty), SkinClass.skin);
             final Label baseLabel = new Label("Most Bases Destroyed: " + record.mostBasesDestroyed, SkinClass.skin);

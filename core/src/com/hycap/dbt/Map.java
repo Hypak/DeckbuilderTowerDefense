@@ -12,6 +12,7 @@ public class Map {
     public static final java.util.Map<GameScreen.Difficulty, Integer> difficultyRadius;
     static {
         difficultyRadius = new HashMap<>();
+        difficultyRadius.put(GameScreen.Difficulty.CREATIVE, 50);
         difficultyRadius.put(GameScreen.Difficulty.EASY, 35);
         difficultyRadius.put(GameScreen.Difficulty.NORMAL, 50);
         difficultyRadius.put(GameScreen.Difficulty.HARD, 60);
