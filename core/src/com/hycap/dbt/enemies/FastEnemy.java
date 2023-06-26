@@ -7,6 +7,7 @@ public class FastEnemy extends BasicEnemy {
     public static Texture texture;
     public FastEnemy(final Vector2 position) {
         super(position);
+        super.buildingTargetPriority = PreferEconomy.preferEconomy;
         moveSpeed = 1.8f;
         health = 10;
         attackTime = 0.35f;

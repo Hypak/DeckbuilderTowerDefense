@@ -3,15 +3,14 @@ package com.hycap.dbt.buildings;
 import com.badlogic.gdx.graphics.Texture;
 import com.hycap.dbt.GameState;
 
-public class MineBuilding extends AttackableBuilding {
+public class FieldBuilding extends AttackableBuilding implements CannotPath {
     public static Texture texture;
 
-    private static final int goldCapacity = 3;
     private static final int goldPerTurn = 1;
 
     @Override
     public String getName() {
-        return "Mine";
+        return "Field";
     }
 
     @Override
@@ -21,23 +20,18 @@ public class MineBuilding extends AttackableBuilding {
 
     @Override
     public String getInfo() {
-        int _goldCapacity = goldCapacity;
         int _goldPerTurn = goldPerTurn;
         if (onRift) {
-            _goldCapacity *= 2;
             _goldPerTurn *= 2;
         }
-        return "Generate " + _goldPerTurn + " gold per turn.\nHold "
-                + _goldCapacity + " more gold.";
+        return "Generate " + _goldPerTurn + " gold per turn.\nThese do not extend your base.";
     }
 
     @Override
     public void onCreate(final GameState gameState, final boolean onRift) {
-        health = 25;
-        gameState.maxGold += goldCapacity;
+        health = 5;
         gameState.goldPerTurn += goldPerTurn;
         if (onRift) {
-            gameState.maxGold += goldCapacity;
             gameState.goldPerTurn += goldPerTurn;
         }
         super.onCreate(gameState, onRift);
@@ -45,10 +39,8 @@ public class MineBuilding extends AttackableBuilding {
 
     @Override
     public void onDestroy(final GameState gameState) {
-        gameState.maxGold -= goldCapacity;
         gameState.goldPerTurn -= goldPerTurn;
         if (onRift) {
-            gameState.maxGold -= goldCapacity;
             gameState.goldPerTurn -= goldPerTurn;
         }
         if (gameState.gold > gameState.maxGold) {
@@ -58,6 +50,6 @@ public class MineBuilding extends AttackableBuilding {
 
     @Override
     public Building duplicate() {
-        return new MineBuilding();
+        return new FieldBuilding();
     }
 }

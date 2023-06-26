@@ -48,6 +48,40 @@ public class Map {
         ++currentRadius;
         GameState.gameState.gameStats.setRadius(currentRadius);
         enemyBaseManager.newTurn();
+        spreadFields();
+    }
+
+    private void spreadFields() {
+        Integer[][] fieldNeighbours = new Integer[SIZE][SIZE];
+        for (int x = 0; x < SIZE; ++x) {
+            for (int y = 0; y < SIZE; ++y) {
+                fieldNeighbours[x][y] = 0;
+            }
+        }
+        for (final Building building : buildingList) {
+            if (!(building instanceof FieldBuilding)) {
+                continue;
+            }
+            final Pair<Integer> pos = building.getPosition();
+            for (int dX = -1; dX <= 1; ++dX) {
+                for (int dY = -1; dY <= 1; ++dY) {
+                    ++fieldNeighbours[pos.getLeft() + dX][pos.getRight() + dY];
+                }
+            }
+        }
+        for (int x = 0; x < SIZE; ++x) {
+            for (int y = 0; y < SIZE; ++y) {
+                if (fieldNeighbours[x][y] < 3 || buildings[x][y] != null) {
+                    continue;
+                }
+                FieldBuilding fieldBuilding = new FieldBuilding();
+                fieldBuilding.setPosition(new Pair<Integer>(x, y));
+                final boolean onRift = GameState.gameState.map.riftCoords.contains(fieldBuilding.getPosition());
+                fieldBuilding.onCreate(GameState.gameState, onRift);
+                buildings[x][y] = fieldBuilding;
+                buildingList.add(fieldBuilding);
+            }
+        }
     }
 
 
@@ -89,16 +123,29 @@ public class Map {
                 return false;
             }
         }
-        if (x - 1 >= 0 && buildings[x-1][y] != null) {
-            return true;
+        for (final Building building : getAdjacentBuildings(x, y)) {
+            if (!(building instanceof CannotPath)) {
+                return true;
+            }
         }
-        if (x + 1 < SIZE && buildings[x+1][y] != null) {
-            return true;
+        return false;
+    }
+
+    private List<Building> getAdjacentBuildings(int x, int y) {
+        List<Building> res = new ArrayList<>(4);
+        if (x - 1 >= 0 && buildings[x - 1][y] != null) {
+            res.add(buildings[x - 1][y]);
         }
-        if (y - 1 >= 0 && buildings[x][y-1] != null) {
-            return true;
+        if (x + 1 < SIZE && buildings[x + 1][y] != null) {
+            res.add(buildings[x + 1][y]);
         }
-        return y + 1 < SIZE && buildings[x][y + 1] != null;
+        if (y - 1 >= 0 && buildings[x][y - 1] != null) {
+            res.add(buildings[x][y - 1]);
+        }
+        if (y + 1 < SIZE && buildings[x][y + 1] != null) {
+            res.add(buildings[x][y + 1]);
+        }
+        return res;
     }
 
     public boolean placeBuilding(final Building building, final int x, final int y) {
@@ -112,8 +159,8 @@ public class Map {
             }
         }
         buildings[x][y] = building;
-        final Pair<Integer> coords = new Pair<>(x, y);
         buildingList.add(building);
+        final Pair<Integer> coords = new Pair<>(x, y);
         if (riftCoords.contains(coords) && building instanceof AttackableBuilding) {
             GameState.gameState.baseEnergy += energyPerRift;
             BuildRiftTask.finished = true;
@@ -140,10 +187,14 @@ public class Map {
     private void removeBuildingAt(final int x, final int y) {
         final Building building = buildings[x][y];
         final Pair<Integer> coords = new Pair<>(x, y);
-        final PathBuilding newPath = new PathBuilding();
-        buildings[x][y] = newPath;
-        newPath.setPosition(coords);
-        buildingList.add(newPath);
+        if (building instanceof CannotPath) {
+            buildings[x][y] = null;
+        } else {
+            final PathBuilding newPath = new PathBuilding();
+            buildings[x][y] = newPath;
+            newPath.setPosition(coords);
+            buildingList.add(newPath);
+        }
         if (riftCoords.contains(coords) && building instanceof AttackableBuilding) {
             GameState.gameState.baseEnergy -= energyPerRift;
             if (GameState.gameState.currentEnergy > GameState.gameState.baseEnergy) {

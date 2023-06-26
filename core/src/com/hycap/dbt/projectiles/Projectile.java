@@ -18,8 +18,12 @@ public abstract class Projectile implements Updatable {
 
     @Override
     public void update(final float deltaT) {
-        if (targetEnemy == null) {
+        if (targetEnemy == null || targetEnemy.invisSeconds > 0) {
             GameState.gameState.projectilesToRemove.add(this);
+        }
+        if (targetEnemy.invisSeconds > 0) {
+            // Stops enemies becoming permanently invincible
+            targetEnemy.damageToTake -= damage;
         }
         final Vector2 move = new Vector2(targetEnemy.getPosition()).sub(positionVector);
         final float targetDist = move.len();

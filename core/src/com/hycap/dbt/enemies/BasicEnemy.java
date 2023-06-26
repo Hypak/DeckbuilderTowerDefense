@@ -11,6 +11,7 @@ public class BasicEnemy extends Enemy {
 
     public BasicEnemy(final Vector2 position) {
         super(position);
+        super.buildingTargetPriority = Neutral.neutral;
         attackRange = 0.5f;
         moveSpeed = 1f;
         health = 15;
@@ -25,6 +26,7 @@ public class BasicEnemy extends Enemy {
         timeUntilNextAttack -= deltaT;
         super.update(deltaT);
         if (targetDist <= attackRange && timeUntilNextAttack <= 0 && targetBuilding != null) {
+            invisSeconds = 0;
             targetBuilding.attack(attackDamage);
             timeUntilNextAttack = attackTime;
         }

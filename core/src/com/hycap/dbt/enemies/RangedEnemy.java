@@ -12,7 +12,8 @@ public class RangedEnemy extends Enemy {
     private float timeUntilNextAttack;
 
     public RangedEnemy(final Vector2 position) {
-        super(position, (float) Math.PI / 6);
+        super(position, (float) Math.PI / 4);
+        super.buildingTargetPriority = Neutral.neutral;
         moveSpeed = 0.75f;
         health = 8;
         attackTime = 0.7f;

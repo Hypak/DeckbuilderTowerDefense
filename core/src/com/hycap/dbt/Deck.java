@@ -13,11 +13,12 @@ public class Deck {
 
     Deck() {
         cards = new ArrayList<>();
-        for (int i = 0; i < 7; ++i) {
+        for (int i = 0; i < 6; ++i) {
             cards.add(new PathCard());
         }
         cards.add(new MineCard());
-        cards.add(new MineCard());
+        cards.add(new FieldCard());
+        cards.add(new FieldCard());
         cards.add(new BuyCard());
         cards.add(new TowerCard());
         cards.add(new Recycle2Card());
@@ -95,14 +96,16 @@ public class Deck {
     }
 
     void drawNewHand(final int handSize) {
-        int size = handSize;
-        for (final Card card : hand) {
-            if (card instanceof EtherealCard) {
-                hand.remove(card);
+        for (int i = 0; i < hand.size(); ++i) {
+            if (hand.get(i) instanceof EtherealCard) {
+                cards.remove(hand.get(i));
+                hand.remove(i);
+                --i;
             }
         }
         discardPile.addAll(hand);
         hand = new ArrayList<>();
+        int size = handSize;
         if (size > cards.size()) {
             size = cards.size();
         }

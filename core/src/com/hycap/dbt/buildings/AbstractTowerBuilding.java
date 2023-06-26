@@ -116,7 +116,7 @@ public abstract class AbstractTowerBuilding extends AttackableBuilding implement
             float closestEnemyDist = range;
             Enemy closestEnemy = null;
             for (final Enemy enemy : GameState.gameState.enemies) {
-                if (enemy.damageToTake >= enemy.health) {
+                if (enemy.damageToTake >= enemy.health || enemy.invisSeconds > 0) {
                     continue;
                 }
                 final Vector2 diff = new Vector2(vecPosition).sub(enemy.getPosition());

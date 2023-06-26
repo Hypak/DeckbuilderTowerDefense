@@ -5,10 +5,7 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.hycap.dbt.buildings.*;
 import com.hycap.dbt.cards.*;
-import com.hycap.dbt.enemies.BasicEnemy;
-import com.hycap.dbt.enemies.BigEnemy;
-import com.hycap.dbt.enemies.FastEnemy;
-import com.hycap.dbt.enemies.RangedEnemy;
+import com.hycap.dbt.enemies.*;
 import com.hycap.dbt.projectiles.EarthquakeProjectile;
 import com.hycap.dbt.projectiles.RangedEnemyProjectile;
 import com.hycap.dbt.projectiles.SniperProjectile;
@@ -30,6 +27,8 @@ final class TextureManager {
         Path0EnergyCard.texture = new Texture("Path0EnergyCard.png");
         MineBuilding.texture = new Texture("MineBuilding.png");
         MineCard.texture = new Texture("MineCard.png");
+        FieldBuilding.texture = new Texture("FieldBuilding.png");
+        FieldCard.texture = new Texture("FieldCard.png");
         CoffersBuilding.texture = new Texture("CoffersBuilding.png");
         CoffersCard.texture = new Texture("CoffersCard.png");
         MageBuilding.texture = new Texture("MageBuilding.png");
@@ -58,6 +57,7 @@ final class TextureManager {
         FastEnemy.texture = new Texture("FastEnemy.png");
         RangedEnemy.texture = new Texture("RangedEnemy.png");
         BigEnemy.texture = new Texture("BigEnemy.png");
+        NinjaEnemy.texture = new Texture("NinjaEnemy.png");
 
         EnemyBase.texture = new Texture("EnemyBase.png");
 

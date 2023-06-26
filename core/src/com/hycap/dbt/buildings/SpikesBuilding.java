@@ -8,10 +8,10 @@ import com.hycap.dbt.enemies.Enemy;
 import java.util.ArrayList;
 import java.util.Collection;
 
-public class SpikesBuilding extends Building implements Updatable {
+public class SpikesBuilding extends Building implements Updatable, CannotPath {
     public static Texture texture;
 
-    private float damage = 3;
+    private float damage = 4;
     private float reloadTime = 0.5f;
     private float timeUntilNextReload = 0;
     @Override

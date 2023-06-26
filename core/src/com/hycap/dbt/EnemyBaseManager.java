@@ -1,12 +1,10 @@
 package com.hycap.dbt;
 
 import com.badlogic.gdx.math.Vector2;
-import com.hycap.dbt.enemies.BasicEnemy;
-import com.hycap.dbt.enemies.BigEnemy;
-import com.hycap.dbt.enemies.Enemy;
-import com.hycap.dbt.enemies.FastEnemy;
+import com.hycap.dbt.enemies.*;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Random;
 
@@ -18,6 +16,8 @@ public class EnemyBaseManager {
     private final List<Pair<Integer>> setBasicBaseRadii;
     private final List<Pair<Integer>> setFastBaseRadii;
     private final List<Pair<Integer>> setBigBaseRadii;
+    private final List<Pair<Integer>> setNinjaBaseRadii;
+
     private final Map map;
 
     EnemyBaseManager(final GameScreen.Difficulty difficulty, final Map map) {
@@ -45,15 +45,21 @@ public class EnemyBaseManager {
         setBasicBaseRadii.add(new Pair<>(18, 2));
 
         setFastBaseRadii = new ArrayList<>();
-        setFastBaseRadii.add(new Pair<>(20, 1));
-        setFastBaseRadii.add(new Pair<>(22, 1));
-        setFastBaseRadii.add(new Pair<>(24, 2));
-        setFastBaseRadii.add(new Pair<>(26, 2));
+        setFastBaseRadii.add(new Pair<>(20, 2));
+        setFastBaseRadii.add(new Pair<>(22, 2));
+        setFastBaseRadii.add(new Pair<>(24, 3));
+        setFastBaseRadii.add(new Pair<>(26, 3));
 
         setBigBaseRadii = new ArrayList<>();
         setBigBaseRadii.add(new Pair<>(30, 1));
         setBigBaseRadii.add(new Pair<>(32, 1));
         setBigBaseRadii.add(new Pair<>(34, 1));
+
+        setNinjaBaseRadii = new ArrayList<>();
+
+        setNinjaBaseRadii.add(new Pair<>(32, 2));
+        setNinjaBaseRadii.add(new Pair<>(34, 2));
+        setNinjaBaseRadii.add(new Pair<>(35, 2));
 
         enemyBases = new ArrayList<>();
         generateBases();
@@ -80,7 +86,7 @@ public class EnemyBaseManager {
                 --i;
                 continue;
             }
-            generateFastEnemyBaseAt(x, y, 2);
+            generateFastEnemyBaseAt(x, y, 3);
         }
         for (int i = 0; i < bigEnemyBaseCount; ++i) {
             final int x = random.nextInt(map.SIZE);
@@ -129,6 +135,10 @@ public class EnemyBaseManager {
             final Pair<Integer> coords = getCoordsAtRadius(radiusCount.getLeft());
             generateBigEnemyBaseAt(coords.getLeft(), coords.getRight(), radiusCount.getRight());
         }
+        for (final Pair<Integer> radiusCount : setNinjaBaseRadii) {
+            final Pair<Integer> coords = getCoordsAtRadius(radiusCount.getLeft());
+            generateNinjaEnemyBaseAt(coords.getLeft(), coords.getRight(), radiusCount.getRight());
+        }
     }
 
     private void generateBasicEnemyBaseAt(final int x, final int y, final int spawnCount) {
@@ -136,8 +146,7 @@ public class EnemyBaseManager {
         for (int i = 0; i < spawnCount; ++i) {
             enemySpawns.add(new BasicEnemy(new Vector2(x, y)));
         }
-        final EnemyBase newBase = new EnemyBase(new Pair<>(x, y), enemySpawns, 1.5f);
-        enemyBases.add(newBase);
+        generateBaseWithSpawnsAt(x, y, enemySpawns);
     }
 
     private void generateFastEnemyBaseAt(final int x, final int y, final int spawnCount) {
@@ -145,8 +154,7 @@ public class EnemyBaseManager {
         for (int i = 0; i < spawnCount; ++i) {
             enemySpawns.add(new FastEnemy(new Vector2(x, y)));
         }
-        final EnemyBase newBase = new EnemyBase(new Pair<>(x, y), enemySpawns, 2f);
-        enemyBases.add(newBase);
+        generateBaseWithSpawnsAt(x, y, enemySpawns);
     }
 
     private void generateBigEnemyBaseAt(final int x, final int y, final int spawnCount) {
@@ -154,6 +162,18 @@ public class EnemyBaseManager {
         for (int i = 0; i < spawnCount; ++i) {
             enemySpawns.add(new BigEnemy(new Vector2(x, y)));
         }
+        generateBaseWithSpawnsAt(x, y, enemySpawns);
+    }
+
+    private void generateNinjaEnemyBaseAt(final int x, final int y, final int spawnCount) {
+        final List<Enemy> enemySpawns = new ArrayList<>();
+        for (int i = 0; i < spawnCount; ++i) {
+            enemySpawns.add(new NinjaEnemy(new Vector2(x, y)));
+        }
+        generateBaseWithSpawnsAt(x, y, enemySpawns);
+    }
+
+    private void generateBaseWithSpawnsAt(final int x, final int y, final List<Enemy> enemySpawns) {
         final EnemyBase newBase = new EnemyBase(new Pair<>(x, y), enemySpawns, 2f);
         enemyBases.add(newBase);
     }

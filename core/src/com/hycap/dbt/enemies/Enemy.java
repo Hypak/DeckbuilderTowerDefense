@@ -21,15 +21,20 @@ public abstract class Enemy implements Updatable {
         dieSound = Gdx.audio.newSound(Gdx.files.internal("EnemyDie.ogg"));
     }
 
+
     Vector2 position;
     float moveSpeed;
     private Vector2 target;
+    BuildingTargetPriority buildingTargetPriority;
     AttackableBuilding targetBuilding;
     float targetDist;
     float attackRange;
     public float health;
     public float damageToTake;
-    private final float offsetAngle;
+    public boolean takenDamage = false;
+    private float offsetAngle;
+
+    public float invisSeconds = 0;
 
     private static final Random random;
 
@@ -61,16 +66,23 @@ public abstract class Enemy implements Updatable {
     }
 
     private void setTargetNearest() {
-        float closestSquareDist = Float.MAX_VALUE;
+        float closestDist = Float.MAX_VALUE;
+        int highestPriority = Integer.MIN_VALUE;
         for (final Building building : GameState.gameState.map.getBuildingList()) {
             final Pair<Integer> coords = building.getPosition();
             if (!(building instanceof AttackableBuilding)) {
                 continue;
             }
             final Vector2 vecCoords = new Vector2(coords.getLeft(), coords.getRight());
-            final float squareDist = vecCoords.sub(position).len2();
-            if (squareDist < closestSquareDist) {
-                closestSquareDist = squareDist;
+            float dist = vecCoords.sub(position).len();
+            if (dist < 1) {
+                // Always attack close
+                dist = Float.MIN_VALUE;
+            }
+            final float priority = buildingTargetPriority.getPriority(this, building);
+            dist -= priority;
+            if (dist < closestDist) {
+                closestDist = dist;
                 target = new Vector2(coords.getLeft(), coords.getRight());
                 targetBuilding = (AttackableBuilding)building;
             }
@@ -79,6 +91,12 @@ public abstract class Enemy implements Updatable {
 
     @Override
     public void update(final float deltaT) {
+        if (damageToTake > 0 || takenDamage) {
+            offsetAngle = 0;
+        }
+        if (invisSeconds > 0) {
+            invisSeconds -= deltaT;
+        }
         setTargetNearest();
         final Vector2 move = new Vector2(target).sub(position);
         targetDist = move.len();
@@ -94,6 +112,7 @@ public abstract class Enemy implements Updatable {
             return;
         }
         health -= damage;
+        takenDamage = true;
         GameState.gameState.addHurtParticle(position);
         attackSound.play();
         if (health <= 0) {

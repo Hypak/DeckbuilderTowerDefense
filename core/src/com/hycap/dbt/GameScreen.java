@@ -300,10 +300,14 @@ public class GameScreen extends ScreenAdapter {
 		}
 		for (final Enemy enemy : GameState.gameState.enemies) {
 			float scale = 1;
+			float alpha = 1;
 			if (enemy instanceof SetRenderScale) {
 				scale = ((SetRenderScale)enemy).getRenderScale();
 			}
-			TextureManager.draw(batch, enemy.getTexture(), enemy.getX(), enemy.getY(), 1, scale);
+			if (enemy.invisSeconds > 0) {
+				alpha = 0.5f;
+			}
+			TextureManager.draw(batch, enemy.getTexture(), enemy.getX(), enemy.getY(), alpha, scale);
 		}
 		for (final HasRange building : selectedViewTowers) {
 			final int x = building.getPosition().getLeft();

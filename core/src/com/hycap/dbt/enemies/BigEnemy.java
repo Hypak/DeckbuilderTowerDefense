@@ -8,6 +8,7 @@ public class BigEnemy extends BasicEnemy implements SetRenderScale {
     public static Texture texture;
     public BigEnemy(final Vector2 position) {
         super(position);
+        super.buildingTargetPriority = PreferTowers.preferTowers;
         moveSpeed = 0.75f;
         health = 40;
         attackTime = 1f;
