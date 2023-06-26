@@ -45,21 +45,26 @@ public class EnemyBaseManager {
         setBasicBaseRadii.add(new Pair<>(18, 2));
 
         setFastBaseRadii = new ArrayList<>();
+        setFastBaseRadii.add(new Pair<>(14, 2));
+        setFastBaseRadii.add(new Pair<>(17, 2));
         setFastBaseRadii.add(new Pair<>(20, 2));
         setFastBaseRadii.add(new Pair<>(22, 2));
         setFastBaseRadii.add(new Pair<>(24, 3));
         setFastBaseRadii.add(new Pair<>(26, 3));
 
         setBigBaseRadii = new ArrayList<>();
-        setBigBaseRadii.add(new Pair<>(30, 1));
+        setBigBaseRadii.add(new Pair<>(20, 1));
         setBigBaseRadii.add(new Pair<>(32, 1));
-        setBigBaseRadii.add(new Pair<>(34, 1));
+        setBigBaseRadii.add(new Pair<>(34, 2));
+        setBigBaseRadii.add(new Pair<>(35, 2));
 
         setNinjaBaseRadii = new ArrayList<>();
 
-        setNinjaBaseRadii.add(new Pair<>(32, 2));
+        setNinjaBaseRadii.add(new Pair<>(25, 1));
+        setNinjaBaseRadii.add(new Pair<>(27, 1));
+        setNinjaBaseRadii.add(new Pair<>(28, 2));
         setNinjaBaseRadii.add(new Pair<>(34, 2));
-        setNinjaBaseRadii.add(new Pair<>(35, 2));
+        setNinjaBaseRadii.add(new Pair<>(35, 3));
 
         enemyBases = new ArrayList<>();
         generateBases();

@@ -10,7 +10,7 @@ public class BigEnemy extends BasicEnemy implements SetRenderScale {
         super(position);
         super.buildingTargetPriority = PreferTowers.preferTowers;
         moveSpeed = 0.75f;
-        health = 40;
+        health = 50;
         attackTime = 1f;
         attackDamage = 20;
         attackRange = 0.75f;

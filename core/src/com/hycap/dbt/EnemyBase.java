@@ -2,10 +2,7 @@ package com.hycap.dbt;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
-import com.hycap.dbt.enemies.BigEnemy;
-import com.hycap.dbt.enemies.Enemy;
-import com.hycap.dbt.enemies.FastEnemy;
-import com.hycap.dbt.enemies.RangedEnemy;
+import com.hycap.dbt.enemies.*;
 
 import java.util.*;
 
@@ -40,9 +37,13 @@ public class EnemyBase implements Updatable {
             } else {
                 enemySpawns.add(0, new RangedEnemy(new Vector2(position.getLeft(), position.getRight())));
             }
-            final int addBigAtRadius = 40;
+            final int addBigAtRadius = 20;
             if (GameState.gameState.map.currentRadius >= addBigAtRadius) {
                 enemySpawns.add(0, new BigEnemy(new Vector2(position.getLeft(), position.getRight())));
+            }
+            final int addNinjaAtRadius = 25;
+            if (GameState.gameState.map.currentRadius >= addNinjaAtRadius) {
+                enemySpawns.add(new NinjaEnemy(new Vector2(position.getLeft(), position.getRight())));
             }
             turnsUntilUpgrade = baseTurnsUntilUpgrade;
         }
