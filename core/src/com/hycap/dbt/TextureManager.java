@@ -51,6 +51,8 @@ final class TextureManager {
         EarthquakeBuilding.texture = new Texture("EarthquakeBuilding.png");
         EarthquakeCard.texture = new Texture("EarthquakeCard.png");
 
+        FarmerUnit.texture = new Texture("FarmerUnit.png");
+
         Draw2Card.texture = new Texture("Draw2Card.png");
         Remove1Card.texture = new Texture("Remove1Card.png");
         BuyCard.texture = new Texture("BuyCard.png");
@@ -63,8 +65,6 @@ final class TextureManager {
         NinjaEnemy.texture = new Texture("NinjaEnemy.png");
 
         EnemyBase.texture = new Texture("EnemyBase.png");
-
-        FarmerUnit.texture = NinjaEnemy.texture;
 
         TowerProjectile.texture = new Texture("TowerProjectile.png");
         SniperProjectile.texture = new Texture("TowerProjectile.png");
