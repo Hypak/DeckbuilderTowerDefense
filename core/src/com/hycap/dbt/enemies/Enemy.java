@@ -10,6 +10,7 @@ import com.hycap.dbt.Updatable;
 import com.hycap.dbt.buildings.AttackableBuilding;
 import com.hycap.dbt.buildings.Building;
 import com.hycap.dbt.tasks.KillEnemyTask;
+import com.hycap.dbt.units.Unit;
 
 import java.util.Random;
 
@@ -24,7 +25,8 @@ public abstract class Enemy implements Updatable {
 
     Vector2 position;
     float moveSpeed;
-    private Vector2 target;
+    public Vector2 target;
+    public Vector2 velocity;
     BuildingTargetPriority buildingTargetPriority;
     AttackableBuilding targetBuilding;
     float targetDist;
@@ -44,7 +46,7 @@ public abstract class Enemy implements Updatable {
 
     Enemy(final Vector2 position) {
         this.position = position;
-        float maxOffsetAngle = (float) Math.PI / 8;
+        final float maxOffsetAngle = (float) Math.PI / 8;
         offsetAngle = 2f * (random.nextFloat() - 0.5f) * maxOffsetAngle;
     }
 
@@ -89,6 +91,19 @@ public abstract class Enemy implements Updatable {
         }
     }
 
+    Unit getNearestUnit() {
+        float minDist = Float.MAX_VALUE;
+        Unit res = null;
+        for (final Unit u : GameState.gameState.units) {
+            float dist = new Vector2(position).sub(u.position).len();
+            if (dist < minDist) {
+                minDist = dist;
+                res = u;
+            }
+        }
+        return res;
+    }
+
     @Override
     public void update(final float deltaT) {
         if (damageToTake > 0 || takenDamage) {
@@ -103,7 +118,8 @@ public abstract class Enemy implements Updatable {
         if (targetDist > attackRange) {
             move.scl(1 / targetDist);
             final Vector2 rotatedMove = move.rotateRad(offsetAngle);
-            position.add(rotatedMove.scl(deltaT * moveSpeed));
+            velocity = rotatedMove.scl(deltaT * moveSpeed);
+            position.add(velocity);
         }
     }
 

@@ -10,6 +10,7 @@ import com.hycap.dbt.projectiles.EarthquakeProjectile;
 import com.hycap.dbt.projectiles.RangedEnemyProjectile;
 import com.hycap.dbt.projectiles.SniperProjectile;
 import com.hycap.dbt.projectiles.TowerProjectile;
+import com.hycap.dbt.units.FarmerUnit;
 
 final class TextureManager {
     public static Texture grassTexture;
@@ -27,6 +28,8 @@ final class TextureManager {
         Path0EnergyCard.texture = new Texture("Path0EnergyCard.png");
         MineBuilding.texture = new Texture("MineBuilding.png");
         MineCard.texture = new Texture("MineCard.png");
+        ShackCard.texture = new Texture("ShackCard.png");
+        ShackBuilding.texture = new Texture("ShackBuilding.png");
         FieldBuilding.texture = new Texture("FieldBuilding.png");
         FieldCard.texture = new Texture("FieldCard.png");
         CoffersBuilding.texture = new Texture("CoffersBuilding.png");
@@ -60,6 +63,8 @@ final class TextureManager {
         NinjaEnemy.texture = new Texture("NinjaEnemy.png");
 
         EnemyBase.texture = new Texture("EnemyBase.png");
+
+        FarmerUnit.texture = NinjaEnemy.texture;
 
         TowerProjectile.texture = new Texture("TowerProjectile.png");
         SniperProjectile.texture = new Texture("TowerProjectile.png");

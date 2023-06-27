@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
 import com.hycap.dbt.GameState;
 import com.hycap.dbt.projectiles.RangedEnemyProjectile;
+import com.hycap.dbt.units.Unit;
 
 public class RangedEnemy extends Enemy {
     public static Texture texture;
@@ -36,6 +37,16 @@ public class RangedEnemy extends Enemy {
             projectile.damage = attackDamage;
             GameState.gameState.enemyProjectiles.add(projectile);
             timeUntilNextAttack = attackTime;
+        } else {
+            Unit nearestUnit = getNearestUnit();
+            if (nearestUnit == null) {
+                return;
+            }
+            float dist = new Vector2(position).sub(nearestUnit.position).len();
+            if (dist <= attackRange) {
+                nearestUnit.attack(attackDamage);
+                timeUntilNextAttack = attackTime;
+            }
         }
     }
 

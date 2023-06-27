@@ -2,6 +2,8 @@ package com.hycap.dbt.enemies;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
+import com.hycap.dbt.Pair;
+import com.hycap.dbt.units.Unit;
 
 public class BasicEnemy extends Enemy {
     public static Texture texture;
@@ -25,10 +27,22 @@ public class BasicEnemy extends Enemy {
         }
         timeUntilNextAttack -= deltaT;
         super.update(deltaT);
-        if (targetDist <= attackRange && timeUntilNextAttack <= 0 && targetBuilding != null) {
-            invisSeconds = 0;
-            targetBuilding.attack(attackDamage);
-            timeUntilNextAttack = attackTime;
+        if (timeUntilNextAttack <= 0) {
+            if (targetDist <= attackRange && targetBuilding != null) {
+                invisSeconds = 0;
+                targetBuilding.attack(attackDamage);
+                timeUntilNextAttack = attackTime;
+            } else {
+                Unit nearestUnit = getNearestUnit();
+                if (nearestUnit == null) {
+                    return;
+                }
+                float dist = new Vector2(position).sub(nearestUnit.position).len();
+                if (dist <= attackRange) {
+                    nearestUnit.attack(attackDamage);
+                    timeUntilNextAttack = attackTime;
+                }
+            }
         }
     }
 

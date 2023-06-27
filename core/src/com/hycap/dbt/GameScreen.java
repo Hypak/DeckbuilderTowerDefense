@@ -13,6 +13,7 @@ import com.hycap.dbt.tasks.ClickBuildingTask;
 import com.hycap.dbt.tasks.EndTurnTask;
 import com.hycap.dbt.tasks.PlayActionTask;
 import com.hycap.dbt.tasks.TaskManager;
+import com.hycap.dbt.units.Unit;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -331,6 +332,9 @@ public class GameScreen extends ScreenAdapter {
 				alpha = 0.5f;
 			}
 			TextureManager.draw(batch, enemy.getTexture(), enemy.getX(), enemy.getY(), alpha, scale);
+		}
+		for (final Unit unit : GameState.gameState.units) {
+			TextureManager.draw(batch, unit.getTexture(), unit.getX(), unit.getY());
 		}
 		for (final HasRange building : selectedViewTowers) {
 			final int x = building.getPosition().getLeft();

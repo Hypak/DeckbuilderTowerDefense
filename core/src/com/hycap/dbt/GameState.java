@@ -11,6 +11,8 @@ import com.hycap.dbt.enemies.Enemy;
 import com.hycap.dbt.projectiles.EnemyProjectile;
 import com.hycap.dbt.projectiles.Projectile;
 import com.hycap.dbt.tasks.FastforwardTask;
+import com.hycap.dbt.units.FarmerUnit;
+import com.hycap.dbt.units.Unit;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,6 +44,7 @@ public class GameState {
     public final List<Card> freeCardsPerTurn;
 
     public final List<Enemy> enemies;
+    public List<Unit> units;
     final List<EnemyBase> updatableBases;
     public List<Projectile> projectiles;
     public List<Projectile> projectilesToRemove = null;
@@ -105,6 +108,7 @@ public class GameState {
         BuyCard.shownCardAmount = BuyCard.baseShownCardAmount;
 
         enemies = new ArrayList<>();
+        units = new ArrayList<>();
         updatableBases = new ArrayList<>();
         projectiles = new ArrayList<>();
         enemyProjectiles = new ArrayList<>();
@@ -115,6 +119,13 @@ public class GameState {
 
     void newTurn() {
         map.newTurn();
+        units = new ArrayList<>();
+        for (final Building b : map.buildingList) {
+            if (b instanceof ActionOnStartTurn) {
+                final ActionOnStartTurn actionOnStartTurn = (ActionOnStartTurn) b;
+                actionOnStartTurn.startTurn();
+            }
+        }
         currentEnergy = baseEnergy;
         gold += goldPerTurn;
         if (gold > maxGold) {
@@ -195,6 +206,10 @@ public class GameState {
         for (final Updatable e : enemies) {
             e.update(deltaT);
             animating |= e.keepActive();
+        }
+        for (final Updatable u : units) {
+            u.update(deltaT);
+            // Stop updating even when units are alive
         }
     }
 
