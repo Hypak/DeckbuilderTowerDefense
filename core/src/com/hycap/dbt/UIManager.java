@@ -37,9 +37,15 @@ public final class UIManager {
     private static final int basePressesUntilRemove = 2;
     private static Table buildingButtonTable;
     private static Table selectedInfoTable;
-    private static Building selectedBuilding = null;
+    static Building selectedBuilding = null;
 
     private static Label roundInfo;
+
+    private static Label speedLabel;
+    private static TextButton pauseButton;
+    private static TextButton slowSpeedButton;
+    private static TextButton mediumSpeedButton;
+    private static TextButton fastSpeedButton;
 
     private static Button taskButton;
     private static boolean showingAllCompletedTasks = false;
@@ -85,13 +91,11 @@ public final class UIManager {
             final Upgradable upgradable = (Upgradable) building;
             buildingUpgrade.remove();
             buildingUpgrade = new TextButton("Upgrade " + upgradable.getUpgradeCost() + " Gold", SkinClass.skin);
+            buildingUpgrade.addListener(new TextTooltip("Return", tooltipManager, SkinClass.skin));
             buildingUpgrade.addListener(new ChangeListener() {
                 @Override
                 public void changed(final ChangeEvent event, final Actor actor) {
-                    if (upgradable.tryUpgrade(GameState.gameState)) {
-                        setSelectedInfo(building);
-                        UpgradeTask.finished = true;
-                    }
+                    upgradeBuilding(building);
                 }
             });
             buildingUpgrade.setDisabled(GameState.gameState.animating);
@@ -101,6 +105,7 @@ public final class UIManager {
         if (!(building instanceof CannotBeRemoved)) {
             buildingRemove.remove();
             buildingRemove = new TextButton("Remove", SkinClass.skin);
+            buildingRemove.addListener(new TextTooltip("Del", tooltipManager, SkinClass.skin));
             pressesUntilRemove = basePressesUntilRemove;
             buildingRemove.addListener(new ChangeListener() {
                 @Override
@@ -108,17 +113,32 @@ public final class UIManager {
                     --pressesUntilRemove;
                     buildingRemove.setText("Confirm");
                     if (pressesUntilRemove < 1) {
-                        GameState.gameState.map.removeBuilding(building);
-                        building.onDestroy(GameState.gameState);
-                        removeSelectedInfo();
-                        if (building instanceof HasRange) {
-                            GameScreen.gameScreen.selectedViewTowers.remove((HasRange) building);
-                        }
+                        removeBuilding(building);
                     }
                 }
             });
             buildingRemove.setDisabled(GameState.gameState.animating);
             buildingButtonTable.add(buildingRemove).row();
+        }
+    }
+
+    public static void upgradeBuilding(Building building) {
+        if (!(building instanceof Upgradable)) {
+            return;
+        }
+        Upgradable upgradable = (Upgradable) building;
+        if (upgradable.tryUpgrade(GameState.gameState)) {
+            setSelectedInfo(building);
+            UpgradeTask.finished = true;
+        }
+    }
+
+    public static void removeBuilding(Building building) {
+        GameState.gameState.map.removeBuilding(building);
+        building.onDestroy(GameState.gameState);
+        removeSelectedInfo();
+        if (building instanceof HasRange) {
+            GameScreen.gameScreen.selectedViewTowers.remove((HasRange) building);
         }
     }
 
@@ -228,6 +248,8 @@ public final class UIManager {
 
         buildingUpgrade = new TextButton("Upgrade n Gold", SkinClass.skin);
         buildingRemove = new TextButton("Remove", SkinClass.skin);
+        buildingRemove.addListener(new TextTooltip("Del", tooltipManager, SkinClass.skin));
+
         buildingButtonTable = new Table(SkinClass.skin);
 
         roundInfo = new Label("Loading...", SkinClass.skin);
@@ -255,38 +277,38 @@ public final class UIManager {
         taskInfoTable.padTop(30);
         taskInfoTable.padRight(30);
 
-        final TextButton pauseButton = new TextButton("Pause", SkinClass.skin);
+        speedLabel = new Label("Speed: x", SkinClass.skin);
+        pauseButton = new TextButton("Pause", SkinClass.skin);
+        pauseButton.addListener(new TextTooltip("P", tooltipManager, SkinClass.skin));
         pauseButton.addListener(new ChangeListener() {
             @Override
             public void changed(final ChangeEvent event, final Actor actor) {
-                GameState.gameState.paused = true;
+                GameState.gameState.paused = !GameState.gameState.paused;
             }
         });
-        final TextButton slowSpeedButton = new TextButton(">", SkinClass.skin);
+        slowSpeedButton = new TextButton(">", SkinClass.skin);
         slowSpeedButton.addListener(new ChangeListener() {
             @Override
             public void changed(final ChangeEvent event, final Actor actor) {
                 GameState.gameState.setRunSpeed(GameState.RunSpeed.SLOW);
-                GameState.gameState.paused = false;
             }
         });
-        final TextButton mediumSpeedButton = new TextButton(">>", SkinClass.skin);
+        mediumSpeedButton = new TextButton(">>", SkinClass.skin);
         mediumSpeedButton.addListener(new ChangeListener() {
             @Override
             public void changed(final ChangeEvent event, final Actor actor) {
                 GameState.gameState.setRunSpeed(GameState.RunSpeed.MEDIUM);
-                GameState.gameState.paused = false;
             }
         });
-        final TextButton fastSpeedButton = new TextButton(">>>", SkinClass.skin);
+        fastSpeedButton = new TextButton(">>>", SkinClass.skin);
         fastSpeedButton.addListener(new ChangeListener() {
             @Override
             public void changed(final ChangeEvent event, final Actor actor) {
                 GameState.gameState.setRunSpeed(GameState.RunSpeed.FAST);
-                GameState.gameState.paused = false;
             }
         });
         final TextButton skipButton = new TextButton("-->", SkinClass.skin);
+        skipButton.addListener(new TextTooltip("/", tooltipManager, SkinClass.skin));
         skipButton.addListener(new ChangeListener() {
             @Override
             public void changed(final ChangeEvent event, final Actor actor) {
@@ -294,11 +316,15 @@ public final class UIManager {
             }
         });
         final Table fastForwardTable = new Table();
-        fastForwardTable.add(pauseButton);
-        fastForwardTable.add(slowSpeedButton);
-        fastForwardTable.add(mediumSpeedButton);
-        fastForwardTable.add(fastSpeedButton);
-        fastForwardTable.add(skipButton);
+        fastForwardTable.add(speedLabel);
+        fastForwardTable.row();
+        final Table subFFTable = new Table();
+        subFFTable.add(pauseButton);
+        subFFTable.add(slowSpeedButton);
+        subFFTable.add(mediumSpeedButton);
+        subFFTable.add(fastSpeedButton);
+        subFFTable.add(skipButton);
+        fastForwardTable.add(subFFTable);
         fastForwardTable.padTop(30);
         fastForwardTable.setFillParent(true);
         fastForwardTable.align(Align.top);
@@ -410,9 +436,37 @@ public final class UIManager {
         roundInfoString.append("\nNew base at radius: ").append(GameState.gameState.map.enemyBaseManager.getNextBaseRadius());
         final int enemiesNextWave = GameState.gameState.map.enemyBaseManager.getEnemyCountNextWave();
         if (enemiesNextWave > 0) {
-            roundInfoString.append("\nEnemies next wave: ").append(enemiesNextWave);
+            roundInfoString.append("\nEnemies next wave: ").append(enemiesNextWave).append("\n");
+            roundInfoString.append(GameState.gameState.map.enemyBaseManager.getEnemyDescriptionNextWave());
         }
         roundInfo.setText(roundInfoString.toString());
+
+        if (GameState.gameState.paused) {
+            speedLabel.setText("Paused (Speed: " + GameState.gameState.runSpeed.toString() + ")");
+        } else {
+            speedLabel.setText("Speed: " + GameState.gameState.runSpeed.toString());
+        }
+        if (GameState.gameState.paused) {
+            pauseButton.setText("Play");
+        } else {
+            pauseButton.setText("Pause");
+        }
+        slowSpeedButton.setTouchable(Touchable.enabled);
+        mediumSpeedButton.setTouchable(Touchable.enabled);
+        fastSpeedButton.setTouchable(Touchable.enabled);
+        if (!GameState.gameState.paused) {
+            switch (GameState.gameState.runSpeed) {
+                case SLOW:
+                    slowSpeedButton.setTouchable(Touchable.disabled);
+                    break;
+                case MEDIUM:
+                    mediumSpeedButton.setTouchable(Touchable.disabled);
+                    break;
+                case FAST:
+                    fastSpeedButton.setTouchable(Touchable.disabled);
+                    break;
+            }
+        }
 
         if (showingAllCompletedTasks) {
             taskInfoLabel.setText(TaskManager.getAllCompletedTaskDescriptions());

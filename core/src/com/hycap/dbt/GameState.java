@@ -36,7 +36,7 @@ public class GameState {
     public boolean blocked;
     boolean animating;
 
-    private RunSpeed runSpeed;
+    RunSpeed runSpeed;
     boolean paused;
 
     public final List<Card> freeCardsPerTurn;
@@ -203,13 +203,33 @@ public class GameState {
         FastforwardTask.finished = true;
     }
 
-    void nextRunSpeed() {
+    void slowDownRunSpeed() {
+        final RunSpeed[] values = RunSpeed.values();
+        for (int i = 0; i < RunSpeed.values().length; ++i) {
+            if (values[i] == runSpeed) {
+                --i;
+                if (i < 0) {
+                    i = 0;
+                    paused = true;
+                }
+                setRunSpeed(RunSpeed.values()[i]);
+                break;
+            }
+        }
+    }
+
+    void speedUpRunSpeed() {
+        if (paused) {
+            paused = false;
+            runSpeed = RunSpeed.SLOW;
+            return;
+        }
         final RunSpeed[] values = RunSpeed.values();
         for (int i = 0; i < RunSpeed.values().length; ++i) {
             if (values[i] == runSpeed) {
                 ++i;
                 if (i >= RunSpeed.values().length) {
-                    i = 0;
+                    i = RunSpeed.values().length - 1;
                 }
                 setRunSpeed(RunSpeed.values()[i]);
                 break;

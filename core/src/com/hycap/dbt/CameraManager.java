@@ -12,6 +12,8 @@ import com.hycap.dbt.tasks.ScrollTask;
 final class CameraManager {
     static OrthographicCamera camera;
     private static final float panSpeed = 15;
+    private final static float zoomSpeed = 1.1f;
+
     static InputProcessor cameraProcessor;
 
     private CameraManager() {
@@ -24,12 +26,11 @@ final class CameraManager {
     static void create() {
         camera.setToOrtho(false, 20,
                 20f * Gdx.graphics.getHeight() / Gdx.graphics.getWidth());
-        resetCamera();
+        setViewWide();
         cameraProcessor = new InputAdapter() {
             @Override
             public boolean scrolled(final float amountX, final float amountY) {
-                final double zoomSpeed = 1.1f;
-                final float zoomMult = (float) Math.pow(zoomSpeed, amountY);
+                float zoomMult = getZoomMult(amountY);
                 camera.zoom *= zoomMult;
                 final Vector3 mousePos = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
                 camera.unproject(mousePos);
@@ -39,7 +40,31 @@ final class CameraManager {
                 ScrollTask.finished = true;
                 return true;
             }
+
+            @Override
+            public boolean keyUp(int keycode) {
+                switch (keycode) {
+                    case Input.Keys.PAGE_UP:
+                    case Input.Keys.Q:
+                        camera.zoom /= 2;
+                        ScrollTask.finished = true;
+                        return true;
+                    case Input.Keys.PAGE_DOWN:
+                    case Input.Keys.Z:
+                        camera.zoom *= 2;
+                        ScrollTask.finished = true;
+                        return true;
+                }
+                return false;
+            }
         };
+    }
+
+    static float getZoomMult(final float amount) {
+        if (amount == 1) {
+            return zoomSpeed;
+        }
+        return (float) Math.pow(zoomSpeed, amount);
     }
 
     static void update() {
@@ -66,9 +91,14 @@ final class CameraManager {
         camera.update();
     }
 
-    static void resetCamera() {
+    static void setViewWide() {
         camera.position.set(GameState.gameState.map.SIZE / 2f, GameState.gameState.map.SIZE / 2f, 0);
         camera.zoom = (GameState.gameState.map.currentRadius + 4) / 6f;
+    }
+
+    static void setViewHome() {
+        camera.position.set(GameState.gameState.map.SIZE / 2f, GameState.gameState.map.SIZE / 2f, 0);
+        camera.zoom = 1;
     }
 
 }

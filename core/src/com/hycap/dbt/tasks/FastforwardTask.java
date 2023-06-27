@@ -7,7 +7,7 @@ public class FastforwardTask implements Task {
     public static boolean finished;
     @Override
     public String getTaskText() {
-        return "Press tab or the >>> button to speed up battles.";
+        return "Press the [ ] keys or the >>> buttons\nto change the speed of battles.";
     }
 
     @Override

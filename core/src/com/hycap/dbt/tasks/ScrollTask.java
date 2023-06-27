@@ -7,7 +7,7 @@ public class ScrollTask implements Task {
     public static boolean finished = false;
     @Override
     public String getTaskText() {
-        return "Use the scroll wheel to zoom in and out.";
+        return "Use the scroll wheel to zoom in and out.\nAlternatively use Q Z or PageUp PageDown.";
     }
 
     @Override

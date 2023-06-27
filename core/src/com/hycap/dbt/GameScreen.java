@@ -104,6 +104,7 @@ public class GameScreen extends ScreenAdapter {
 							if (card instanceof ExhaustCard) {
 								GameState.gameState.deck.removeCard(card);
 							}
+							UIManager.setSelectedInfo(newBuilding);
 						}
 					} else if (card instanceof ActionCard) {
 						final ActionCard actionCard = (ActionCard) card;
@@ -124,26 +125,48 @@ public class GameScreen extends ScreenAdapter {
 		final InputProcessor shortcutProcessor = new InputAdapter() {
 			@Override
 			public boolean keyUp(final int keycode) {
-				if (keycode == Input.Keys.SPACE) {
-					CameraManager.resetCamera();
-					return true;
-				}
-
-				if (keycode == Input.Keys.TAB) {
-					GameState.gameState.nextRunSpeed();
-					return true;
-				}
-				if (keycode == Input.Keys.ESCAPE) {
-					UIManager.hideAllCards();
-					UIManager.toggleMenuButton();
-					selectedViewTowers = new ArrayList<>();
-					selectedIndex = null;
-				}
-				if (keycode == Input.Keys.V) {
-					UIManager.toggleShowCards();
+				switch (keycode) {
+					case Input.Keys.HOME:
+						CameraManager.setViewHome();
+						return true;
+					case Input.Keys.SPACE:
+					case Input.Keys.END:
+						CameraManager.setViewWide();
+						return true;
+					case Input.Keys.P:
+						GameState.gameState.paused = !GameState.gameState.paused;
+						return true;
+					case Input.Keys.LEFT_BRACKET:
+						GameState.gameState.slowDownRunSpeed();
+						return true;
+					case Input.Keys.RIGHT_BRACKET:
+						GameState.gameState.speedUpRunSpeed();
+						return true;
+					case Input.Keys.SLASH:
+						GameState.gameState.skipAnimation();
+						return true;
+					case Input.Keys.ESCAPE:
+						UIManager.hideAllCards();
+						UIManager.toggleMenuButton();
+						selectedViewTowers = new ArrayList<>();
+						selectedIndex = null;
+						return true;
+					case Input.Keys.V:
+						UIManager.toggleShowCards();
+						return true;
+					case Input.Keys.DEL:
+					case Input.Keys.FORWARD_DEL:
+						if (UIManager.selectedBuilding == null || UIManager.selectedBuilding instanceof CannotBeRemoved) {
+							return false;
+						}
+						UIManager.removeBuilding(UIManager.selectedBuilding);
+						return true;
+					case Input.Keys.ENTER:
+						UIManager.upgradeBuilding(UIManager.selectedBuilding);
 				}
 				if (keycode >= Input.Keys.NUM_0 && keycode <= Input.Keys.NUM_9) {
 					pressNum(keycode);
+					return true;
 				}
 				if (GameState.gameState.blocked || GameState.gameState.animating) {
 					return false;
@@ -160,7 +183,7 @@ public class GameScreen extends ScreenAdapter {
 			@Override
 			public boolean touchUp(final int screenX, final int screenY, final int pointer, final int button) {
 				if (button == Input.Buttons.MIDDLE) {
-					CameraManager.resetCamera();
+					CameraManager.setViewWide();
 					return true;
 				}
 				if (button == Input.Buttons.BACK) {

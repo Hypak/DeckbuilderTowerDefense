@@ -3,10 +3,7 @@ package com.hycap.dbt;
 import com.badlogic.gdx.math.Vector2;
 import com.hycap.dbt.enemies.*;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 public class EnemyBaseManager {
     public final List<EnemyBase> enemyBases;
@@ -226,6 +223,28 @@ public class EnemyBaseManager {
             nextRadius = 0;  // Nicer fail value than MAX_VALUE
         }
         return nextRadius;
+    }
+
+    String getEnemyDescriptionNextWave() {
+        final HashMap<String, Integer> counts = new HashMap<>();
+        for (final EnemyBase base : enemyBases) {
+            final int radius = GameState.gameState.map.getRadius(base.position.getLeft(), base.position.getRight());
+            if (radius <= GameState.gameState.map.currentRadius + 1 && base.turnsUntilNextSpawn <= 1) {
+                for (final Enemy enemy : base.enemySpawns) {
+                    final String enemyName = enemy.getName();
+                    if (counts.containsKey(enemyName)) {
+                        counts.put(enemyName, counts.get(enemyName) + 1);
+                    } else {
+                        counts.put(enemyName, 1);
+                    }
+                }
+            }
+        }
+        final StringBuilder res = new StringBuilder();
+        for (final java.util.Map.Entry<String, Integer> entry: counts.entrySet()) {
+            res.append(" -").append(entry.getKey()).append(": ").append(entry.getValue()).append("\n");
+        }
+        return res.toString();
     }
 
     int getEnemyCountNextWave() {
