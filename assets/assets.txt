@@ -21,7 +21,9 @@ i:SniperCard.png:SniperCard-6bd1a0c263de5123910a3dac89c30411.png:500:image/png:1
 i:Grass.png:Grass-59b019f3976417f83a1915f456e0b8ae.png:263:image/png:1
 i:BigEnemy.png:BigEnemy-8c924004789f9cb08ce3d2fcc3ed5036.png:232:image/png:1
 i:TowerCard.png:TowerCard-62bfaf476950f7eee894b28dcd1b48cb.png:493:image/png:1
+i:FieldBuilding.png:FieldBuilding-7c1219ca0b493f0ff0f8c4a05499de4e.png:534:image/png:1
 i:Grass2.png:Grass2-5a3e0d6dff07289cc7b39f5cab4f9fdb.png:107:image/png:1
+i:NinjaEnemy.png:NinjaEnemy-d399b6d9703f91282690bdf969674d9c.png:297:image/png:1
 i:MageCard.png:MageCard-816bc41e5690d2af1e1c2d16405a6771.png:476:image/png:1
 i:BuyCard.png:BuyCard-6a479d281f1ed1f1e3cc4cd32bb5eade.png:517:image/png:1
 i:RangedEnemyProjectile.png:RangedEnemyProjectile-11e93e754682661e98b9d79f3cf8df22.png:252:image/png:1
@@ -78,6 +80,7 @@ i:Remove1Card.png:Remove1Card-cef43bc0229038e0af238557c5af201c.png:502:image/png
 i:PathCard.png:PathCard-6042b2b998f4a7e29345fff8fd0d9f47.png:519:image/png:1
 i:SniperBuilding.png:SniperBuilding-598e7edc2735bf1dc2e98b8493cbfc4a.png:381:image/png:1
 i:LibraryCard.png:LibraryCard-0a0d3268cd8b0a748b94b50d377aec5f.png:540:image/png:1
+i:FieldCard.png:FieldCard-09ff29c544874407c40b5194c5aed13c.png:555:image/png:1
 i:Recycle2Card.png:Recycle2Card-5d265acc21613b9039fa6ec32a8b75c8.png:545:image/png:1
 i:WallCard.png:WallCard-2875ce01deb7b78a6d8468cb58951d94.png:448:image/png:1
 a:BuildingHitEffect.ogg:BuildingHitEffect-f482d6546f9c11f43a83476be30cee28.ogg:3016:application/unknown:1
