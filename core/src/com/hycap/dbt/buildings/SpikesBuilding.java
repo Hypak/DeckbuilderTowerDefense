@@ -11,7 +11,7 @@ import java.util.Collection;
 public class SpikesBuilding extends Building implements Updatable, CannotPath {
     public static Texture texture;
 
-    private float damage = 4;
+    private float damage = 5;
     private float reloadTime = 0.5f;
     private float timeUntilNextReload = 0;
     @Override
