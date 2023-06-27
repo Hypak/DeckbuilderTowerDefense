@@ -46,7 +46,10 @@ public final class UIManager {
     private static Label taskInfoLabel;
 
     static boolean showingMenu = false;
+    private static TextButton menuButton;
     private static Table menuTable;
+    private static final int[] menuPressesRemaining = {2};
+
     static boolean showingEndGameUI = false;
 
     public static Table queryTable;
@@ -300,14 +303,18 @@ public final class UIManager {
         fastForwardTable.setFillParent(true);
         fastForwardTable.align(Align.top);
 
-        TextButton menuButton = new TextButton("Menu", SkinClass.skin);
+        menuButton = new TextButton("Quit to Menu", SkinClass.skin);
         menuButton.addListener(new ChangeListener() {
             @Override
             public void changed(final ChangeEvent event, final Actor actor) {
-                DBTGame.game.setScreen(new TitleScreen());
+                --menuPressesRemaining[0];
+                menuButton.setText("Confirm");
+                if (menuPressesRemaining[0] < 1) {
+                    DBTGame.game.setScreen(new TitleScreen());
+                }
             }
         });
-        TextButton cancelMenuButton = new TextButton("Back to game", SkinClass.skin);
+        TextButton cancelMenuButton = new TextButton("Back to Game", SkinClass.skin);
         cancelMenuButton.addListener(new ChangeListener() {
             @Override
             public void changed(final ChangeEvent event, final Actor actor) {
@@ -315,8 +322,10 @@ public final class UIManager {
             }
         });
         menuTable = new Table();
-        menuTable.add(menuButton).row();
-        menuTable.add(cancelMenuButton);
+        cancelMenuButton.padBottom(30);
+        menuTable.add(cancelMenuButton).pad(30);
+        menuTable.row();
+        menuTable.add(menuButton);
         menuTable.setFillParent(true);
         menuTable.align(Align.center);
 
@@ -418,6 +427,8 @@ public final class UIManager {
             menuTable.remove();
         } else {
             showingMenu = true;
+            menuPressesRemaining[0] = 2;
+            menuButton.setText("Quit to Menu");
             stage.addActor(menuTable);
         }
     }
