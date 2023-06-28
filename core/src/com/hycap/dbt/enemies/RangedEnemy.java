@@ -2,6 +2,7 @@ package com.hycap.dbt.enemies;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
+import com.hycap.dbt.Attackable;
 import com.hycap.dbt.GameState;
 import com.hycap.dbt.projectiles.RangedEnemyProjectile;
 import com.hycap.dbt.units.Unit;
@@ -30,13 +31,11 @@ public class RangedEnemy extends Enemy {
         }
         timeUntilNextAttack -= deltaT;
         super.update(deltaT);
-        if (targetDist <= attackRange && timeUntilNextAttack <= 0 && targetBuilding != null) {
-            final RangedEnemyProjectile projectile = new RangedEnemyProjectile();
-            projectile.positionVector = new Vector2(position);
-            projectile.targetBuilding = targetBuilding;
-            projectile.damage = attackDamage;
-            GameState.gameState.enemyProjectiles.add(projectile);
-            timeUntilNextAttack = attackTime;
+        if (timeUntilNextAttack > 0) {
+            return;
+        }
+        if (targetDist <= attackRange && targetBuilding != null) {
+            shoot(targetBuilding);
         } else {
             Unit nearestUnit = getNearestUnit();
             if (nearestUnit == null) {
@@ -44,10 +43,18 @@ public class RangedEnemy extends Enemy {
             }
             float dist = new Vector2(position).sub(nearestUnit.position).len();
             if (dist <= attackRange) {
-                nearestUnit.attack(attackDamage);
-                timeUntilNextAttack = attackTime;
+                shoot(nearestUnit);
             }
         }
+    }
+
+    private void shoot(Attackable target) {
+        final RangedEnemyProjectile projectile = new RangedEnemyProjectile();
+        projectile.positionVector = new Vector2(position);
+        projectile.target = target;
+        projectile.damage = attackDamage;
+        GameState.gameState.enemyProjectiles.add(projectile);
+        timeUntilNextAttack = attackTime;
     }
 
     @Override

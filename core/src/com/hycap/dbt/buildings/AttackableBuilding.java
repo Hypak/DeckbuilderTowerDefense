@@ -3,10 +3,11 @@ package com.hycap.dbt.buildings;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.math.Vector2;
+import com.hycap.dbt.Attackable;
 import com.hycap.dbt.GameState;
 import com.hycap.dbt.UIManager;
 
-public abstract class AttackableBuilding extends Building {
+public abstract class AttackableBuilding extends Building implements Attackable {
     private static final Sound attackSound;
     private static final Sound destroySound;
     static {
@@ -37,6 +38,7 @@ public abstract class AttackableBuilding extends Building {
         return res;
     }
 
+    @Override
     public void attack(final float damage) {
         health -= damage;
         GameState.gameState.addHurtParticle(new Vector2(position.getLeft(), position.getRight()));
@@ -55,5 +57,10 @@ public abstract class AttackableBuilding extends Building {
             UIManager.updateInfoIfSelected(this);
         }
         health = maxHealth;
+    }
+
+    @Override
+    public Vector2 getVecPosition() {
+        return new Vector2(position.getLeft(), position.getRight());
     }
 }

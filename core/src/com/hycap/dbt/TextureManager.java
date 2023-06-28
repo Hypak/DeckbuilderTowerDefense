@@ -11,11 +11,13 @@ import com.hycap.dbt.projectiles.RangedEnemyProjectile;
 import com.hycap.dbt.projectiles.SniperProjectile;
 import com.hycap.dbt.projectiles.TowerProjectile;
 import com.hycap.dbt.units.FarmerUnit;
+import com.hycap.dbt.units.KnightUnit;
 
 final class TextureManager {
     public static Texture grassTexture;
     public static Texture riftTexture;
     public static Texture circleTexture;
+    public static Texture selectedTexture;
     public static float circleSizeMult;
 
     private TextureManager() {
@@ -28,8 +30,13 @@ final class TextureManager {
         Path0EnergyCard.texture = new Texture("Path0EnergyCard.png");
         MineBuilding.texture = new Texture("MineBuilding.png");
         MineCard.texture = new Texture("MineCard.png");
+
         ShackCard.texture = new Texture("ShackCard.png");
         ShackBuilding.texture = new Texture("ShackBuilding.png");
+
+        BarracksCard.texture = new Texture("BarracksCard.png");
+        BarracksBuilding.texture = new Texture("BarracksBuilding.png");
+
         FieldBuilding.texture = new Texture("FieldBuilding.png");
         FieldCard.texture = new Texture("FieldCard.png");
         CoffersBuilding.texture = new Texture("CoffersBuilding.png");
@@ -52,6 +59,7 @@ final class TextureManager {
         EarthquakeCard.texture = new Texture("EarthquakeCard.png");
 
         FarmerUnit.texture = new Texture("FarmerUnit.png");
+        KnightUnit.texture = new Texture("KnightUnit.png");
 
         Draw2Card.texture = new Texture("Draw2Card.png");
         Remove1Card.texture = new Texture("Remove1Card.png");
@@ -74,6 +82,7 @@ final class TextureManager {
         grassTexture = new Texture("Grass2.png");
         riftTexture = new Texture("EnergyRift.png");
         circleTexture = new Texture("Circle.png");
+        selectedTexture = new Texture("Selected.png");
         circleSizeMult = 32f / 512f;
     }
 

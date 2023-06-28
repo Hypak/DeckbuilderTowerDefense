@@ -1,25 +1,25 @@
 package com.hycap.dbt.cards;
 
 import com.badlogic.gdx.graphics.Texture;
+import com.hycap.dbt.buildings.BarracksBuilding;
 import com.hycap.dbt.buildings.Building;
-import com.hycap.dbt.buildings.MineBuilding;
 import com.hycap.dbt.buildings.ShackBuilding;
 
-public class ShackCard extends BuildingCard implements BuyableCard {
+public class BarracksCard extends BuildingCard implements BuyableCard {
     public static Texture texture;
     @Override
     public Building getBuilding() {
-        return new ShackBuilding();
+        return new BarracksBuilding();
     }
 
     @Override
     public int getEnergyCost() {
-        return 1;
+        return 4;
     }
 
     @Override
     public String getName() {
-        return "Shack";
+        return "Barracks";
     }
 
     @Override
@@ -29,11 +29,11 @@ public class ShackCard extends BuildingCard implements BuyableCard {
 
     @Override
     public Card duplicate() {
-        return new ShackCard();
+        return new BarracksCard();
     }
 
     @Override
     public int getBuyCost() {
-        return 5;
+        return 20;
     }
 }

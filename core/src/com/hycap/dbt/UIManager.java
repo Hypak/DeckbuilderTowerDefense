@@ -1,5 +1,6 @@
 package com.hycap.dbt;
 
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -38,6 +39,7 @@ public final class UIManager {
     private static Table buildingButtonTable;
     private static Table selectedInfoTable;
     static Building selectedBuilding = null;
+    static EnemyBase selectedBase = null;
 
     private static Label roundInfo;
 
@@ -71,6 +73,8 @@ public final class UIManager {
     static void setSelectedInfo(final EnemyBase base) {
         removeSelectedInfo();
         selectedInfo.setText(GetObjectInfo.getInfo(base));
+        selectedBase = base;
+        selectedBuilding = null;
     }
 
     static void setSelectedInfo(final Building building) {
@@ -120,6 +124,7 @@ public final class UIManager {
             buildingRemove.setDisabled(GameState.gameState.animating);
             buildingButtonTable.add(buildingRemove).row();
         }
+        selectedBase = null;
     }
 
     public static void upgradeBuilding(Building building) {
@@ -154,6 +159,17 @@ public final class UIManager {
         if (buildingButtonTable != null) {
             buildingButtonTable.remove();
         }
+    }
+
+    static void tabSelectedBuilding(int indexChange) {
+        int i = GameState.gameState.map.buildingList.indexOf(selectedBuilding);
+        i += indexChange;
+        if (i >= GameState.gameState.map.buildingList.size()) {
+            i = 0;
+        } else if (i < 0) {
+            i = GameState.gameState.map.buildingList.size() - 1;
+        }
+        setSelectedInfo(GameState.gameState.map.buildingList.get(i));
     }
 
     static void startAnimating() {

@@ -2,12 +2,13 @@ package com.hycap.dbt.projectiles;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
+import com.hycap.dbt.Attackable;
 import com.hycap.dbt.GameState;
 import com.hycap.dbt.Updatable;
 import com.hycap.dbt.buildings.AttackableBuilding;
 
 public abstract class EnemyProjectile implements Updatable {
-    public AttackableBuilding targetBuilding;
+    public Attackable target;
     public Vector2 positionVector;
     float projectileSpeed;
     float projectileRadius;
@@ -15,17 +16,16 @@ public abstract class EnemyProjectile implements Updatable {
 
     @Override
     public void update(final float deltaT) {
-        if (targetBuilding == null) {
+        if (target == null) {
             GameState.gameState.enemyProjectilesToRemove.add(this);
         }
-        final Vector2 target = new Vector2(targetBuilding.getPosition().getLeft(), targetBuilding.getPosition().getRight());
-        final Vector2 move = target.sub(positionVector);
+        final Vector2 move = new Vector2(target.getVecPosition()).sub(positionVector);
         final float targetDist = move.len();
         if (targetDist > projectileRadius) {
             move.scl(1 / targetDist);
             positionVector.add(move.scl(deltaT * projectileSpeed));
         } else {
-            targetBuilding.attack(damage);
+            target.attack(damage);
             GameState.gameState.enemyProjectilesToRemove.add(this);
         }
     }

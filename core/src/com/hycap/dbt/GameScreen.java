@@ -164,6 +164,14 @@ public class GameScreen extends ScreenAdapter {
 						return true;
 					case Input.Keys.ENTER:
 						UIManager.upgradeBuilding(UIManager.selectedBuilding);
+						return true;
+					case Input.Keys.TAB:
+						int indexChange = 1;
+						if (Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT)) {
+							indexChange = -1;
+						}
+						UIManager.tabSelectedBuilding(indexChange);
+						return true;
 				}
 				if (keycode >= Input.Keys.NUM_0 && keycode <= Input.Keys.NUM_9) {
 					pressNum(keycode);
@@ -358,6 +366,14 @@ public class GameScreen extends ScreenAdapter {
 				GameState.gameState.particles.remove(i);
 				--i;
 			}
+		}
+		if (UIManager.selectedBuilding != null) {
+			final Pair<Integer> selectedPos = UIManager.selectedBuilding.getPosition();
+			TextureManager.draw(batch, TextureManager.selectedTexture, selectedPos.getLeft(), selectedPos.getRight());
+		}
+		if (UIManager.selectedBase != null) {
+			final Pair<Integer> selectedPos = UIManager.selectedBase.position;
+			TextureManager.draw(batch, TextureManager.selectedTexture, selectedPos.getLeft(), selectedPos.getRight());
 		}
 		batch.end();
 		UIManager.render(this);

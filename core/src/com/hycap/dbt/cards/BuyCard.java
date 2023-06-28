@@ -40,9 +40,11 @@ public class BuyCard implements ActionCard, BuyableCard{
         cardDrawWeights.put(new LibraryCard(), 1.5f);
         cardDrawWeights.put(new SpikesCard(), 1.75f);
         cardDrawWeights.put(new MineCard(), 1.75f);
+        cardDrawWeights.put(new ShackCard(), 1.5f);
+        cardDrawWeights.put(new BarracksCard(), 1f);
 
         cardRemainingCount = new HashMap<>(1);
-        cardRemainingCount.put(new LibraryCard(), 3);
+        cardRemainingCount.put(new LibraryCard(), 4);
     }
 
     @Override

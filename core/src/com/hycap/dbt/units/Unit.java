@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
+import com.hycap.dbt.Attackable;
 import com.hycap.dbt.GameState;
 import com.hycap.dbt.Pair;
 import com.hycap.dbt.Updatable;
@@ -14,7 +15,7 @@ import com.hycap.dbt.enemies.Enemy;
 
 import java.util.Random;
 
-public abstract class Unit implements Updatable {
+public abstract class Unit implements Updatable, Attackable {
     private static final Sound attackSound;
     private static final Sound dieSound;
     static {
@@ -89,6 +90,7 @@ public abstract class Unit implements Updatable {
         }
     }
 
+    @Override
     public void attack(final float damage) {
         if (health <= 0) {
             return;
@@ -101,6 +103,11 @@ public abstract class Unit implements Updatable {
             GameState.gameState.units.remove(this);
             dieSound.play();
         }
+    }
+
+    @Override
+    public Vector2 getVecPosition() {
+        return position;
     }
 
     public boolean keepActive() {
