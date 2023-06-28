@@ -6,12 +6,12 @@ import com.hycap.dbt.ActionOnStartTurn;
 import com.hycap.dbt.GameState;
 import com.hycap.dbt.units.FarmerUnit;
 import com.hycap.dbt.units.KnightUnit;
+import com.hycap.dbt.units.SuperKnightUnit;
 
 public class BarracksBuilding extends AttackableBuilding implements ActionOnStartTurn {
     public static Texture texture;
 
-    private static final int baseUnitsPerTurn = 1;
-    private int unitsPerTurn = baseUnitsPerTurn;
+    private boolean isOnRift = false;
 
     @Override
     public String getName() {
@@ -25,20 +25,17 @@ public class BarracksBuilding extends AttackableBuilding implements ActionOnStar
 
     @Override
     public String getInfo() {
-        if (unitsPerTurn == 1) {
-            return "Generate 1 knight per turn.\n";
+        if (isOnRift) {
+            return "Generate 1 knight per turn.\nAdjacent shacks produce knights.";
         } else {
-            return "Generate " + unitsPerTurn + " knights per turn.\n";
+            return "Generate 1 Super Knight per turn.\nAdjacent shacks produce knights.";
         }
     }
 
     @Override
     public void onCreate(final GameState gameState, final boolean onRift) {
         health = 100;
-        unitsPerTurn = baseUnitsPerTurn;
-        if (onRift) {
-            unitsPerTurn += baseUnitsPerTurn;
-        }
+        isOnRift = onRift;
         super.onCreate(gameState, onRift);
     }
 
@@ -54,9 +51,12 @@ public class BarracksBuilding extends AttackableBuilding implements ActionOnStar
 
     @Override
     public void startTurn() {
-        for (int i = 0; i < unitsPerTurn; ++i) {
-            Vector2 vecPos = new Vector2(position.getLeft(), position.getRight());
+        Vector2 vecPos = new Vector2(position.getLeft(), position.getRight());
+        if (onRift) {
+            GameState.gameState.units.add(new SuperKnightUnit(vecPos));
+        } else {
             GameState.gameState.units.add(new KnightUnit(vecPos));
         }
+
     }
 }

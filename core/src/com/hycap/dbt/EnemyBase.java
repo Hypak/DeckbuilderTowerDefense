@@ -34,7 +34,9 @@ public class EnemyBase implements Updatable {
         if (turnsUntilUpgrade <= 0) {
             if (new Random().nextBoolean()) {
                 enemySpawns.add(new FastEnemy(new Vector2(position.getLeft(), position.getRight())));
+                enemySpawns.add(new FastEnemy(new Vector2(position.getLeft(), position.getRight())));
             } else {
+                enemySpawns.add(0, new RangedEnemy(new Vector2(position.getLeft(), position.getRight())));
                 enemySpawns.add(0, new RangedEnemy(new Vector2(position.getLeft(), position.getRight())));
             }
             final int addBigAtRadius = 20;

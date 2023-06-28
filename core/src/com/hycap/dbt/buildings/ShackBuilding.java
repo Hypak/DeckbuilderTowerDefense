@@ -6,6 +6,8 @@ import com.hycap.dbt.ActionOnStartTurn;
 import com.hycap.dbt.GameState;
 import com.hycap.dbt.Updatable;
 import com.hycap.dbt.units.FarmerUnit;
+import com.hycap.dbt.units.KnightUnit;
+import com.hycap.dbt.units.Unit;
 
 public class ShackBuilding extends AttackableBuilding implements ActionOnStartTurn {
     public static Texture texture;
@@ -52,11 +54,22 @@ public class ShackBuilding extends AttackableBuilding implements ActionOnStartTu
         return new ShackBuilding();
     }
 
+    private Unit getUnit() {
+        for (int dX = -1; dX <= 1; ++dX) {
+            for (int dY = -1; dY <= 1; ++dY) {
+                if (GameState.gameState.map.getBuilding(position.getLeft() + dX, position.getRight() + dY) instanceof BarracksBuilding) {
+                    return new KnightUnit(vecPosition.cpy());
+                }
+            }
+        }
+        return new FarmerUnit(vecPosition.cpy());
+    }
+
     @Override
     public void startTurn() {
         for (int i = 0; i < unitsPerTurn; ++i) {
-            Vector2 vecPos = new Vector2(position.getLeft(), position.getRight());
-            GameState.gameState.units.add(new FarmerUnit(vecPos));
+            Vector2 vecPos = new Vector2(vecPosition.cpy());
+            GameState.gameState.units.add(getUnit());
         }
     }
 }

@@ -3,17 +3,17 @@ package com.hycap.dbt.units;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
 
-public class KnightUnit extends Unit {
+public class SuperKnightUnit extends Unit {
     public static Texture texture;
-    float attackTime = 0.5f;
-    float attackDamage = 15;
+    float attackTime = 0.4f;
+    float attackDamage = 20;
     private float timeUntilNextAttack;
 
-    public KnightUnit(final Vector2 position) {
+    public SuperKnightUnit(final Vector2 position) {
         super(position);
-        attackRange = 0.6f;
-        moveSpeed = 1.2f;
-        health = 50;
+        attackRange = 0.8f;
+        moveSpeed = 1.9f;
+        health = 120;
     }
 
     @Override
@@ -31,12 +31,12 @@ public class KnightUnit extends Unit {
 
     @Override
     public Unit clone() {
-        return new KnightUnit(super.position);
+        return new SuperKnightUnit(super.position);
     }
 
     @Override
     public String getName() {
-        return "Knight";
+        return "Super Knight";
     }
 
     @Override

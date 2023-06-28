@@ -5,7 +5,7 @@ import com.hycap.dbt.buildings.BarracksBuilding;
 import com.hycap.dbt.buildings.Building;
 import com.hycap.dbt.buildings.ShackBuilding;
 
-public class BarracksCard extends BuildingCard implements BuyableCard {
+public class BarracksCard extends BuildingCard implements BuyableCard, ExhaustCard {
     public static Texture texture;
     @Override
     public Building getBuilding() {

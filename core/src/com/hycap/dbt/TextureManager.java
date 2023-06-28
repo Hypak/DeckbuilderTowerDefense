@@ -12,6 +12,7 @@ import com.hycap.dbt.projectiles.SniperProjectile;
 import com.hycap.dbt.projectiles.TowerProjectile;
 import com.hycap.dbt.units.FarmerUnit;
 import com.hycap.dbt.units.KnightUnit;
+import com.hycap.dbt.units.SuperKnightUnit;
 
 final class TextureManager {
     public static Texture grassTexture;
@@ -60,6 +61,7 @@ final class TextureManager {
 
         FarmerUnit.texture = new Texture("FarmerUnit.png");
         KnightUnit.texture = new Texture("KnightUnit.png");
+        SuperKnightUnit.texture = new Texture("SuperKnightUnit.png");
 
         Draw2Card.texture = new Texture("Draw2Card.png");
         Remove1Card.texture = new Texture("Remove1Card.png");
