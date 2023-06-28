@@ -42,7 +42,7 @@ public abstract class AttackableBuilding extends Building implements Attackable 
     public void attack(final float damage) {
         health -= damage;
         GameState.gameState.addHurtParticle(new Vector2(position.getLeft(), position.getRight()));
-        if (health < 0 && !destroyed) {
+        if (health <= 0 && !destroyed) {
             GameState.gameState.map.removeBuilding(this);
             onDestroy(GameState.gameState);
             destroyed = true;  // Prevent triggering twice
