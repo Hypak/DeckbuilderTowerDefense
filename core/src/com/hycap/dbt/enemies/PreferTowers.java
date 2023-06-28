@@ -3,6 +3,7 @@ package com.hycap.dbt.enemies;
 import com.hycap.dbt.buildings.AbstractTowerBuilding;
 import com.hycap.dbt.buildings.Building;
 import com.hycap.dbt.buildings.CentralBuilding;
+import com.hycap.dbt.buildings.FieldBuilding;
 
 public class PreferTowers implements BuildingTargetPriority {
     public static PreferTowers preferTowers;
@@ -15,6 +16,9 @@ public class PreferTowers implements BuildingTargetPriority {
         }
         if (building instanceof CentralBuilding) {
             return 1;
+        }
+        if (building instanceof FieldBuilding) {
+            return -100;
         }
         return 0;
     }

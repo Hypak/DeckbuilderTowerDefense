@@ -11,6 +11,7 @@ public class FastEnemy extends BasicEnemy {
         moveSpeed = 1.8f;
         health = 10;
         attackTime = 0.35f;
+        attackDamage = 5;
     }
 
     @Override

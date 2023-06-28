@@ -12,8 +12,11 @@ public class PreferEconomy implements BuildingTargetPriority {
             return 0;
         }
         if (building instanceof CentralBuilding || building instanceof CoffersBuilding
-                || building instanceof MageBuilding || building instanceof MineBuilding ) {
+                || building instanceof MageBuilding || building instanceof MineBuilding) {
             return 3;
+        }
+        if (building instanceof FieldBuilding) {
+            return 1;
         }
         return 0;
     }

@@ -26,12 +26,12 @@ public class NinjaEnemy extends Enemy {
         super(position, 0);
         super.buildingTargetPriority = PreferTowers.preferTowers;
         moveSpeed = 1.4f;
-        health = 15;
+        health = 18;
         attackTime = 2f;
         timeUntilNextAttack = 0;
         attackDamage = 50;
         attackRange = 0.75f;
-        dashDist = 1.5f;
+        dashDist = 2f;
         dashSpeedMult = 2.5f;
         invisEffectSeconds = 1.5f;
         invisEffectRange = 3;

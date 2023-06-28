@@ -17,11 +17,11 @@ public class RangedEnemy extends Enemy {
         super(position, (float) Math.PI / 4);
         super.buildingTargetPriority = Neutral.neutral;
         moveSpeed = 0.75f;
-        health = 8;
-        attackTime = 0.7f;
+        health = 10;
+        attackTime = 0.5f;
         timeUntilNextAttack = 0;
-        attackDamage = 4;
-        attackRange = 3;
+        attackDamage = 5;
+        attackRange = 3.3f;
     }
 
     @Override
