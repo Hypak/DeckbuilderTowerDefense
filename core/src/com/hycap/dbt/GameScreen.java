@@ -95,10 +95,7 @@ public class GameScreen extends ScreenAdapter {
 					if (card instanceof BuildingCard) {
 						final BuildingCard buildingCard = (BuildingCard)card;
 						final Building newBuilding = buildingCard.getBuilding().duplicate();
-						newBuilding.setPosition(new Pair<>(x, y));
 						if (GameState.gameState.map.placeBuilding(newBuilding, x, y)) {
-							final boolean onRift = GameState.gameState.map.riftCoords.contains(newBuilding.getPosition());
-							newBuilding.onCreate(GameState.gameState, onRift);
 							GameState.gameState.currentEnergy -= card.getEnergyCost();
 							GameState.gameState.deck.discardCard(card);
 							selectedIndex = null;
@@ -106,6 +103,9 @@ public class GameScreen extends ScreenAdapter {
 								GameState.gameState.deck.removeCard(card);
 							}
 							UIManager.setSelectedInfo(newBuilding);
+							if (newBuilding instanceof HasRange) {
+								selectedViewTowers.add((HasRange) newBuilding);
+							}
 						}
 					} else if (card instanceof ActionCard) {
 						final ActionCard actionCard = (ActionCard) card;
