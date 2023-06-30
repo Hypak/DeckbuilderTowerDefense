@@ -3,7 +3,7 @@ package com.hycap.dbt.buildings;
 import com.badlogic.gdx.graphics.Texture;
 import com.hycap.dbt.GameState;
 
-public class FieldBuilding extends AttackableBuilding implements CannotPath {
+public class FieldBuilding extends AttackableBuilding implements CannotPath, CanBeBuiltOver {
     public static Texture texture;
 
     private static final int goldPerTurn = 1;

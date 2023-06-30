@@ -74,12 +74,9 @@ public class Map {
                 if (fieldNeighbours[x][y] < 3 || buildings[x][y] != null) {
                     continue;
                 }
-                FieldBuilding fieldBuilding = new FieldBuilding();
-                fieldBuilding.setPosition(new Pair<Integer>(x, y));
-                final boolean onRift = GameState.gameState.map.riftCoords.contains(fieldBuilding.getPosition());
-                fieldBuilding.onCreate(GameState.gameState, onRift);
-                buildings[x][y] = fieldBuilding;
-                buildingList.add(fieldBuilding);
+                FieldBuilding newField = new FieldBuilding();
+                newField.setPosition(new Pair<Integer>(x, y));
+                forcePlaceBuilding(newField, x, y);
             }
         }
     }
@@ -148,22 +145,20 @@ public class Map {
         return res;
     }
 
-    public boolean placeBuilding(final Building building, final int x, final int y) {
-        if (!canPlaceBuilding(x, y)) {
-            return false;
-        }
+    /*
+    Does not check if placement is valid
+     */
+    private void forcePlaceBuilding(final Building building, final int x, final int y) {
         final Building oldBuilding = buildings[x][y];
-        if (oldBuilding != null) {
-            if (building.getName().equals(oldBuilding.getName())) {
-                return false;
-            }
-        }
         buildings[x][y] = building;
         buildingList.add(building);
         final Pair<Integer> coords = new Pair<>(x, y);
         if (riftCoords.contains(coords) && building instanceof AttackableBuilding) {
             GameState.gameState.baseEnergy += energyPerRift;
             BuildRiftTask.finished = true;
+            building.onCreate(GameState.gameState, true);
+        } else {
+            building.onCreate(GameState.gameState, false);
         }
         if (building instanceof MineBuilding) {
             BuildMineTask.finished = true;
@@ -181,6 +176,20 @@ public class Map {
             }
             oldBuilding.onDestroy(GameState.gameState);
         }
+    }
+
+    public boolean placeBuilding(final Building building, final int x, final int y) {
+        if (!canPlaceBuilding(x, y)) {
+            return false;
+        }
+        building.setPosition(new Pair<>(x, y));
+        final Building oldBuilding = buildings[x][y];
+        if (oldBuilding != null) {
+            if (building.getName().equals(oldBuilding.getName())) {
+                return false;
+            }
+        }
+        forcePlaceBuilding(building, x, y);
         return true;
     }
 
