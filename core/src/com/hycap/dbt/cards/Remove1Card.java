@@ -51,7 +51,7 @@ public class Remove1Card implements ActionCard, BuyableCard {
 
             stage.addActor(queryTable);
 
-            gameState.blocked = true;
+            gameState.prompting = true;
 
 
             for (final Card card : gameState.deck.getHand()) {
@@ -64,7 +64,7 @@ public class Remove1Card implements ActionCard, BuyableCard {
                     public boolean touchDown(final InputEvent event, final float x, final float y, final int pointer, final int button) {
                         gameState.deck.removeCard(card);
                         gameState.deck.discardCard(thisCard);
-                        gameState.blocked = false;
+                        gameState.prompting = false;
                         queryTable.remove();
                         return true;
                     }
@@ -75,7 +75,7 @@ public class Remove1Card implements ActionCard, BuyableCard {
                 @Override
                 public boolean touchDown(final InputEvent event, final float x, final float y, final int pointer, final int button) {
                     gameState.deck.discardCard(thisCard);
-                    gameState.blocked = false;
+                    gameState.prompting = false;
                     queryTable.remove();
                     return true;
                 }

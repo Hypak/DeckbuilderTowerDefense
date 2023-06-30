@@ -47,7 +47,7 @@ public class Recycle2Card implements ActionCard, BuyableCard {
 
         stage.addActor(UIManager.queryTable);
 
-        gameState.blocked = true;
+        gameState.prompting = true;
         final Deck deck = GameState.gameState.deck;
         for (final Card card : gameState.deck.getHand()) {
             final TextureRegionDrawable image = new TextureRegionDrawable(new TextureRegion(card.getTexture()));
@@ -61,7 +61,7 @@ public class Recycle2Card implements ActionCard, BuyableCard {
                     imageButton.remove();
                     --deck.cardsLeftToDiscard;
                     if (deck.cardsLeftToDiscard <= 0) {
-                        GameState.gameState.blocked = false;
+                        GameState.gameState.prompting = false;
                         UIManager.queryTable.remove();
                     }
                     return true;

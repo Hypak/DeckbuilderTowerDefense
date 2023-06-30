@@ -55,8 +55,7 @@ public class GameScreen extends ScreenAdapter {
 			@Override
 			public boolean touchUp(final int screenX, final int screenY, final int pointer, final int button) {
 				if (button == Input.Buttons.RIGHT) {
-					selectedIndex = null;
-					UIManager.removeSelectedInfo();
+					setSelectedIndex(null);
 					selectedViewTowers = new ArrayList<>();
 					return true;
 				}
@@ -84,7 +83,7 @@ public class GameScreen extends ScreenAdapter {
 				if (base != null) {
 					UIManager.setSelectedInfo(base);
 				}
-				if (GameState.gameState.blocked || GameState.gameState.animating) {
+				if (GameState.gameState.prompting || GameState.gameState.animating) {
 					return false;
 				}
 				if (selectedIndex != null && selectedIndex >= 0 && selectedIndex < GameState.gameState.deck.getHand().size()) {
@@ -98,7 +97,7 @@ public class GameScreen extends ScreenAdapter {
 						if (GameState.gameState.map.placeBuilding(newBuilding, x, y)) {
 							GameState.gameState.currentEnergy -= card.getEnergyCost();
 							GameState.gameState.deck.discardCard(card);
-							selectedIndex = null;
+							setSelectedIndex(null);
 							if (card instanceof ExhaustCard) {
 								GameState.gameState.deck.removeCard(card);
 							}
@@ -111,7 +110,7 @@ public class GameScreen extends ScreenAdapter {
 						final ActionCard actionCard = (ActionCard) card;
 						if (actionCard.tryPlayCard(GameState.gameState, UIManager.stage)) {
 							GameState.gameState.currentEnergy -= card.getEnergyCost();
-							selectedIndex = null;
+							setSelectedIndex(null);
 							if (card instanceof ExhaustCard) {
 								GameState.gameState.deck.removeCard(card);
 							}
@@ -177,12 +176,8 @@ public class GameScreen extends ScreenAdapter {
 					pressNum(keycode);
 					return true;
 				}
-				if (GameState.gameState.blocked || GameState.gameState.animating) {
-					return false;
-				}
 				if (keycode == Input.Keys.E) {
 					newTurn();
-					EndTurnTask.finished = true;
 					return true;
 				}
 
@@ -191,31 +186,24 @@ public class GameScreen extends ScreenAdapter {
 
 			@Override
 			public boolean touchUp(final int screenX, final int screenY, final int pointer, final int button) {
-				if (button == Input.Buttons.MIDDLE) {
-					CameraManager.setViewWide();
-					return true;
-				}
-				if (button == Input.Buttons.BACK) {
-					if (selectedIndex == null) {
-						selectedIndex = GameState.gameState.deck.getHand().size() - 1;
+				switch (button) {
+					case Input.Buttons.MIDDLE:
+						CameraManager.setViewWide();
 						return true;
-					}
-					--selectedIndex;
-					if (selectedIndex < 0) {
-						selectedIndex = null;
-					}
-					return true;
-				}
-				if (button == Input.Buttons.FORWARD) {
-					if (selectedIndex == null) {
-						selectedIndex = 0;
+					case Input.Buttons.BACK:
+						if (selectedIndex == null) {
+							setSelectedIndex(GameState.gameState.deck.getHand().size() - 1);
+							return true;
+						}
+						setSelectedIndex(selectedIndex - 1);
 						return true;
-					}
-					++selectedIndex;
-					if (selectedIndex >= GameState.gameState.deck.getHand().size()) {
-						selectedIndex = null;
-					}
-					return true;
+					case Input.Buttons.FORWARD:
+						if (selectedIndex == null) {
+							setSelectedIndex(0);
+							return true;
+						}
+						setSelectedIndex(selectedIndex + 1);
+						return true;
 				}
 				return false;
 			}
@@ -233,13 +221,13 @@ public class GameScreen extends ScreenAdapter {
 			newSelectedIndex = keycode - Input.Keys.NUM_1;
 		}
 		final Deck deck = GameState.gameState.deck;
-		if (GameState.gameState.blocked) {
+		if (GameState.gameState.prompting) {
 			if (deck.cardsLeftToDiscard > 0) {
 				deck.discardCardAt(newSelectedIndex);
 				--deck.cardsLeftToDiscard;
 				if (deck.cardsLeftToDiscard <= 0) {
 					UIManager.queryTable.remove();
-					GameState.gameState.blocked = false;
+					GameState.gameState.prompting = false;
 				} else {
 					Recycle2Card.createQueryTable(GameState.gameState, UIManager.stage);
 				}
@@ -248,22 +236,31 @@ public class GameScreen extends ScreenAdapter {
 			}
 			return;
 		}
+		setSelectedIndex(newSelectedIndex);
+	}
 
-		if (selectedIndex != null && newSelectedIndex == selectedIndex) {
+	private void setSelectedIndex(Integer index) {
+		selectedIndex = index;
+		if (selectedIndex == null || selectedIndex < 0 || selectedIndex >= GameState.gameState.deck.getHand().size()) {
 			selectedIndex = null;
 			UIManager.removeSelectedInfo();
-		} else {
-			selectedIndex = newSelectedIndex;
-			if (selectedIndex < GameState.gameState.deck.getHand().size()) {
-				UIManager.setSelectedInfo(GameState.gameState.deck.getHandCard(selectedIndex));
-			}
+			return;
 		}
+		UIManager.setSelectedInfo(GameState.gameState.deck.getHandCard(selectedIndex));
 	}
 
 	void newTurn() {
+		if (GameState.gameState.animating) {
+			return;
+		}
+		GameState.gameState.prompting = false;
+		if (UIManager.queryTable != null) {
+			UIManager.queryTable.remove();
+		}
+		EndTurnTask.finished = true;
 		GameState.gameState.newTurn();
 		GameState.gameState.paused = false;
-		selectedIndex = null;
+		setSelectedIndex(null);
 	}
 
 	public void resize (final int width, final int height) {
@@ -294,7 +291,7 @@ public class GameScreen extends ScreenAdapter {
 		final Card card;
 		if (selectedIndex != null && selectedIndex >= 0 && selectedIndex < GameState.gameState.deck.getHand().size()) {
 			card = GameState.gameState.deck.getHandCard(selectedIndex);
-			if (!GameState.gameState.blocked && selectedIndex != null && card instanceof BuildingCard) {
+			if (!GameState.gameState.prompting && selectedIndex != null && card instanceof BuildingCard) {
 				final BuildingCard buildingCard = (BuildingCard) GameState.gameState.deck.getHandCard(selectedIndex);
 				final Vector3 mousePos = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
 				CameraManager.camera.unproject(mousePos);

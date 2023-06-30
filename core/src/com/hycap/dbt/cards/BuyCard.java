@@ -129,7 +129,7 @@ public class BuyCard implements ActionCard, BuyableCard{
 
         stage.addActor(UIManager.queryTable);
 
-        gameState.blocked = true;
+        gameState.prompting = true;
 
         for (final BuyableCard card : cardSelection) {
             final Label costLabel = new Label(card.getBuyCost() + "G", SkinClass.skin);
@@ -157,7 +157,7 @@ public class BuyCard implements ActionCard, BuyableCard{
         passButton.addListener(new InputListener() {
             @Override
             public boolean touchDown(final InputEvent event, final float x, final float y, final int pointer, final int button) {
-                gameState.blocked = false;
+                gameState.prompting = false;
                 UIManager.queryTable.remove();
                 return true;
             }
@@ -173,7 +173,7 @@ public class BuyCard implements ActionCard, BuyableCard{
         }
         gameState.gold -= card.getBuyCost();
         gameState.deck.addToHand(card);
-        gameState.blocked = false;
+        gameState.prompting = false;
         UIManager.queryTable.remove();
         decreaseRemainingCount(card);
         BuyNewCardTask.finished = true;

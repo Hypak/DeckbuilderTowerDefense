@@ -11,7 +11,6 @@ import com.hycap.dbt.enemies.Enemy;
 import com.hycap.dbt.projectiles.EnemyProjectile;
 import com.hycap.dbt.projectiles.Projectile;
 import com.hycap.dbt.tasks.FastforwardTask;
-import com.hycap.dbt.units.FarmerUnit;
 import com.hycap.dbt.units.Unit;
 
 import java.util.ArrayList;
@@ -35,7 +34,7 @@ public class GameState {
     public int gold;
     public int maxGold;
     public int goldPerTurn;
-    public boolean blocked;
+    public boolean prompting;
     boolean animating;
 
     RunSpeed runSpeed;
@@ -90,7 +89,7 @@ public class GameState {
                 break;
         }
         baseEnergy = 0;
-        blocked = false;
+        prompting = false;
         animating = false;
         gold = 0;
         maxGold = 0;

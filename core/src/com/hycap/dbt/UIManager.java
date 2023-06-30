@@ -229,10 +229,7 @@ public final class UIManager {
         endTurnButton.addListener(new ChangeListener() {
             @Override
             public void changed(final ChangeEvent event, final Actor actor) {
-                if (!GameState.gameState.blocked && !GameState.gameState.animating) {
-                    gameScreen.newTurn();
-                    EndTurnTask.finished = true;
-                }
+                gameScreen.newTurn();
                 tooltipManager.instant();  // I don't know why I need this line lol
             }
         });
