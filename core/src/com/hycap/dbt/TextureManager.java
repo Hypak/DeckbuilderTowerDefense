@@ -59,6 +59,10 @@ final class TextureManager {
         EarthquakeBuilding.texture = new Texture("EarthquakeBuilding.png");
         EarthquakeCard.texture = new Texture("EarthquakeCard.png");
 
+        BombBuilding.texture = new Texture("BombBuilding.png");
+        BombBuilding.noChargeTexture = new Texture("Grass2.png");
+        BombCard.texture = new Texture("BombCard.png");
+
         FarmerUnit.texture = new Texture("FarmerUnit.png");
         KnightUnit.texture = new Texture("KnightUnit.png");
         SuperKnightUnit.texture = new Texture("SuperKnightUnit.png");

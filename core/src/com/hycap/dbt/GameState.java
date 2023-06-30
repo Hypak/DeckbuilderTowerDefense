@@ -35,7 +35,7 @@ public class GameState {
     public int maxGold;
     public int goldPerTurn;
     public boolean prompting;
-    boolean animating;
+    public boolean animating;
 
     RunSpeed runSpeed;
     boolean paused;
@@ -169,15 +169,7 @@ public class GameState {
             performUpdate(deltaT);
         }
 
-        if (!animating) {
-            for (final Building building : map.getBuildingList()) {
-                if (building instanceof AttackableBuilding) {
-                    final AttackableBuilding attackableBuilding = (AttackableBuilding)building;
-                    attackableBuilding.newTurn();
-                }
-            }
-            UIManager.endAnimating();
-        }
+        UIManager.endAnimating();
     }
 
     private void performUpdate(final float deltaT) {

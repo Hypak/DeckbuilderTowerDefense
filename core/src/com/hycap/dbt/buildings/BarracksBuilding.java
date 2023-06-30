@@ -51,6 +51,7 @@ public class BarracksBuilding extends AttackableBuilding implements ActionOnStar
 
     @Override
     public void startTurn() {
+        super.startTurn();
         Vector2 vecPos = new Vector2(position.getLeft(), position.getRight());
         if (onRift) {
             GameState.gameState.units.add(new SuperKnightUnit(vecPos));

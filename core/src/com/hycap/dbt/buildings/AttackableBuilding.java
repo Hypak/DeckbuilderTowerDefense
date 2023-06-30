@@ -3,11 +3,12 @@ package com.hycap.dbt.buildings;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.math.Vector2;
+import com.hycap.dbt.ActionOnStartTurn;
 import com.hycap.dbt.Attackable;
 import com.hycap.dbt.GameState;
 import com.hycap.dbt.UIManager;
 
-public abstract class AttackableBuilding extends Building implements Attackable {
+public abstract class AttackableBuilding extends Building implements Attackable, ActionOnStartTurn {
     private static final Sound attackSound;
     private static final Sound destroySound;
     static {
@@ -51,7 +52,8 @@ public abstract class AttackableBuilding extends Building implements Attackable 
         attackSound.play();
     }
 
-    public void newTurn() {
+    @Override
+    public void startTurn() {
         if (maxHealth > health) {
             healthRepaired += (maxHealth - health);
             UIManager.updateInfoIfSelected(this);

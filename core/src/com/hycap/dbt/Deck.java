@@ -13,13 +13,14 @@ public class Deck {
 
     Deck() {
         cards = new ArrayList<>();
-        for (int i = 0; i < 6; ++i) {
+        for (int i = 0; i < 5; ++i) {
             cards.add(new PathCard());
         }
         cards.add(new MineCard());
         cards.add(new ShackCard());
         cards.add(new FieldCard());
         cards.add(new BuyCard());
+        cards.add(new BombCard());
         cards.add(new TowerCard());
         cards.add(new Recycle2Card());
         shuffleAll();
